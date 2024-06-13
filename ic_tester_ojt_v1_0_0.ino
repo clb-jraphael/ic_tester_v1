@@ -282,11 +282,7 @@ void executeAction() {
   }
 }
 
-void manualUserInterface() {
-  lcd.clear();
-  lcd.setCursor(0, 0); lcd.print(icOptions[currentSelection]);
-  lcd.setCursor(0, 1); lcd.print(icOptions[(currentSelection + 1) % numOptions]);
-}
+
 
 void testIC7400() {
   // Implement test procedure for IC 7400
