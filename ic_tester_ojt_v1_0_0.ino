@@ -92,8 +92,6 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // GLOBAL VARIABLES
 int menu = 1;
 
-unsigned long lastButtonPressTime = 0;
-unsigned long debounceDelay = 100; 
 
 // FUNCTIONS
 
@@ -153,6 +151,9 @@ void setup() {
   delay(3000);
   updateMenu();
 }
+
+unsigned long lastButtonPressTime = 0;
+unsigned long debounceDelay = 100; 
 
 void loop() {
   unsigned long currentMillis = millis();
@@ -255,8 +256,6 @@ void manualUserInterface() {
       menu = 7;
       break;
   }
-  //lcd.setCursor(0, 0);lcd.print(F("1. 7400"));
-  //lcd.setCursor(0, 1);lcd.print(F("1. 7402"));
 }
 
 void executeAction() {
@@ -277,8 +276,6 @@ void executeAction() {
       testIC747266();
   }
 }
-
-
 
 void testIC7400() {
   // Implement test procedure for IC 7400
