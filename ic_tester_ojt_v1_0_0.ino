@@ -165,33 +165,28 @@ void setup() {
 
 void loop() {
   // Init buttons for use
-  if (!digitalRead(downButton)){
+  if (!digitalRead(PIN_BTN_DOWN)){
     menu++;
     updateMenu();
     delay(100);
-    while (!digitalRead(downButton));
+    while (!digitalRead(PIN_BTN_DOWN));
   }
-  if (!digitalRead(upButton)){
+  if (!digitalRead(PIN_BTN_UP)){
     menu--;
     updateMenu();
     delay(100);
-    while(!digitalRead(upButton));
+    while(!digitalRead(PIN_BTN_UP));
   }
-  if (!digitalRead(selectButton)){
+  if (!digitalRead(PIN_BTN_OK)){
     executeAction();
     updateMenu();
     delay(100);
-    while (!digitalRead(selectButton));
+    while (!digitalRead(PIN_BTN_OK));
   }
 }
 
-void chooseOptionMainMenu() {
-  delay(3000);
-  lcd.clear();
-  lcd.setCursor(0,0);lcd.print(F("1. Automatic"));
-  lcd.setCursor(0,1);lcd.print(F("2. Manual"));
-
-  switch (userInterface()) {
+void updateMenu() {
+  switch (menu) {
     case 0:
       menu = 1;
       break;
@@ -208,17 +203,86 @@ void chooseOptionMainMenu() {
       lcd.print(">Manual");
       break;
     case 3:
-      menu = 4;
+      menu = 2;
       break;
   }
 }
 
-void updateMenu() {
+void manualUserInterface() {
+  lcd.clear();
   switch (menu) {
+    case 0:
+      menu = 1;
+      break;
+    case 1:
+      lcd.clear();
+      lcd.print(">IC 7400");
+      lcd.setCursor(0, 1);
+      lcd.print(" IC 7402");
+      break;
+    case 2:
+      lcd.clear();
+      lcd.print(" IC 7400");
+      lcd.setCursor(0, 1);
+      lcd.print(">IC 7402");
+      break;
+    case 3:
+      lcd.clear();
+      lcd.print(">IC 7404");
+      lcd.setCursor(0, 1);
+      lcd.print(" IC 7408");
+      break;
+    case 4: 
+      lcd.clear();
+      lcd.print(" IC 7404");
+      lcd.setCursor(0, 1);
+      lcd.print(">IC 7408");
+      break;
+    case 5: 
+      lcd.clear();
+      lcd.print(">IC 7437");
+      lcd.setCursor(0, 1);
+      lcd.print(" IC 7486");
+      break;
+    case 6: 
+      lcd.clear();
+      lcd.print(" IC 7437");
+      lcd.setCursor(0, 1);
+      lcd.print(">IC 7486");
+      break;
+    case 7: 
+      lcd.clear();
+      lcd.print(">IC 747266");
+      lcd.setCursor(0, 1);
+      break;
+    case 8:
+      menu = 7;
+      break;
+  }
+  //lcd.setCursor(0, 0);lcd.print(F("1. 7400"));
+  //lcd.setCursor(0, 1);lcd.print(F("1. 7402"));
+}
 
+void executeAction() {
+  switch (menu) {
+    case 1:
+      testIC7400();
+      break;
+    case 2:
+      testIC7402();
+      break;
+    case 3:
+      testIC7404();
+      break;
+    case 4:
+      testIC7408();
+      break;
+    case 5:
+      testIC747266();
   }
 }
 
+<<<<<<< HEAD
 
 void manualUserInterface() {
   lcd.clear();
@@ -234,4 +298,25 @@ void executeAction() {
   // Additional code to handle the selected IC
   delay(2000);
   manualUserInterface();
+=======
+void testIC7400() {
+  // Implement test procedure for IC 7400
+  // Example: Check pins, apply signals, read outputs, etc.
+}
+
+void testIC7402() {
+  // Implement test procedure for IC 7402
+}
+
+void testIC7404() {
+  // Implement test procedure for IC 7404
+}
+
+void testIC7408() {
+  // Implement test procedure for IC 7408
+}
+
+void testIC747266() {
+
+>>>>>>> 37e931f75f485ab3436d42fea172901558440e55
 }
