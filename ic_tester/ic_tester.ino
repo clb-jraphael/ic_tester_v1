@@ -98,8 +98,6 @@ unsigned long lastButtonPressTime = 0;
 unsigned long debounceDelay = 100;
 
 
-
-
 // FUNCTIONS
 
 void init_ic_pins()
