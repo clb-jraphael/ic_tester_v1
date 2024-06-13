@@ -282,7 +282,7 @@ void executeAction() {
   }
 }
 
-<<<<<<< HEAD
+
 
 void manualUserInterface() {
   lcd.clear();
@@ -298,7 +298,7 @@ void executeAction() {
   // Additional code to handle the selected IC
   delay(2000);
   manualUserInterface();
-=======
+
 void testIC7400() {
   // Implement test procedure for IC 7400
   // Example: Check pins, apply signals, read outputs, etc.
@@ -318,5 +318,4 @@ void testIC7408() {
 
 void testIC747266() {
 
->>>>>>> 37e931f75f485ab3436d42fea172901558440e55
 }
