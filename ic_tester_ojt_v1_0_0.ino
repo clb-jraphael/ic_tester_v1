@@ -2,7 +2,6 @@
 
 
 
-
 // CONSTANTS AND OBJECTS
 const byte PIN_BUZZ = 3;
 const byte PIN_POT = A1;
@@ -89,8 +88,16 @@ const byte PIN_LED1 = 8;
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
+
+
+
+
 // GLOBAL VARIABLES
 int menu = 1;
+
+
+
+
 
 
 
@@ -198,6 +205,26 @@ void updateMenu() {
   }
 }
 
+void displayManualSubmenu(){
+  lcd.clear();
+  lcd.print(">IC 7400");
+  lcd.setCursor(0, 1);
+  lcd.print(" IC 7402");
+  manualUserInterface();
+}
+
+void executeAction() {
+  switch (menu) {
+    case 1:
+      // automaticUserInterface();
+      // TO DO: Implement 
+      break;
+    case 2:
+      displayManualSubmenu();
+      break;
+  }
+}
+
 void manualUserInterface() {
   lcd.clear();
   switch (menu) {
@@ -253,7 +280,7 @@ void manualUserInterface() {
   //lcd.setCursor(0, 1);lcd.print(F("1. 7402"));
 }
 
-void executeAction() {
+void executeActionTestIC() {
   switch (menu) {
     case 1:
       testIC7400();
@@ -271,8 +298,6 @@ void executeAction() {
       testIC747266();
   }
 }
-
-
 
 void testIC7400() {
   // Implement test procedure for IC 7400
