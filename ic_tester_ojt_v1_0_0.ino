@@ -1,5 +1,8 @@
 #include <LiquidCrystal.h>
 
+
+
+
 // CONSTANTS AND OBJECTS
 const byte PIN_BUZZ = 3;
 const byte PIN_POT = A1;
@@ -91,7 +94,7 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
 // GLOBAL VARIABLES
-
+int menu = 1;
 
 
 
@@ -154,7 +157,69 @@ void setup() {
 
   Serial.begin(115200);
   Serial.println(F(">"));
+  delay(3000);
+  updateMenu();
 }
 
 void loop() {
+  // Init buttons for use
+  if (!digitalRead(downButton)){
+    menu++;
+    updateMenu();
+    delay(100);
+    while (!digitalRead(downButton));
+  }
+  if (!digitalRead(upButton)){
+    menu--;
+    updateMenu();
+    delay(100);
+    while(!digitalRead(upButton));
+  }
+  if (!digitalRead(selectButton)){
+    executeAction();
+    updateMenu();
+    delay(100);
+    while (!digitalRead(selectButton));
+  }
+}
+
+void chooseOptionMainMenu() {
+  delay(3000);
+  lcd.clear();
+  lcd.setCursor(0,0);lcd.print(F("1. Automatic"));
+  lcd.setCursor(0,1);lcd.print(F("2. Manual"));
+
+  switch (userInterface()) {
+    case 0:
+      menu = 1;
+      break;
+    case 1:
+      lcd.clear();
+      lcd.print(">Automatic");
+      lcd.setCursor(0, 1);
+      lcd.print(" Manual");
+      break;
+    case 2:
+      lcd.clear();
+      lcd.print(" Automatic");
+      lcd.setCursor(0, 1);
+      lcd.print(">Manual");
+      break;
+    case 3:
+      menu = 4;
+      break;
+  }
+}
+
+void updateMenu() {
+  switch (menu) {
+
+  }
+}
+
+
+void manualUserInterface() {
+  lcd.clear();
+  lcd.setCursor(0, 0);lcd.print(F("1. 7400"));
+  lcd.setCursor(0, 1);lcd.print(F("1. 7402"));
 }
