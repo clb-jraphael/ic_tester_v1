@@ -92,7 +92,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // GLOBAL VARIABLES
 int menu = 1;
 
-
+unsigned long lastButtonPressTime = 0;
+unsigned long debounceDelay = 100; 
 
 // FUNCTIONS
 
@@ -154,24 +155,29 @@ void setup() {
 }
 
 void loop() {
-  // Init buttons for use
-  if (!digitalRead(PIN_BTN_DOWN)){
+  unsigned long currentMillis = millis();
+
+  // Handle button presses with non-blocking delay using millis()
+  if (!digitalRead(PIN_BTN_DOWN) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
+    lastButtonPressTime = currentMillis;
     menu++;
+    if (menu > 7) {
+      menu = 1; // Wrap around if menu goes out of bounds
+    }
     updateMenu();
-    delay(100);
-    while (!digitalRead(PIN_BTN_DOWN));
   }
-  if (!digitalRead(PIN_BTN_UP)){
+  if (!digitalRead(PIN_BTN_UP) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
+    lastButtonPressTime = currentMillis;
     menu--;
+    if (menu < 1) {
+      menu = 7; // Wrap around if menu goes out of bounds
+    }
     updateMenu();
-    delay(100);
-    while(!digitalRead(PIN_BTN_UP));
   }
-  if (!digitalRead(PIN_BTN_OK)){
+  if (!digitalRead(PIN_BTN_OK) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
+    lastButtonPressTime = currentMillis;
     executeAction();
     updateMenu();
-    delay(100);
-    while (!digitalRead(PIN_BTN_OK));
   }
 }
 
