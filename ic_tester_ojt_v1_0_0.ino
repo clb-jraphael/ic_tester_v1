@@ -92,16 +92,6 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // GLOBAL VARIABLES
 int menu = 1;
 
-const char *icOptions[] = {
-  "7432 (OR Gate)",
-  "7408 (AND Gate)",
-  "7404 (Inverter)",
-  "747266 (Transceiver)",
-  "7400 (NAND Gate)",
-  "7402 (NOR Gate)",
-  "7486 (XOR Gate)"
-};
-const int numOptions = sizeof(icOptions) / sizeof(icOptions[0]);
 
 
 // FUNCTIONS
