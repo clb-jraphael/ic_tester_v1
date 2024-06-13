@@ -89,17 +89,19 @@ const byte PIN_LED1 = 8;
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-
-
-
-
 // GLOBAL VARIABLES
 int menu = 1;
 
-
-
-
-
+const char *icOptions[] = {
+  "7432 (OR Gate)",
+  "7408 (AND Gate)",
+  "7404 (Inverter)",
+  "747266 (Transceiver)",
+  "7400 (NAND Gate)",
+  "7402 (NOR Gate)",
+  "7486 (XOR Gate)"
+};
+const int numOptions = sizeof(icOptions) / sizeof(icOptions[0]);
 
 
 // FUNCTIONS
@@ -220,6 +222,16 @@ void updateMenu() {
 
 void manualUserInterface() {
   lcd.clear();
-  lcd.setCursor(0, 0);lcd.print(F("1. 7400"));
-  lcd.setCursor(0, 1);lcd.print(F("1. 7402"));
+  lcd.setCursor(0, 0); lcd.print(icOptions[currentSelection]);
+  lcd.setCursor(0, 1); lcd.print(icOptions[(currentSelection + 1) % numOptions]);
+}
+
+
+void executeAction() {
+  lcd.clear();
+  lcd.setCursor(0, 0); lcd.print(F("Selected:"));
+  lcd.setCursor(0, 1); lcd.print(icOptions[currentSelection]);
+  // Additional code to handle the selected IC
+  delay(2000);
+  manualUserInterface();
 }
