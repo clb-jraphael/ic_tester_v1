@@ -111,18 +111,18 @@ void init_ic_pins()
 void potreader()
 {
   static unsigned long t;
-  if(millis() - t < 50) return;
+  if (millis() - t < 50) return;
   t = millis();
 
   unsigned int a;
   a = 0;
-  for(byte i=0;i<10;i++) 
-  {
-    a+=analogRead(PIN_POT);    
+  for (byte i = 0; i < 10; i++) {
+    a += analogRead(PIN_POT);
   }
-  a/=10;
-
-  //a is the final value. this is between 0 and 1023
+  a /= 10;
+  // a is the final value. this is between 0 and 1023
+  //analogWrite(PIN_RGBLED_R, map(a, 0, 1023, 0, 255));
+  analogWrite(PIN_RGBLED_B, map(a, 0, 1023, 0, 255));
 
 }
 
@@ -219,6 +219,7 @@ void setup() {
 }
 
 void loop() {
+  potreader();
   unsigned long currentMillis = millis();
 
   // Handle button presses with non-blocking delay using millis()
