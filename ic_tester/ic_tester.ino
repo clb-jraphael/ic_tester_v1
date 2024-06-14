@@ -1,7 +1,6 @@
 #include <LiquidCrystal.h>
 
 
-
 // CONSTANTS AND OBJECTS
 const byte PIN_BUZZ = 3;
 const byte PIN_POT = A1;
@@ -28,8 +27,6 @@ const byte PIN_PWM_P0 = 5;
 const byte PIN_PWM_P1 = 7;
 const byte PIN_PWM_P2 = 9;
 const byte PIN_PWM_P3 = 11;
-
-const byte PIN_LCD_CONTRAST = 2; // PWM pin for LCD contrast control
 
 // Vx headers
 const byte PIN_VOLTMETER_V0 = A3;
@@ -87,6 +84,8 @@ const byte PIN_RGBLED_B = 2;
 
 const byte PIN_LED1 = 8;
 
+const int PIN_LCD_CONTRAST = 4;
+
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
@@ -95,10 +94,11 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 
 // GLOBAL VARIABLES
-int menu = 1;
+byte menu = 1, submenu = 1, num = 1;
 unsigned long lastButtonPressTime = 0;
 unsigned long debounceDelay = 100;
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
+
 
 
 // FUNCTIONS
@@ -135,67 +135,6 @@ void potreader()
 
 }
 
-void button_scanner() {
-  static unsigned long lastDebounceTime = 0;
-  static boolean lastButtonState[6] = {HIGH, HIGH, HIGH, HIGH, HIGH, HIGH}; // Initialize the last button states
-  
-  // Loop through each button pin
-  for (int i = 0; i < 6; i++) {
-    byte buttonPin = PINS_BUTTONS[i];
-    int buttonState = digitalRead(buttonPin);
-    
-    // Check if current button state is different from the last known state
-    if (buttonState != lastButtonState[i]) {
-      // Reset the debounce timer
-      lastDebounceTime = millis();
-    }
-    
-    // Check if debounce delay has elapsed
-    if ((millis() - lastDebounceTime) > debounceDelay) {
-      // If button state has remained stable for debounceDelay, consider it a valid button press
-      if (buttonState != lastButtonState[i]) {
-        lastButtonState[i] = buttonState; // Update last button state
-        
-        // Perform action based on button pin
-        switch (buttonPin) {
-          case PIN_BTN_UP:
-            // Handle button up action
-            menu++;
-            if (menu > 7) {
-              menu = 1; // Wrap around if menu goes out of bounds
-            }
-            update_menu();
-            break;
-          case PIN_BTN_DOWN:
-            // Handle button down action
-            menu--;
-            if (menu < 1) {
-              menu = 7; // Wrap around if menu goes out of bounds
-            }
-            update_menu();
-            break;
-          case PIN_BTN_LEFT:
-            // TODO: Implementation
-            break;
-          case PIN_BTN_RIGHT:
-            // TODO: Implementation
-            break;
-          case PIN_BTN_OK:
-            execute_action();
-            update_menu();
-            break;
-          case PIN_BTN_CANCEL:
-            // TODO: Implementation
-            break;
-          default:
-            // Handle other button actions if needed
-            break;
-        }
-      }
-    }
-  }
-}
-
 void setup() {
   Serial.begin(9600);
   init_ic_pins();
@@ -215,21 +154,10 @@ void setup() {
   pinMode(PIN_PWM_P1, OUTPUT);
   pinMode(PIN_PWM_P2, OUTPUT);
   pinMode(PIN_PWM_P3, OUTPUT);
-  pinMode(PIN_LCD_CONTRAST, OUTPUT); // Set the PWM pin for the LCD contrast control as output
 
   lcd.begin(16, 2);
  
-  lcd.setCursor(0,0);lcd.print(F("  LC IC TESTER  "));unsigned int potValue = analogRead(PIN_POT);
-  int contrastValue = map(potValue, 0, 1023, 0, 255);
-  analogWrite(PIN_LCD_CONTRAST, contrastValue);
-
-  // Debug output
-  Serial.print("Potentiometer Value: ");
-  Serial.print(potValue);
-  Serial.print(" - Mapped Contrast Value: ");
-  Serial.println(contrastValue);
-
-  delay(100); // Delay for readability
+  lcd.setCursor(0,0);lcd.print(F("  LC IC TESTER  "));
   lcd.setCursor(0,1);lcd.print(F("HW1.0.0  SW1.0.0"));
   
 
@@ -237,12 +165,14 @@ void setup() {
   Serial.println(F("Hello"));
   delay(3000);
   update_menu();
-  digitalWrite(PIN_LED1, HIGH); // Turn on heartbeat LED
+  
 }
 
 void loop() {
+  button_scanner();
+
   potreader();
-  
+
   unsigned long currentMillis = millis();
 
   // Heartbeat LED control
@@ -251,32 +181,37 @@ void loop() {
     digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
 
   }
+}
 
-  // Handle button presses with non-blocking delay using millis()
-  if (!digitalRead(PIN_BTN_DOWN) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
-    lastButtonPressTime = currentMillis;
+void button_scanner() {
+  if (!digitalRead(PIN_BTN_DOWN) && num == 1){
     menu++;
-    if (menu > 2) {
-      menu = 2;
-    }
     update_menu();
+    delay(100);
+    while (!digitalRead(PIN_BTN_DOWN) && num == 1);
   }
-  if (!digitalRead(PIN_BTN_UP) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
-    lastButtonPressTime = currentMillis;
+  if (!digitalRead(PIN_BTN_UP) && num == 1){
     menu--;
-    if (menu < 1) {
-      menu = 1;
-    }
     update_menu();
+    delay(100);
+    while(!digitalRead(PIN_BTN_UP) && num == 1);
   }
-  if (!digitalRead(PIN_BTN_OK) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
-    lastButtonPressTime = currentMillis;
+  if (!digitalRead(PIN_BTN_OK) && num == 1){
     execute_action();
-    if (menu == 1) {
-      // Automatic testing function
-    } else {
-      display_manual_submenu();
-    }
+    delay(100);
+    while (!digitalRead(PIN_BTN_OK) && num == 1);
+  }
+  if (!digitalRead(PIN_BTN_DOWN) && num == 2){
+    if (submenu < 7) submenu++;
+    manual_user_interface();
+    delay(100);
+    while (!digitalRead(PIN_BTN_DOWN) && num == 2);
+  }
+  if (!digitalRead(PIN_BTN_UP) && num == 2){
+    if (submenu > 1) submenu--;
+    manual_user_interface();
+    delay(100);
+    while (!digitalRead(PIN_BTN_UP) && num == 2);
   }
 }
 
@@ -287,15 +222,15 @@ void update_menu() {
       break;
     case 1:
       lcd.clear();
-      lcd.print(">Automatic");
+      lcd.print(F(">Automatic"));
       lcd.setCursor(0, 1);
-      lcd.print(" Manual");
+      lcd.print(F(" Manual"));
       break;
     case 2:
       lcd.clear();
-      lcd.print(" Automatic");
+      lcd.print(F(" Automatic"));
       lcd.setCursor(0, 1);
-      lcd.print(">Manual");
+      lcd.print(F(">Manual"));
       break;
     case 3:
       menu = 2;
@@ -307,77 +242,79 @@ void execute_action() {
   switch (menu) {
     case 1:
       // automaticUserInterface();
-      // TO DO: Implement 
+      // TO DO: Implement automatic through a different function
       break;
     case 2:
-      display_manual_submenu();
+      manual_user_interface();
+      num++;
       break;
   }
 }
 
-void display_manual_submenu(){
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(">IC 7400        ");
-  lcd.setCursor(0, 1);
-  lcd.print(" IC 7402        ");
-  manual_user_interface();
-}
+// MAY NOT BE NEEDED ANYMORE
+//void display_manual_submenu(){
+//  lcd.clear();
+//  lcd.setCursor(0, 0);
+//  lcd.print(F(">IC 7400        "));
+//  lcd.setCursor(0, 1);
+//  lcd.print(F(" IC 7402        "));
+//  manual_user_interface();
+//}
 
 void manual_user_interface() {
   lcd.clear();
-  switch (menu) {
+  switch (submenu) {
     case 0:
-      menu = 1;
+      submenu = 1;
       break;
     case 1:
       lcd.clear();
-      lcd.print(">IC 7400        ");
+      lcd.print(F(">IC 7400        "));
       lcd.setCursor(0, 1);
-      lcd.print(" IC 7402        ");
+      lcd.print(F(" IC 7402        "));
       break;
     case 2:
       lcd.clear();
-      lcd.print(" IC 7400");
+      lcd.print(F(" IC 7400        "));
       lcd.setCursor(0, 1);
-      lcd.print(">IC 7402");
+      lcd.print(F(">IC 7402        "));
       break;
     case 3:
       lcd.clear();
-      lcd.print(">IC 7404");
+      lcd.print(F(">IC 7404        "));
       lcd.setCursor(0, 1);
-      lcd.print(" IC 7408");
+      lcd.print(F(" IC 7408        "));
       break;
     case 4: 
       lcd.clear();
-      lcd.print(" IC 7404");
+      lcd.print(F(" IC 7404        "));
       lcd.setCursor(0, 1);
-      lcd.print(">IC 7408");
+      lcd.print(F(">IC 7408        "));
       break;
     case 5: 
       lcd.clear();
-      lcd.print(">IC 7437");
+      lcd.print(F(">IC 7437        "));
       lcd.setCursor(0, 1);
-      lcd.print(" IC 7486");
+      lcd.print(F(" IC 7486        "));
       break;
     case 6: 
       lcd.clear();
-      lcd.print(" IC 7437");
+      lcd.print(F(" IC 7437        "));
       lcd.setCursor(0, 1);
-      lcd.print(">IC 7486");
+      lcd.print(F(">IC 7486        "));
       break;
     case 7: 
       lcd.clear();
-      lcd.print(">IC 747266");
+      lcd.print(F(">IC 747266      "));
       lcd.setCursor(0, 1);
       break;
     case 8:
-      menu = 7;
+      submenu = 7;
       break;
   }
 }
 
-void execut_action_test_IC() {
+void execute_action_test_IC() {
   switch (menu) {
     case 1:
       testIC7400();
