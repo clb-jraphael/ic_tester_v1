@@ -95,8 +95,6 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // GLOBAL VARIABLES
 byte menu = 1, submenu = 1, num = 1;
-unsigned long lastButtonPressTime = 0;
-unsigned long debounceDelay = 100;
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
 
@@ -185,7 +183,6 @@ void loop() {
   if (currentMillis - lastMillis > 1000) {
     lastMillis = currentMillis;
     digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
-
   }
 }
 
@@ -195,6 +192,7 @@ void display_placeholder_text() {
   switch (submenu) {
     case 1:
       lcd.print(F("Testing IC 7400"));
+      // Call corresponding method to execute testing
       testIC7400();
       break;
     case 2:
@@ -228,55 +226,46 @@ void display_placeholder_text() {
 
 void button_scanner() {
   unsigned long currentTime = millis();
-  if (currentTime - lastButtonPressTime > debounceDelay) {
-    if (!digitalRead(PIN_BTN_DOWN) && num == 1){
-      buzz_for_feedback();
-      menu++;
+  if (!digitalRead(PIN_BTN_DOWN) && num == 1){
+    buzz_for_feedback();
+    menu++;
+    update_menu();
+    while (!digitalRead(PIN_BTN_DOWN) && num == 1);
+  }
+  if (!digitalRead(PIN_BTN_UP) && num == 1){
+    buzz_for_feedback();
+    menu--;
+    update_menu();
+    while(!digitalRead(PIN_BTN_UP) && num == 1);
+  }
+  if (!digitalRead(PIN_BTN_OK) && num == 1){
+    buzz_for_feedback();
+    execute_action();
+    while (!digitalRead(PIN_BTN_OK) && num == 1);
+  }
+  if (!digitalRead(PIN_BTN_DOWN) && num == 2){
+    buzz_for_feedback();
+    if (submenu < 7) submenu++;
+    manual_user_interface();
+    while (!digitalRead(PIN_BTN_DOWN) && num == 2);
+  }
+  if (!digitalRead(PIN_BTN_UP) && num == 2){
+    buzz_for_feedback();
+    if (submenu > 1) submenu--;
+    manual_user_interface();
+    while (!digitalRead(PIN_BTN_UP) && num == 2);
+  }
+  if (!digitalRead(PIN_BTN_OK) && num == 2) {
+    buzz_for_feedback();
+    display_placeholder_text();
+    while (!digitalRead(PIN_BTN_OK) && num == 2);
+  }
+  if (!digitalRead(PIN_BTN_CANCEL)) {
+    buzz_for_feedback();
+    if (num == 2) {
+      num = 1;
       update_menu();
-      lastButtonPressTime = currentTime;
-      while (!digitalRead(PIN_BTN_DOWN) && num == 1);
-    }
-    if (!digitalRead(PIN_BTN_UP) && num == 1){
-      buzz_for_feedback();
-      menu--;
-      update_menu();
-      lastButtonPressTime = currentTime;
-      while(!digitalRead(PIN_BTN_UP) && num == 1);
-    }
-    if (!digitalRead(PIN_BTN_OK) && num == 1){
-      buzz_for_feedback();
-      execute_action();
-      lastButtonPressTime = currentTime;
-      while (!digitalRead(PIN_BTN_OK) && num == 1);
-    }
-    if (!digitalRead(PIN_BTN_DOWN) && num == 2){
-      buzz_for_feedback();
-      if (submenu < 7) submenu++;
-      manual_user_interface();
-      lastButtonPressTime = currentTime;
-      while (!digitalRead(PIN_BTN_DOWN) && num == 2);
-    }
-    if (!digitalRead(PIN_BTN_UP) && num == 2){
-      buzz_for_feedback();
-      if (submenu > 1) submenu--;
-      manual_user_interface();
-      lastButtonPressTime = currentTime;
-      while (!digitalRead(PIN_BTN_UP) && num == 2);
-    }
-    if (!digitalRead(PIN_BTN_OK) && num == 2) {
-      buzz_for_feedback();
-      display_placeholder_text();
-      lastButtonPressTime = currentTime;
-      while (!digitalRead(PIN_BTN_OK) && num == 2);
-    }
-    if (!digitalRead(PIN_BTN_CANCEL)) {
-      buzz_for_feedback();
-      if (num == 2) {
-        num = 1;
-        update_menu();
-        lastButtonPressTime = currentTime;
-        while (!digitalRead(PIN_BTN_CANCEL));
-      }
+      while (!digitalRead(PIN_BTN_CANCEL));
     }
   }
 }
