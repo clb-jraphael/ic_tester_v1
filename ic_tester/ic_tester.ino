@@ -249,6 +249,7 @@ void loop() {
   if (currentMillis - lastMillis > 1000) {
     lastMillis = currentMillis;
     digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
+    
   }
 
   // Handle button presses with non-blocking delay using millis()
