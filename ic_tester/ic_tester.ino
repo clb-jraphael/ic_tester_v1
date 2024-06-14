@@ -224,8 +224,8 @@ void setup() {
   update_menu();
 }
 
-void buttonScanner(){
-if (menu == 1 || menu == 2) {
+void buttonScanner() {
+  if (menu == 1 || menu == 2) {
     // Main menu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
@@ -272,6 +272,11 @@ if (menu == 1 || menu == 2) {
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       display_placeholder_text(); // Execute the selected IC test
+
+      // Check if submenu option 4 (IC 7408) is selected
+      if (submenu == 4) {
+        testIC7408(); // Call the function to test IC 7408
+      }
     }
   
     if (flag_button[5]) { // CANCEL button
@@ -281,6 +286,7 @@ if (menu == 1 || menu == 2) {
     }
   }
 }
+
 
 //for manual 
 void display_placeholder_text() {
@@ -356,7 +362,13 @@ void execute_action() {
       num++;
       break;
   }
+
+  // Check if submenu option 4 (IC 7408) is selected
+  if (menu == 3 && submenu == 4) {
+    testIC7408(); // Call the function to test IC 7408
+  }
 }
+
 
 void manual_user_interface() {
   lcd.clear();
@@ -404,41 +416,8 @@ void manual_user_interface() {
 
 
 void testIC7400() {
-  // Initialize IC 7400 pins as outputs (assuming pin 1 to pin 14)
-  for (int i = 0; i < 14; ++i) {
-    pinMode(PINS_IC[i], OUTPUT);
-  }
-
-  // Test each gate by applying different input combinations
-  // and printing the output states
-
-  // Example: Apply signals to inputs of each gate and read outputs
-  for (int gate = 0; gate < 4; ++gate) {
-    int input1 = gate % 2;  // Alternating 0 and 1
-    int input2 = (gate / 2) % 2;  // Alternating 0 and 1
-
-    // Set inputs
-    digitalWrite(PINS_IC[2 * gate + 1], input1);
-    digitalWrite(PINS_IC[2 * gate + 2], input2);
-
-    // Read output
-    int output = digitalRead(PINS_IC[2 * gate + 3]);
-
-    // Print results to serial monitor
-    Serial.print("Gate ");
-    Serial.print(gate + 1);  // Gate number (1 to 4)
-    Serial.print(": Input1 = ");
-    Serial.print(input1);
-    Serial.print(", Input2 = ");
-    Serial.print(input2);
-    Serial.print(", Output = ");
-    Serial.println(output);
-  }
-
-  // Reset all pins to INPUT mode to avoid interference
-  for (int i = 0; i < 14; ++i) {
-    pinMode(PINS_IC[i], INPUT);
-  }
+  
+  
 }
 
 void testIC7402() {
@@ -450,7 +429,69 @@ void testIC7404() {
 }
 
 void testIC7408() {
-  // Implement test procedure for IC 7408
+ // Test patterns for the four gates in IC 7408
+  char testPattern[] = "00L00LGL00L00V";
+
+  // Initialize IC 7408 pins as necessary (adjust pin modes accordingly)
+  pinMode(PIN_IC_PIN1, OUTPUT);  // A1
+  pinMode(PIN_IC_PIN2, OUTPUT);  // B1
+  pinMode(PIN_IC_PIN3, OUTPUT);  // A2
+  pinMode(PIN_IC_PIN4, INPUT);   // Y1
+
+  pinMode(PIN_IC_PIN5, OUTPUT);  // A3
+  pinMode(PIN_IC_PIN6, OUTPUT);  // B3
+  pinMode(PIN_IC_PIN7, OUTPUT);  // A4
+  pinMode(PIN_IC_PIN8, INPUT);   // Y2
+
+  pinMode(PIN_IC_PIN9, OUTPUT);  // A5
+  pinMode(PIN_IC_PIN10, OUTPUT); // B5
+  pinMode(PIN_IC_PIN11, OUTPUT); // A6
+  pinMode(PIN_IC_PIN12, INPUT);  // Y3
+
+  pinMode(PIN_IC_PIN13, OUTPUT); // A7
+  pinMode(PIN_IC_PIN14, OUTPUT); // B7
+  pinMode(PIN_IC_PIN15, OUTPUT); // A8
+  pinMode(PIN_IC_PIN16, INPUT);  // Y4
+
+  // Loop through each gate (4 gates in total)
+  for (int gate = 0; gate < 4; ++gate) {
+    char input1 = testPattern[gate * 3];
+    char input2 = testPattern[gate * 3 + 1];
+    char expectedOutput = testPattern[gate * 3 + 2];
+
+    // Set inputs
+    digitalWrite(PINS_IC[8 * gate], input1 == '1' ? HIGH : LOW);  // A1, A3, A5, A7
+    digitalWrite(PINS_IC[8 * gate + 1], input2 == '1' ? HIGH : LOW);  // B1, B3, B5, B7
+
+    // Read output
+    int output = digitalRead(PINS_IC[8 * gate + 3]);  // Y1, Y2, Y3, Y4
+
+    // Print results to serial monitor
+    Serial.print("Gate ");
+    Serial.print(gate + 1);  // Gate number (1 to 4)
+    Serial.print(": Input1 = ");
+    Serial.print(input1);
+    Serial.print(", Input2 = ");
+    Serial.print(input2);
+    Serial.print(", Output = ");
+    Serial.println(output == HIGH ? "HIGH" : "LOW");
+
+    // Validate output
+    if (expectedOutput == 'V') {
+      Serial.println("Output voltage can vary (HIGH-Z state).");
+    } else {
+      if ((output == HIGH && expectedOutput == 'H') || (output == LOW && expectedOutput == 'L')) {
+        Serial.println("Output is correct.");
+      } else {
+        Serial.println("Output mismatch detected!");
+      }
+    }
+  }
+
+  // Reset all pins to INPUT mode to avoid interference
+  for (int i = 0; i < 20; ++i) {
+    pinMode(PINS_IC[i], INPUT);
+  }
 }
 
 void testIC7437() {
@@ -468,8 +509,8 @@ void testIC747266() {
 void loop() {
   buttonDebounce();
   buttonScanner();
-  potreader();
-  heartbeatLED();
+  //potreader();
+  //heartbeatLED();
 }
 
 
