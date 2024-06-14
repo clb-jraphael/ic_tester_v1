@@ -135,6 +135,12 @@ void potreader()
 
 }
 
+void buzz_for_feedback() {
+  digitalWrite(PIN_BUZZ, HIGH);
+  delay(50);
+  digitalWrite(PIN_BUZZ, LOW);
+}
+
 void setup() {
   Serial.begin(9600);
   init_ic_pins();
@@ -224,40 +230,47 @@ void button_scanner() {
   unsigned long currentTime = millis();
   if (currentTime - lastButtonPressTime > debounceDelay) {
     if (!digitalRead(PIN_BTN_DOWN) && num == 1){
+      buzz_for_feedback();
       menu++;
       update_menu();
       lastButtonPressTime = currentTime;
       while (!digitalRead(PIN_BTN_DOWN) && num == 1);
     }
     if (!digitalRead(PIN_BTN_UP) && num == 1){
+      buzz_for_feedback();
       menu--;
       update_menu();
       lastButtonPressTime = currentTime;
       while(!digitalRead(PIN_BTN_UP) && num == 1);
     }
     if (!digitalRead(PIN_BTN_OK) && num == 1){
+      buzz_for_feedback();
       execute_action();
       lastButtonPressTime = currentTime;
       while (!digitalRead(PIN_BTN_OK) && num == 1);
     }
     if (!digitalRead(PIN_BTN_DOWN) && num == 2){
+      buzz_for_feedback();
       if (submenu < 7) submenu++;
       manual_user_interface();
       lastButtonPressTime = currentTime;
       while (!digitalRead(PIN_BTN_DOWN) && num == 2);
     }
     if (!digitalRead(PIN_BTN_UP) && num == 2){
+      buzz_for_feedback();
       if (submenu > 1) submenu--;
       manual_user_interface();
       lastButtonPressTime = currentTime;
       while (!digitalRead(PIN_BTN_UP) && num == 2);
     }
     if (!digitalRead(PIN_BTN_OK) && num == 2) {
+      buzz_for_feedback();
       display_placeholder_text();
       lastButtonPressTime = currentTime;
       while (!digitalRead(PIN_BTN_OK) && num == 2);
     }
     if (!digitalRead(PIN_BTN_CANCEL)) {
+      buzz_for_feedback();
       if (num == 2) {
         num = 1;
         update_menu();
@@ -376,14 +389,14 @@ void testIC7408() {
 }
 
 void testIC7437() {
-
+  // Implement test procedure for IC 7437
 }
 
 void testIC7486() {
-
+  // Implement test procedure for IC 7486
 }
 
 void testIC747266() {
-
+  // Implement test procedure for IC 747266
 }
 
