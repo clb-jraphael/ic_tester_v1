@@ -1,6 +1,5 @@
 #include <LiquidCrystal.h>
 
-
 // CONSTANTS AND OBJECTS
 const byte PIN_BUZZ = 3;
 const byte PIN_POT = A1;
@@ -11,7 +10,9 @@ const byte PIN_BTN_RIGHT = 27;
 const byte PIN_BTN_OK = 24;
 const byte PIN_BTN_CANCEL = 26;
 
-const  byte PINS_BUTTONS[6] = {
+
+const byte MAX_BUTTONS = 6;
+const  byte PINS_BUTTONS[MAX_BUTTONS] = {
   PIN_BTN_UP,
   PIN_BTN_DOWN,
   PIN_BTN_LEFT,
@@ -19,6 +20,8 @@ const  byte PINS_BUTTONS[6] = {
   PIN_BTN_OK,
   PIN_BTN_CANCEL
 };
+
+byte flag_button[MAX_BUTTONS];
 
 const byte PIN_PROBE= A2;
 
@@ -89,10 +92,6 @@ const int PIN_LCD_CONTRAST = A10;
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-
-
-
-
 // GLOBAL VARIABLES
 byte menu = 1, submenu = 1, num = 1;
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
@@ -106,7 +105,9 @@ bool btnCancelPressed = false;
 
 void init_ic_pins()
 {
-  for(byte i=0;i<20;i++) pinMode(PINS_IC[i], INPUT);
+  for(byte i=0;i<20;i++){
+    pinMode(PINS_IC[i], INPUT);
+  } 
 }
 
 
@@ -136,38 +137,59 @@ void potreader()
 
 }
 
-void checkKeyAvailable() {
-  if (!btnDownPressed && !digitalRead(PIN_BTN_DOWN)) {
-    btnDownPressed = true;
-    buzz_for_feedback();
-    // Process key press action here
-  } else if (btnDownPressed && digitalRead(PIN_BTN_DOWN)) {
-    btnDownPressed = false;
-  }
+void heartbeatLED() {
+  unsigned long currentMillis = millis();
+  static unsigned long lastMillis = 0;
+  static bool ledState = false;
 
-  if (!btnUpPressed && !digitalRead(PIN_BTN_UP)) {
-    btnUpPressed = true;
-    buzz_for_feedback();
-    // Process key press action here
-  } else if (btnUpPressed && digitalRead(PIN_BTN_UP)) {
-    btnUpPressed = false;
+  // Toggle heartbeat LED every second
+  if (currentMillis - lastMillis > 1000) {
+    lastMillis = currentMillis;
+    ledState = !ledState;
+    digitalWrite(PIN_LED1, ledState);
+    digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
   }
+}
 
-  if (!btnOkPressed && !digitalRead(PIN_BTN_OK)) {
-    btnOkPressed = true;
-    buzz_for_feedback();
-    // Process key press action here
-  } else if (btnOkPressed && digitalRead(PIN_BTN_OK)) {
-    btnOkPressed = false;
-  }
+void buttonDebounce(){
+  static unsigned t; //for loop tracking
+  static unsigned last_unpress[MAX_BUTTONS];
 
-  if (!btnCancelPressed && !digitalRead(PIN_BTN_CANCEL)) {
-    btnCancelPressed = true;
-    buzz_for_feedback();
-    // Process key press action here
-  } else if (btnCancelPressed && digitalRead(PIN_BTN_CANCEL)) {
-    btnCancelPressed = false;
+  if(millis() - t < 1)return;
+  t = millis();
+
+  for(byte i=0;i<MAX_BUTTONS;i++)
+  {
+    if(digitalRead(PINS_BUTTONS[i]) == LOW)
+    {
+      if(flag_button[i] == false)
+      {
+        if(millis() -last_unpress[i] > 5)
+        {
+          flag_button[i] = true;
+          digitalWrite(PIN_BUZZ, HIGH);
+          delay(5);
+          digitalWrite(PIN_BUZZ, LOW);
+          while(digitalRead(PINS_BUTTONS[i]) == LOW){};
+
+        }
+      }
+    }
+    else
+    {
+        last_unpress[i] = millis();
+    }
   }
+}
+
+bool get_button_ok()
+{
+  for (byte i = 0; i < MAX_BUTTONS; i++) {
+    if (flag_button[i]) {
+      return true;  // Return true if any button is pressed
+    }
+  }
+  return false;  // Return false if no button is pressed
 }
 
 void buzz_for_feedback() {
@@ -209,27 +231,14 @@ void setup() {
   
 }
 
+
+
 void loop() {
-  button_scanner();
+  buttonDebounce();
+  //button_scanner();
   potreader();
-  checkKeyAvailable();
   heartbeatLED();
 }
-
-void heartbeatLED() {
-  unsigned long currentMillis = millis();
-  static unsigned long lastMillis = 0;
-  static bool ledState = false;
-
-  // Toggle heartbeat LED every second
-  if (currentMillis - lastMillis > 1000) {
-    lastMillis = currentMillis;
-    ledState = !ledState;
-    digitalWrite(PIN_LED1, ledState);
-    digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
-  }
-}
-
 
 void display_placeholder_text() {
   lcd.clear();
@@ -406,8 +415,41 @@ void manual_user_interface() {
 
 
 void testIC7400() {
-  // Implement test procedure for IC 7400
-  // Example: Check pins, apply signals, read outputs, etc.
+  // Initialize IC 7400 pins as outputs (assuming pin 1 to pin 14)
+  for (int i = 0; i < 14; ++i) {
+    pinMode(PINS_IC[i], OUTPUT);
+  }
+
+  // Test each gate by applying different input combinations
+  // and printing the output states
+
+  // Example: Apply signals to inputs of each gate and read outputs
+  for (int gate = 0; gate < 4; ++gate) {
+    int input1 = gate % 2;  // Alternating 0 and 1
+    int input2 = (gate / 2) % 2;  // Alternating 0 and 1
+
+    // Set inputs
+    digitalWrite(PINS_IC[2 * gate + 1], input1);
+    digitalWrite(PINS_IC[2 * gate + 2], input2);
+
+    // Read output
+    int output = digitalRead(PINS_IC[2 * gate + 3]);
+
+    // Print results to serial monitor
+    Serial.print("Gate ");
+    Serial.print(gate + 1);  // Gate number (1 to 4)
+    Serial.print(": Input1 = ");
+    Serial.print(input1);
+    Serial.print(", Input2 = ");
+    Serial.print(input2);
+    Serial.print(", Output = ");
+    Serial.println(output);
+  }
+
+  // Reset all pins to INPUT mode to avoid interference
+  for (int i = 0; i < 14; ++i) {
+    pinMode(PINS_IC[i], INPUT);
+  }
 }
 
 void testIC7402() {
