@@ -29,6 +29,8 @@ const byte PIN_PWM_P1 = 7;
 const byte PIN_PWM_P2 = 9;
 const byte PIN_PWM_P3 = 11;
 
+const byte PIN_LCD_CONTRAST = 2; // PWM pin for LCD contrast control
+
 // Vx headers
 const byte PIN_VOLTMETER_V0 = A3;
 const byte PIN_VOLTMETER_V1 = A4;
@@ -96,6 +98,7 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 int menu = 1;
 unsigned long lastButtonPressTime = 0;
 unsigned long debounceDelay = 100;
+unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
 
 // FUNCTIONS
@@ -112,15 +115,23 @@ void potreader()
   if (millis() - t < 50) return;
   t = millis();
 
-  unsigned int a;
-  a = 0;
+  unsigned int a = 0;
   for (byte i = 0; i < 10; i++) {
     a += analogRead(PIN_POT);
   }
   a /= 10;
-  // a is the final value. this is between 0 and 1023
-  //analogWrite(PIN_RGBLED_R, map(a, 0, 1023, 0, 255));
-  analogWrite(PIN_RGBLED_B, map(a, 0, 1023, 0, 255));
+  
+  // Map the analog value to the PWM range (0-255)
+  int contrastValue = map(a, 0, 1023, 0, 255);
+
+  // Write the contrast value to the LCD contrast pin
+  analogWrite(PIN_LCD_CONTRAST, contrastValue);
+
+  // Debug output
+  Serial.print("Potentiometer Value: ");
+  Serial.print(a);
+  Serial.print(" - Mapped Contrast Value: ");
+  Serial.println(contrastValue);
 
 }
 
@@ -186,6 +197,7 @@ void button_scanner() {
 }
 
 void setup() {
+  Serial.begin(9600);
   init_ic_pins();
   pinMode(PIN_BUZZ, OUTPUT);
   pinMode(PIN_BTN_UP, INPUT_PULLUP);
@@ -203,10 +215,21 @@ void setup() {
   pinMode(PIN_PWM_P1, OUTPUT);
   pinMode(PIN_PWM_P2, OUTPUT);
   pinMode(PIN_PWM_P3, OUTPUT);
+  pinMode(PIN_LCD_CONTRAST, OUTPUT); // Set the PWM pin for the LCD contrast control as output
 
   lcd.begin(16, 2);
  
-  lcd.setCursor(0,0);lcd.print(F("  LC IC TESTER  "));
+  lcd.setCursor(0,0);lcd.print(F("  LC IC TESTER  "));unsigned int potValue = analogRead(PIN_POT);
+  int contrastValue = map(potValue, 0, 1023, 0, 255);
+  analogWrite(PIN_LCD_CONTRAST, contrastValue);
+
+  // Debug output
+  Serial.print("Potentiometer Value: ");
+  Serial.print(potValue);
+  Serial.print(" - Mapped Contrast Value: ");
+  Serial.println(contrastValue);
+
+  delay(100); // Delay for readability
   lcd.setCursor(0,1);lcd.print(F("HW1.0.0  SW1.0.0"));
   
 
@@ -214,11 +237,19 @@ void setup() {
   Serial.println(F("Hello"));
   delay(3000);
   update_menu();
+  digitalWrite(PIN_LED1, HIGH); // Turn on heartbeat LED
 }
 
 void loop() {
   potreader();
+  
   unsigned long currentMillis = millis();
+
+  // Heartbeat LED control
+  if (currentMillis - lastMillis > 1000) {
+    lastMillis = currentMillis;
+    digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
+  }
 
   // Handle button presses with non-blocking delay using millis()
   if (!digitalRead(PIN_BTN_DOWN) && (currentMillis - lastButtonPressTime >= debounceDelay)) {
