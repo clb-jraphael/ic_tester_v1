@@ -222,16 +222,10 @@ void setup() {
   Serial.println(F("Hello"));
   delay(3000);
   update_menu();
-  
 }
 
-void loop() {
-  buttonDebounce();
-  //button_scanner();
-  potreader();
-  heartbeatLED();
-
-  if (menu == 1 || menu == 2) {
+void buttonScanner(){
+if (menu == 1 || menu == 2) {
     // Main menu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
@@ -470,4 +464,13 @@ void testIC7486() {
 void testIC747266() {
   // Implement test procedure for IC 747266
 }
+
+void loop() {
+  buttonDebounce();
+  buttonScanner();
+  potreader();
+  heartbeatLED();
+}
+
+
 
