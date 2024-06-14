@@ -95,11 +95,6 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 // GLOBAL VARIABLES
 byte menu = 1, submenu = 1, num = 1;
-<<<<<<< HEAD
-unsigned long lastButtonPressTime = 0;
-const byte debounceDelay = 255;
-=======
->>>>>>> 3b17601c5ad6a49614c3fbf96f473378ac322c97
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
 bool btnDownPressed = false;
