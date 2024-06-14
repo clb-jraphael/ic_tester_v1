@@ -96,10 +96,13 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // GLOBAL VARIABLES
 byte menu = 1, submenu = 1, num = 1;
 unsigned long lastButtonPressTime = 0;
-unsigned long debounceDelay = 100;
+const byte debounceDelay = 255;
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
-
+bool btnDownPressed = false;
+bool btnUpPressed = false;
+bool btnOkPressed = false;
+bool btnCancelPressed = false;
 
 // FUNCTIONS
 
@@ -133,6 +136,40 @@ void potreader()
   Serial.print(" - Mapped Contrast Value: ");
   Serial.println(contrastValue);
 
+}
+
+void checkKeyAvailable() {
+  if (!btnDownPressed && !digitalRead(PIN_BTN_DOWN)) {
+    btnDownPressed = true;
+    buzz_for_feedback();
+    // Process key press action here
+  } else if (btnDownPressed && digitalRead(PIN_BTN_DOWN)) {
+    btnDownPressed = false;
+  }
+
+  if (!btnUpPressed && !digitalRead(PIN_BTN_UP)) {
+    btnUpPressed = true;
+    buzz_for_feedback();
+    // Process key press action here
+  } else if (btnUpPressed && digitalRead(PIN_BTN_UP)) {
+    btnUpPressed = false;
+  }
+
+  if (!btnOkPressed && !digitalRead(PIN_BTN_OK)) {
+    btnOkPressed = true;
+    buzz_for_feedback();
+    // Process key press action here
+  } else if (btnOkPressed && digitalRead(PIN_BTN_OK)) {
+    btnOkPressed = false;
+  }
+
+  if (!btnCancelPressed && !digitalRead(PIN_BTN_CANCEL)) {
+    btnCancelPressed = true;
+    buzz_for_feedback();
+    // Process key press action here
+  } else if (btnCancelPressed && digitalRead(PIN_BTN_CANCEL)) {
+    btnCancelPressed = false;
+  }
 }
 
 void buzz_for_feedback() {
@@ -176,18 +213,24 @@ void setup() {
 
 void loop() {
   button_scanner();
-
   potreader();
+  checkKeyAvailable();
+  heartbeatLED();
+}
 
+void heartbeatLED() {
   unsigned long currentMillis = millis();
+  static unsigned long lastMillis = 0;
+  static bool ledState = false;
 
-  // Heartbeat LED control
+  // Toggle heartbeat LED every second
   if (currentMillis - lastMillis > 1000) {
     lastMillis = currentMillis;
-    digitalWrite(PIN_LED1, !digitalRead(PIN_LED1)); // Toggle heartbeat LED every second
-
+    ledState = !ledState;
+    digitalWrite(PIN_LED1, ledState);
   }
 }
+
 
 void display_placeholder_text() {
   lcd.clear();
