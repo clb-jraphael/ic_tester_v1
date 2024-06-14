@@ -168,7 +168,7 @@ void buttonDebounce(){
         {
           flag_button[i] = true;
           digitalWrite(PIN_BUZZ, HIGH);
-          delay(5);
+          delay(50);
           digitalWrite(PIN_BUZZ, LOW);
           while(digitalRead(PINS_BUTTONS[i]) == LOW){};
 
@@ -190,12 +190,6 @@ bool get_button_ok()
     }
   }
   return false;  // Return false if no button is pressed
-}
-
-void buzz_for_feedback() {
-  digitalWrite(PIN_BUZZ, HIGH);
-  delay(50);
-  digitalWrite(PIN_BUZZ, LOW);
 }
 
 void setup() {
@@ -231,15 +225,70 @@ void setup() {
   
 }
 
-
-
 void loop() {
   buttonDebounce();
   //button_scanner();
   potreader();
   heartbeatLED();
+
+  if (menu == 1 || menu == 2) {
+    // Main menu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (menu > 1) menu--;
+      update_menu();
+    }
+  
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (menu < 2) menu++;
+      update_menu();
+    }
+  
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (menu == 2) {
+        manual_user_interface(); // Enter submenu
+        menu = 3; // Switch to submenu mode
+      } else {
+        execute_action();
+      }
+    }
+  
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      // Implement cancel action if needed
+    }
+  } else if (menu == 3) {
+    // Submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenu > 1) submenu--;
+      else submenu = 7; // Wrap around to last option
+      manual_user_interface();
+    }
+  
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenu < 7) submenu++;
+      else submenu = 1; // Wrap around to first option
+      manual_user_interface();
+    }
+  
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      display_placeholder_text(); // Execute the selected IC test
+    }
+  
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 1; // Go back to main menu
+      update_menu();
+    }
+  }
 }
 
+//for manual 
 void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -278,74 +327,29 @@ void display_placeholder_text() {
   lcd.print(F("Please wait..."));
 }
 
-void button_scanner() {
-  unsigned long currentTime = millis();
-  if (!digitalRead(PIN_BTN_DOWN) && num == 1){
-    buzz_for_feedback();
-    menu++;
-    update_menu();
-    while (!digitalRead(PIN_BTN_DOWN) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_UP) && num == 1){
-    buzz_for_feedback();
-    menu--;
-    update_menu();
-    while(!digitalRead(PIN_BTN_UP) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_OK) && num == 1){
-    buzz_for_feedback();
-    execute_action();
-    while (!digitalRead(PIN_BTN_OK) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_DOWN) && num == 2){
-    buzz_for_feedback();
-    if (submenu < 7) submenu++;
-    manual_user_interface();
-    while (!digitalRead(PIN_BTN_DOWN) && num == 2);
-  }
-  if (!digitalRead(PIN_BTN_UP) && num == 2){
-    buzz_for_feedback();
-    if (submenu > 1) submenu--;
-    manual_user_interface();
-    while (!digitalRead(PIN_BTN_UP) && num == 2);
-  }
-  if (!digitalRead(PIN_BTN_OK) && num == 2) {
-    buzz_for_feedback();
-    display_placeholder_text();
-    while (!digitalRead(PIN_BTN_OK) && num == 2);
-  }
-  if (!digitalRead(PIN_BTN_CANCEL)) {
-    buzz_for_feedback();
-    if (num == 2) {
-      num = 1;
-      update_menu();
-      while (!digitalRead(PIN_BTN_CANCEL));
-    }
-  }
-}
-
 void update_menu() {
   switch (menu) {
-    case 0:
-      menu = 1;
-      break;
     case 1:
       lcd.clear();
+      lcd.setCursor(0, 0);
       lcd.print(F(">Automatic"));
       lcd.setCursor(0, 1);
       lcd.print(F(" Manual"));
       break;
     case 2:
       lcd.clear();
+      lcd.setCursor(0, 0);
       lcd.print(F(" Automatic"));
       lcd.setCursor(0, 1);
       lcd.print(F(">Manual"));
       break;
-    case 3:
-      menu = 2;
+    default:
+      menu = 1;
+      update_menu();
       break;
   }
 }
+
 
 void execute_action() {
   switch (menu) {
@@ -363,55 +367,46 @@ void execute_action() {
 void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
-    case 0:
-      submenu = 1;
-      break;
     case 1:
-      lcd.clear();
       lcd.print(F(">IC 7400        "));
       lcd.setCursor(0, 1);
       lcd.print(F(" IC 7402        "));
       break;
     case 2:
-      lcd.clear();
       lcd.print(F(" IC 7400        "));
       lcd.setCursor(0, 1);
       lcd.print(F(">IC 7402        "));
       break;
     case 3:
-      lcd.clear();
       lcd.print(F(">IC 7404        "));
       lcd.setCursor(0, 1);
       lcd.print(F(" IC 7408        "));
       break;
-    case 4: 
-      lcd.clear();
+    case 4:
       lcd.print(F(" IC 7404        "));
       lcd.setCursor(0, 1);
       lcd.print(F(">IC 7408        "));
       break;
-    case 5: 
-      lcd.clear();
+    case 5:
       lcd.print(F(">IC 7437        "));
       lcd.setCursor(0, 1);
       lcd.print(F(" IC 7486        "));
       break;
-    case 6: 
-      lcd.clear();
+    case 6:
       lcd.print(F(" IC 7437        "));
       lcd.setCursor(0, 1);
       lcd.print(F(">IC 7486        "));
       break;
-    case 7: 
-      lcd.clear();
+    case 7:
       lcd.print(F(">IC 747266      "));
-      lcd.setCursor(0, 1);
       break;
-    case 8:
-      submenu = 7;
+    default:
+      submenu = 1;
+      manual_user_interface();
       break;
   }
 }
+
 
 
 void testIC7400() {
