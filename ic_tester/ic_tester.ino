@@ -84,7 +84,7 @@ const byte PIN_RGBLED_B = 2;
 
 const byte PIN_LED1 = 8;
 
-const int PIN_LCD_CONTRAST = 4;
+const int PIN_LCD_CONTRAST = A10;
 
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
@@ -183,35 +183,88 @@ void loop() {
   }
 }
 
+void display_placeholder_text() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  switch (submenu) {
+    case 1:
+      lcd.print(F("Testing IC 7400"));
+      testIC7400();
+      break;
+    case 2:
+      lcd.print(F("Testing IC 7402"));
+      testIC7402();
+      break;
+    case 3:
+      lcd.print(F("Testing IC 7404"));
+      testIC7404();
+      break;
+    case 4:
+      lcd.print(F("Testing IC 7408"));
+      testIC7408();
+      break;
+    case 5:
+      lcd.print(F("Testing IC 7437"));
+      testIC7437();
+      break;
+    case 6:
+      lcd.print(F("Testing IC 7486"));
+      testIC7486();
+      break;
+    case 7:
+      lcd.print(F("Testing IC 747266"));
+      testIC747266();
+      break;
+  }
+  lcd.setCursor(0, 1);
+  lcd.print(F("Please wait..."));
+}
+
 void button_scanner() {
-  if (!digitalRead(PIN_BTN_DOWN) && num == 1){
-    menu++;
-    update_menu();
-    delay(100);
-    while (!digitalRead(PIN_BTN_DOWN) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_UP) && num == 1){
-    menu--;
-    update_menu();
-    delay(100);
-    while(!digitalRead(PIN_BTN_UP) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_OK) && num == 1){
-    execute_action();
-    delay(100);
-    while (!digitalRead(PIN_BTN_OK) && num == 1);
-  }
-  if (!digitalRead(PIN_BTN_DOWN) && num == 2){
-    if (submenu < 7) submenu++;
-    manual_user_interface();
-    delay(100);
-    while (!digitalRead(PIN_BTN_DOWN) && num == 2);
-  }
-  if (!digitalRead(PIN_BTN_UP) && num == 2){
-    if (submenu > 1) submenu--;
-    manual_user_interface();
-    delay(100);
-    while (!digitalRead(PIN_BTN_UP) && num == 2);
+  unsigned long currentTime = millis();
+  if (currentTime - lastButtonPressTime > debounceDelay) {
+    if (!digitalRead(PIN_BTN_DOWN) && num == 1){
+      menu++;
+      update_menu();
+      lastButtonPressTime = currentTime;
+      while (!digitalRead(PIN_BTN_DOWN) && num == 1);
+    }
+    if (!digitalRead(PIN_BTN_UP) && num == 1){
+      menu--;
+      update_menu();
+      lastButtonPressTime = currentTime;
+      while(!digitalRead(PIN_BTN_UP) && num == 1);
+    }
+    if (!digitalRead(PIN_BTN_OK) && num == 1){
+      execute_action();
+      lastButtonPressTime = currentTime;
+      while (!digitalRead(PIN_BTN_OK) && num == 1);
+    }
+    if (!digitalRead(PIN_BTN_DOWN) && num == 2){
+      if (submenu < 7) submenu++;
+      manual_user_interface();
+      lastButtonPressTime = currentTime;
+      while (!digitalRead(PIN_BTN_DOWN) && num == 2);
+    }
+    if (!digitalRead(PIN_BTN_UP) && num == 2){
+      if (submenu > 1) submenu--;
+      manual_user_interface();
+      lastButtonPressTime = currentTime;
+      while (!digitalRead(PIN_BTN_UP) && num == 2);
+    }
+    if (!digitalRead(PIN_BTN_OK) && num == 2) {
+      display_placeholder_text();
+      lastButtonPressTime = currentTime;
+      while (!digitalRead(PIN_BTN_OK) && num == 2);
+    }
+    if (!digitalRead(PIN_BTN_CANCEL)) {
+      if (num == 2) {
+        num = 1;
+        update_menu();
+        lastButtonPressTime = currentTime;
+        while (!digitalRead(PIN_BTN_CANCEL));
+      }
+    }
   }
 }
 
@@ -250,16 +303,6 @@ void execute_action() {
       break;
   }
 }
-
-// MAY NOT BE NEEDED ANYMORE
-//void display_manual_submenu(){
-//  lcd.clear();
-//  lcd.setCursor(0, 0);
-//  lcd.print(F(">IC 7400        "));
-//  lcd.setCursor(0, 1);
-//  lcd.print(F(" IC 7402        "));
-//  manual_user_interface();
-//}
 
 void manual_user_interface() {
   lcd.clear();
@@ -314,24 +357,6 @@ void manual_user_interface() {
   }
 }
 
-void execute_action_test_IC() {
-  switch (menu) {
-    case 1:
-      testIC7400();
-      break;
-    case 2:
-      testIC7402();
-      break;
-    case 3:
-      testIC7404();
-      break;
-    case 4:
-      testIC7408();
-      break;
-    case 5:
-      testIC747266();
-  }
-}
 
 void testIC7400() {
   // Implement test procedure for IC 7400
@@ -350,6 +375,15 @@ void testIC7408() {
   // Implement test procedure for IC 7408
 }
 
+void testIC7437() {
+
+}
+
+void testIC7486() {
+
+}
+
 void testIC747266() {
 
 }
+
