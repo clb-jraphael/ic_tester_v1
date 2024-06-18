@@ -427,63 +427,87 @@ void testIC7404() {
 }
 
 void testIC7408() {
- // Test patterns for the four gates in IC 7408
-  char testPattern[] = "00L00LGL00L00V";
+  // Define test patterns for IC 7408
+  struct TestPattern {
+    byte input1;
+    byte input2;
+    byte expectedOutput;
+  };
 
-  // Initialize IC 7408 pins as necessary (adjust pin modes accordingly)
+  // All possible test patterns for a 2-input AND gate (7408)
+  TestPattern patterns[] = {
+    {LOW, LOW, LOW},
+    {LOW, HIGH, LOW},
+    {HIGH, LOW, LOW},
+    {HIGH, HIGH, HIGH}
+  };
+
+  // Initialize IC 7408 pins as necessary
   pinMode(PIN_IC_PIN1, OUTPUT);  // A1
   pinMode(PIN_IC_PIN2, OUTPUT);  // B1
-  pinMode(PIN_IC_PIN3, OUTPUT);  // A2
-  pinMode(PIN_IC_PIN4, INPUT);   // Y1
+  pinMode(PIN_IC_PIN3, INPUT);   // Y1
 
-  pinMode(PIN_IC_PIN5, OUTPUT);  // A3
-  pinMode(PIN_IC_PIN6, OUTPUT);  // B3
-  pinMode(PIN_IC_PIN7, OUTPUT);  // A4
-  pinMode(PIN_IC_PIN8, INPUT);   // Y2
+  pinMode(PIN_IC_PIN4, OUTPUT);  // A2
+  pinMode(PIN_IC_PIN5, OUTPUT);  // B2
+  pinMode(PIN_IC_PIN6, INPUT);   // Y2
 
-  pinMode(PIN_IC_PIN9, OUTPUT);  // A5
-  pinMode(PIN_IC_PIN10, OUTPUT); // B5
-  pinMode(PIN_IC_PIN11, OUTPUT); // A6
-  pinMode(PIN_IC_PIN12, INPUT);  // Y3
+  pinMode(PIN_IC_PIN9, OUTPUT);  // A3
+  pinMode(PIN_IC_PIN10, OUTPUT); // B3
+  pinMode(PIN_IC_PIN8, INPUT);   // Y3
 
-  pinMode(PIN_IC_PIN13, OUTPUT); // A7
-  pinMode(PIN_IC_PIN14, OUTPUT); // B7
-  pinMode(PIN_IC_PIN15, OUTPUT); // A8
-  pinMode(PIN_IC_PIN16, INPUT);  // Y4
+  pinMode(PIN_IC_PIN12, OUTPUT); // A4
+  pinMode(PIN_IC_PIN13, OUTPUT); // B4
+  pinMode(PIN_IC_PIN11, INPUT);  // Y4
 
-  // Loop through each gate (4 gates in total)
+  // Array of input and output pins for each gate
+  const byte inputPins[][2] = {
+    {PIN_IC_PIN1, PIN_IC_PIN2},
+    {PIN_IC_PIN4, PIN_IC_PIN5},
+    {PIN_IC_PIN9, PIN_IC_PIN10},
+    {PIN_IC_PIN12, PIN_IC_PIN13}
+  };
+  const byte outputPins[] = {
+    PIN_IC_PIN3,
+    PIN_IC_PIN6,
+    PIN_IC_PIN8,
+    PIN_IC_PIN11
+  };
+
+  // Test each gate
   for (int gate = 0; gate < 4; ++gate) {
-    char input1 = testPattern[gate * 3];
-    char input2 = testPattern[gate * 3 + 1];
-    char expectedOutput = testPattern[gate * 3 + 2];
+    Serial.print("Testing Gate ");
+    Serial.println(gate + 1);
 
-    // Set inputs
-    digitalWrite(PINS_IC[8 * gate], input1 == '1' ? HIGH : LOW);  // A1, A3, A5, A7
-    digitalWrite(PINS_IC[8 * gate + 1], input2 == '1' ? HIGH : LOW);  // B1, B3, B5, B7
+    for (int i = 0; i < 4; ++i) {
+      // Set inputs
+      digitalWrite(inputPins[gate][0], patterns[i].input1);
+      digitalWrite(inputPins[gate][1], patterns[i].input2);
 
-    // Read output
-    int output = digitalRead(PINS_IC[8 * gate + 3]);  // Y1, Y2, Y3, Y4
+      // Allow some time for the outputs to stabilize
+      delay(10);
 
-    // Print results to serial monitor
-    Serial.print("Gate ");
-    Serial.print(gate + 1);  // Gate number (1 to 4)
-    Serial.print(": Input1 = ");
-    Serial.print(input1);
-    Serial.print(", Input2 = ");
-    Serial.print(input2);
-    Serial.print(", Output = ");
-    Serial.println(output == HIGH ? "HIGH" : "LOW");
+      // Read output
+      int output = digitalRead(outputPins[gate]);
 
-    // Validate output
-    if (expectedOutput == 'V') {
-      Serial.println("Output voltage can vary (HIGH-Z state).");
-    } else {
-      if ((output == HIGH && expectedOutput == 'H') || (output == LOW && expectedOutput == 'L')) {
+      // Print results to serial monitor
+      Serial.print("Inputs: ");
+      Serial.print(patterns[i].input1 == HIGH ? "HIGH" : "LOW");
+      Serial.print(", ");
+      Serial.print(patterns[i].input2 == HIGH ? "HIGH" : "LOW");
+      Serial.print(" | Output: ");
+      Serial.print(output == HIGH ? "HIGH" : "LOW");
+      Serial.print(" | Expected: ");
+      Serial.println(patterns[i].expectedOutput == HIGH ? "HIGH" : "LOW");
+
+      // Validate output
+      if (output == patterns[i].expectedOutput) {
         Serial.println("Output is correct.");
       } else {
         Serial.println("Output mismatch detected!");
       }
     }
+
+    Serial.println();  // Add a newline for readability between gates
   }
 
   // Reset all pins to INPUT mode to avoid interference
