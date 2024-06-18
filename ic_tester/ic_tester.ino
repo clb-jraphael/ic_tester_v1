@@ -509,95 +509,17 @@ void testIC7408() {
       // Print result
       if (actualOutput == testCases[j].expectedOutput) {
         Serial.println(F("Result: OK"));
-
-  // Define test patterns for IC 7408
-  struct TestPattern {
-    byte input1;
-    byte input2;
-    byte expectedOutput;
-  };
-
-  // All possible test patterns for a 2-input AND gate (7408)
-  TestPattern patterns[] = {
-    {LOW, LOW, LOW},
-    {LOW, HIGH, LOW},
-    {HIGH, LOW, LOW},
-    {HIGH, HIGH, HIGH}
-  };
-
-  // Initialize IC 7408 pins as necessary
-  pinMode(PIN_IC_PIN1, OUTPUT);  // A1
-  pinMode(PIN_IC_PIN2, OUTPUT);  // B1
-  pinMode(PIN_IC_PIN3, INPUT);   // Y1
-
-  pinMode(PIN_IC_PIN4, OUTPUT);  // A2
-  pinMode(PIN_IC_PIN5, OUTPUT);  // B2
-  pinMode(PIN_IC_PIN6, INPUT);   // Y2
-
-  pinMode(PIN_IC_PIN9, OUTPUT);  // A3
-  pinMode(PIN_IC_PIN10, OUTPUT); // B3
-  pinMode(PIN_IC_PIN8, INPUT);   // Y3
-
-  pinMode(PIN_IC_PIN12, OUTPUT); // A4
-  pinMode(PIN_IC_PIN13, OUTPUT); // B4
-  pinMode(PIN_IC_PIN11, INPUT);  // Y4
-
-  // Array of input and output pins for each gate
-  const byte inputPins[][2] = {
-    {PIN_IC_PIN1, PIN_IC_PIN2},
-    {PIN_IC_PIN4, PIN_IC_PIN5},
-    {PIN_IC_PIN9, PIN_IC_PIN10},
-    {PIN_IC_PIN12, PIN_IC_PIN13}
-  };
-  const byte outputPins[] = {
-    PIN_IC_PIN3,
-    PIN_IC_PIN6,
-    PIN_IC_PIN8,
-    PIN_IC_PIN11
-  };
-
-  // Test each gate
-  for (int gate = 0; gate < 4; ++gate) {
-    Serial.print("Testing Gate ");
-    Serial.println(gate + 1);
-
-    for (int i = 0; i < 4; ++i) {
-      // Set inputs
-      digitalWrite(inputPins[gate][0], patterns[i].input1);
-      digitalWrite(inputPins[gate][1], patterns[i].input2);
-
-      // Allow some time for the outputs to stabilize
-      delay(10);
-
-      // Read output
-      int output = digitalRead(outputPins[gate]);
-
-      // Print results to serial monitor
-      Serial.print("Inputs: ");
-      Serial.print(patterns[i].input1 == HIGH ? "HIGH" : "LOW");
-      Serial.print(", ");
-      Serial.print(patterns[i].input2 == HIGH ? "HIGH" : "LOW");
-      Serial.print(" | Output: ");
-      Serial.print(output == HIGH ? "HIGH" : "LOW");
-      Serial.print(" | Expected: ");
-      Serial.println(patterns[i].expectedOutput == HIGH ? "HIGH" : "LOW");
-
-      // Validate output
-      if (output == patterns[i].expectedOutput) {
-        Serial.println("Output is correct.");
       } else {
         Serial.println(F("Result: NG"));
       }
     }
     Serial.println(F(""));
-    Serial.println();  // Add a newline for readability between gates
-  }
+
     // Reset pin modes to INPUT to ensure no interference in the next gate test
     pinMode(inputPinsA[i], INPUT);
     pinMode(inputPinsB[i], INPUT);
   }
 }
-
 void testIC7437() {
   // Implement test procedure for IC 7437
 }
