@@ -287,6 +287,28 @@ void buttonScanner() {
   }
 }
 
+void update_menu() {
+  switch (menu) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Automatic"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" Manual"));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Automatic"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">Manual"));
+      break;
+    default:
+      menu = 1;
+      update_menu();
+      break;
+  }
+}
 
 //for manual 
 void display_placeholder_text() {
@@ -326,30 +348,6 @@ void display_placeholder_text() {
   lcd.setCursor(0, 1);
   lcd.print(F("Please wait..."));
 }
-
-void update_menu() {
-  switch (menu) {
-    case 1:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(">Automatic"));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" Manual"));
-      break;
-    case 2:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(" Automatic"));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">Manual"));
-      break;
-    default:
-      menu = 1;
-      update_menu();
-      break;
-  }
-}
-
 
 void execute_action() {
   switch (menu) {
