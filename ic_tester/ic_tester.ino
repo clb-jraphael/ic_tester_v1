@@ -967,13 +967,14 @@ void testIC747266() {
 }
 
 void loop() {
-  pinMode(PIN_IC_PIN1, OUTPUT);
-  pinMode(PIN_IC_PIN2, OUTPUT);
-  digitalWrite(PIN_IC_PIN1, HIGH);
-  digitalWrite(PIN_IC_PIN2, HIGH);
-  Serial.println(digitalRead(PIN_IC_PIN3));
-  //buttonDebounce();
-  //buttonScanner();
+  //pinMode(PIN_IC_PIN18, OUTPUT);
+  //pinMode(PIN_IC_PIN19, OUTPUT);
+  //digitalWrite(PIN_IC_PIN1, LOW);
+  //digitalWrite(PIN_IC_PIN2, LOW);
+  //Serial.println(digitalRead(PIN_IC_PIN3));
+
+  buttonDebounce();
+  buttonScanner();
   //potreader();
   //heartbeatLED();
 }
