@@ -496,7 +496,72 @@ void testIC7402() {
 }
 
 void testIC7404() {
-  // Implement test procedure for IC 7404
+  // Set VCC and GND pins
+  const byte PIN_GND = PINS_IC[6];   // Pin 7
+  const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+  pinMode(PIN_GND, OUTPUT);
+  pinMode(PIN_VCC, OUTPUT);
+  digitalWrite(PIN_GND, LOW);    // GND to LOW
+  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+  // Define the test pattern for IC7404 (Hex Inverter)
+  const char* testPattern[] = {
+    "0H0H0HGH0H0H0V", // A = 0, Y = 1
+    "1L1L1LGL1L1L1V"  // A = 1, Y = 0
+  };
+
+  const byte inputPins[] = {PINS_IC[0], PINS_IC[2], PINS_IC[4], PINS_IC[14], PINS_IC[16], PINS_IC[18]}; // A1, A2, A3, A4, A5, A6
+  const byte outputPins[] = {PINS_IC[1], PINS_IC[3], PINS_IC[5], PINS_IC[13], PINS_IC[15], PINS_IC[17]}; // Y1, Y2, Y3, Y4, Y5, Y6
+
+  // Calculate the number of test cases based on the pattern
+  const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
+
+  // Loop through each inverter (six in total)
+  for (byte inverter = 0; inverter < 6; inverter++) {
+    Serial.print(F("Testing inverter "));
+    Serial.println(inverter + 1);
+
+    // Loop through each test case pattern
+    for (byte test = 0; test < numTestCases; test++) {
+      // Parse the test pattern to set inputs and expected output
+      byte inputA = testPattern[test][0] - '0';
+      byte expectedOutput = (testPattern[test][1] == 'L') ? LOW : HIGH;
+
+      // Set the inputs A1, A2, A3, A4, A5, A6
+      pinMode(inputPins[inverter], OUTPUT);
+      digitalWrite(inputPins[inverter], inputA);
+
+      // Set the output pins Y1, Y2, Y3, Y4, Y5, Y6 as inputs to read the result
+      pinMode(outputPins[inverter], INPUT);
+      delay(10); // Short delay for stabilization
+
+      // Read and compare the actual output
+      byte actualOutput = digitalRead(outputPins[inverter]);
+      Serial.print(F("A="));
+      Serial.print(inputA);
+      Serial.print(F(" => Y="));
+      Serial.print(actualOutput);
+      Serial.print(F(" (Expected: "));
+      Serial.print(expectedOutput);
+      Serial.print(F(") Inverter: "));
+      Serial.print(inverter + 1);
+      Serial.print(F(", Output Pin: "));
+      Serial.print(outputPins[inverter]);
+      Serial.print(F(" Result: "));
+      // Print result
+      if (actualOutput == expectedOutput) {
+        Serial.println(F("OK"));
+      } else {
+        Serial.println(F("NG"));
+      }
+    }
+    Serial.println();
+
+    // Reset pin modes to INPUT to ensure no interference in the next inverter test
+    pinMode(inputPins[inverter], INPUT);
+    pinMode(outputPins[inverter], INPUT);
+  }
 }
 
 void testIC7408() {
