@@ -37,21 +37,21 @@ const byte PIN_VOLTMETER_V1 = A4;
 const byte PIN_VOLTMETER_V2 = A5;
 const byte PIN_VOLTMETER_V3 = A6;
 
-const byte PIN_IC_PIN1 = A15; // physical pin 1
-const byte PIN_IC_PIN2 = 33;
-const byte PIN_IC_PIN3 = 35;
-const byte PIN_IC_PIN4 = 37;
-const byte PIN_IC_PIN5 = 39;
-const byte PIN_IC_PIN6 = 41;
-const byte PIN_IC_PIN7 = 43;
-const byte PIN_IC_PIN8 = 45;
-const byte PIN_IC_PIN9 = 47;
-const byte PIN_IC_PIN10 = 49;
-const byte PIN_IC_PIN11 = 48;
-const byte PIN_IC_PIN12 = 46;
-const byte PIN_IC_PIN13 = 44;
-const byte PIN_IC_PIN14 = 42;
-const byte PIN_IC_PIN15 = 40;
+const byte PIN_IC_PIN1 = A15; // physical pin 1 //A1
+const byte PIN_IC_PIN2 = 33; 
+const byte PIN_IC_PIN3 = 35; 
+const byte PIN_IC_PIN4 = 37; 
+const byte PIN_IC_PIN5 = 39; 
+const byte PIN_IC_PIN6 = 41; 
+const byte PIN_IC_PIN7 = 43; 
+const byte PIN_IC_PIN8 = 45; 
+const byte PIN_IC_PIN9 = 47; 
+const byte PIN_IC_PIN10 = 49; 
+const byte PIN_IC_PIN11 = 48; 
+const byte PIN_IC_PIN12 = 46; 
+const byte PIN_IC_PIN13 = 44; 
+const byte PIN_IC_PIN14 = 42; 
+const byte PIN_IC_PIN15 = 40; 
 const byte PIN_IC_PIN16 = 38;
 const byte PIN_IC_PIN17 = 36;
 const byte PIN_IC_PIN18 = 34;
@@ -66,12 +66,12 @@ const byte PINS_IC[20] = {
   PIN_IC_PIN5,
   PIN_IC_PIN6,
   PIN_IC_PIN7,
-  PIN_IC_PIN8,
-  PIN_IC_PIN9,
-  PIN_IC_PIN10,
-  PIN_IC_PIN11,
-  PIN_IC_PIN12,
-  PIN_IC_PIN13,
+  PIN_IC_PIN8, 
+  PIN_IC_PIN9, 
+  PIN_IC_PIN10, 
+  PIN_IC_PIN11, 
+  PIN_IC_PIN12, 
+  PIN_IC_PIN13, 
   PIN_IC_PIN14,
   PIN_IC_PIN15,
   PIN_IC_PIN16,
@@ -417,7 +417,6 @@ void manual_user_interface() {
 
 void testIC7400() {
   
-  
 }
 
 void testIC7402() {
@@ -429,68 +428,98 @@ void testIC7404() {
 }
 
 void testIC7408() {
- // Test patterns for the four gates in IC 7408
-  char testPattern[] = "00L00LGL00L00V";
+  // Set VCC and GND
+  pinMode(PINS_IC[6], OUTPUT);  // GND (Pin 7)
+  pinMode(PINS_IC[19], OUTPUT); // VCC (Pin 14)
+  digitalWrite(PINS_IC[6], LOW);   // Set GND to LOW
+  digitalWrite(PINS_IC[19], HIGH); // Set VCC to HIGH
 
-  // Initialize IC 7408 pins as necessary (adjust pin modes accordingly)
-  pinMode(PIN_IC_PIN1, OUTPUT);  // A1
-  pinMode(PIN_IC_PIN2, OUTPUT);  // B1
-  pinMode(PIN_IC_PIN3, OUTPUT);  // A2
-  pinMode(PIN_IC_PIN4, INPUT);   // Y1
+  struct TestCase {
+    byte inputA;
+    byte inputB;
+    byte expectedOutput;
+  };
 
-  pinMode(PIN_IC_PIN5, OUTPUT);  // A3
-  pinMode(PIN_IC_PIN6, OUTPUT);  // B3
-  pinMode(PIN_IC_PIN7, OUTPUT);  // A4
-  pinMode(PIN_IC_PIN8, INPUT);   // Y2
+  TestCase testCases[] = {
+    {LOW, LOW, LOW},
+    {LOW, HIGH, LOW},
+    {HIGH, LOW, LOW},
+    {HIGH, HIGH, HIGH}
+  };
 
-  pinMode(PIN_IC_PIN9, OUTPUT);  // A5
-  pinMode(PIN_IC_PIN10, OUTPUT); // B5
-  pinMode(PIN_IC_PIN11, OUTPUT); // A6
-  pinMode(PIN_IC_PIN12, INPUT);  // Y3
+  const byte inputPinsA[] = {PINS_IC[0], PINS_IC[3], PINS_IC[15], PINS_IC[18]}; // A1, A2, A3, A4
+  const byte inputPinsB[] = {PINS_IC[1], PINS_IC[4], PINS_IC[14], PINS_IC[17]}; // B1, B2, B3, B4
+  const byte outputPins[] = {PINS_IC[2], PINS_IC[5], PINS_IC[13], PINS_IC[16]}; // Y1, Y2, Y3, Y4
 
-  pinMode(PIN_IC_PIN13, OUTPUT); // A7
-  pinMode(PIN_IC_PIN14, OUTPUT); // B7
-  pinMode(PIN_IC_PIN15, OUTPUT); // A8
-  pinMode(PIN_IC_PIN16, INPUT);  // Y4
+  // Loop through each gate
+  for (byte i = 0; i < 4; i++) {
+    Serial.print(F("Testing gate "));
+    Serial.println(i + 1);
 
-  // Loop through each gate (4 gates in total)
-  for (int gate = 0; gate < 4; ++gate) {
-    char input1 = testPattern[gate * 3];
-    char input2 = testPattern[gate * 3 + 1];
-    char expectedOutput = testPattern[gate * 3 + 2];
+    // Print pin mappings before setting outputs
+    Serial.print(F("Input A Pins: "));
+    Serial.print(inputPinsA[i]);
+    Serial.print(F(", "));
+    Serial.print(inputPinsA[i+1]);
+    Serial.print(F(", "));
+    Serial.print(inputPinsA[i+2]);
+    Serial.print(F(", "));
+    Serial.println(inputPinsA[i+3]);
 
-    // Set inputs
-    digitalWrite(PINS_IC[8 * gate], input1 == '1' ? HIGH : LOW);  // A1, A3, A5, A7
-    digitalWrite(PINS_IC[8 * gate + 1], input2 == '1' ? HIGH : LOW);  // B1, B3, B5, B7
+    Serial.print(F("Input B Pins: "));
+    Serial.print(inputPinsB[i]);
+    Serial.print(F(", "));
+    Serial.print(inputPinsB[i+1]);
+    Serial.print(F(", "));
+    Serial.print(inputPinsB[i+2]);
+    Serial.print(F(", "));
+    Serial.println(inputPinsB[i+3]);
 
-    // Read output
-    int output = digitalRead(PINS_IC[8 * gate + 3]);  // Y1, Y2, Y3, Y4
+    Serial.print(F("Output Pins: "));
+    Serial.print(outputPins[i]);
+    Serial.print(F(", "));
+    Serial.print(outputPins[i+1]);
+    Serial.print(F(", "));
+    Serial.print(outputPins[i+2]);
+    Serial.print(F(", "));
+    Serial.println(outputPins[i+3]);
 
-    // Print results to serial monitor
-    Serial.print("Gate ");
-    Serial.print(gate + 1);  // Gate number (1 to 4)
-    Serial.print(": Input1 = ");
-    Serial.print(input1);
-    Serial.print(", Input2 = ");
-    Serial.print(input2);
-    Serial.print(", Output = ");
-    Serial.println(output == HIGH ? "HIGH" : "LOW");
+    // Loop through each test case
+    for (byte j = 0; j < sizeof(testCases) / sizeof(TestCase); j++) {
+      // Set the inputs
+      pinMode(inputPinsA[i], OUTPUT);
+      pinMode(inputPinsB[i], OUTPUT);
+      digitalWrite(inputPinsA[i], testCases[j].inputA);
+      digitalWrite(inputPinsB[i], testCases[j].inputB);
 
-    // Validate output
-    if (expectedOutput == 'V') {
-      Serial.println("Output voltage can vary (HIGH-Z state).");
-    } else {
-      if ((output == HIGH && expectedOutput == 'H') || (output == LOW && expectedOutput == 'L')) {
-        Serial.println("Output is correct.");
+      // Set the output pin as input to read the result
+      pinMode(outputPins[i], INPUT);
+      delay(10); // Short delay for stabilization
+
+      // Read and compare the actual output
+      byte actualOutput = digitalRead(outputPins[i]);
+      Serial.print(F("A="));
+      Serial.print(testCases[j].inputA);
+      Serial.print(F(", B="));
+      Serial.print(testCases[j].inputB);
+      Serial.print(F(" => Y="));
+      Serial.print(actualOutput);
+      Serial.print(F(" (Expected: "));
+      Serial.print(testCases[j].expectedOutput);
+      Serial.println(F(")"));
+
+      // Print result
+      if (actualOutput == testCases[j].expectedOutput) {
+        Serial.println(F("Result: OK"));
       } else {
-        Serial.println("Output mismatch detected!");
+        Serial.println(F("Result: NG"));
       }
     }
-  }
+    Serial.println(F(""));
 
-  // Reset all pins to INPUT mode to avoid interference
-  for (int i = 0; i < 20; ++i) {
-    pinMode(PINS_IC[i], INPUT);
+    // Reset pin modes to INPUT to ensure no interference in the next gate test
+    pinMode(inputPinsA[i], INPUT);
+    pinMode(inputPinsB[i], INPUT);
   }
 }
 
