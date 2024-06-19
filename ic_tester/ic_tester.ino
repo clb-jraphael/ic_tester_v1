@@ -690,14 +690,29 @@ void testIC7404() {
   digitalWrite(PIN_GND, LOW);    // GND to LOW
   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
 
-  // Define the test pattern for IC7404 (Hex Inverter)
-  const char* testPattern[] = {
-    "0H0H0HGH0H0H0V", // A = 0, Y = 1
-    "1L1L1LGL1L1L1V"  // A = 1, Y = 0
-  };
+   // Retrieve the test pattern for IC7400
+  const char* icType = "7404";
+  const IC_TestPatterns* icPattern = nullptr;
 
-  // Calculate the number of test cases based on the pattern
-  const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
+  // Find the IC pattern in testPatterns
+  for (size_t i = 0; i < sizeof(testPatterns) / sizeof(testPatterns[2]); ++i) {
+    if (strcmp(testPatterns[i].icType, icType) == 0) {
+      icPattern = &testPatterns[i];
+      break;
+    }
+  }
+
+  if (!icPattern) {
+    Serial.println("IC Type 7404 not found in testPatterns array.");
+    return;
+  }
+
+  // Perform tests using patterns, inputPinsA, inputPinsB, and outputPins
+  int numTestCases = icPattern->numTestCases;
+  const char** patterns = icPattern->testPatterns;
+  const byte* inputPinsA = icPattern->inputPinsA;
+  const byte* inputPinsB = icPattern->inputPinsB;
+  const byte* outputPins = icPattern->outputPins;
 
   // Loop through each inverter (six in total)
   for (byte inverter = 0; inverter < 6; inverter++) {
@@ -707,8 +722,8 @@ void testIC7404() {
     // Loop through each test case pattern
     for (byte test = 0; test < numTestCases; test++) {
       // Parse the test pattern to set inputs and expected output
-      byte inputA = testPattern[test][0] - '0';
-      byte expectedOutput = (testPattern[test][1] == 'L') ? LOW : HIGH;
+      byte inputA = patterns[test][0] - '0';
+      byte expectedOutput = (patterns[test][1] == 'L') ? LOW : HIGH;
 
       // Set the inputs A1, A2, A3, A4, A5, A6
       pinMode(inputPins7404[inverter], OUTPUT);
