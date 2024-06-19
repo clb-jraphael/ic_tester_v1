@@ -148,7 +148,38 @@ IC_TestPatterns testPatterns[] = {
     "11L11LGL11L11V"  // A=1, B=1 -> Y=LOW
   }, inputPinsA7402, inputPinsB7402, outputPins7402},
 
-  // Add more IC test patterns here as needed
+  {"7404", 2, {
+    "0H0H0HGH0H0H0V", // A = 0, Y = 1
+    "1L1L1LGL1L1L1V"  // A = 1, Y = 0
+  }, inputPins7404, outputPins7404},
+
+  {"7408", 4, {
+    "00L00LGL00L00V",
+    "01L01LGL01L01V",
+    "10L10LGL10L10V",
+    "11H11HGH11H11V"
+  }, inputPinsA7408, inputPinsB7408, outputPins7408},
+
+  {"7432", 4, {
+    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
+    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
+    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
+    "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
+  }, inputPinsA7432, inputPinsB7432, outputPins7432},
+
+  {"7486", 4, {
+    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
+    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
+    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
+    "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
+  }, inputPinsA7486, inputPinsB7486, outputPins7486},
+
+  {"747266", 4, {
+    "00H00HGH00H00V", // A = 0, B = 0, Y = 1
+    "01L01LGL01L01V", // A = 0, B = 1, Y = 0
+    "10L10LGL10L10V", // A = 1, B = 0, Y = 0
+    "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
+  }, inputPinsA747266, inputPinsB747266, outputPins747266},
 };
 
 // GLOBAL VARIABLES
