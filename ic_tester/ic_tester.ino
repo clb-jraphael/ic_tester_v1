@@ -459,8 +459,6 @@ void testIC7400() {
     "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
   };
 
-  // CALL INPUT AND OUTPUT PINS here  
-
   // Calculate the number of test cases based on the pattern
   const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
 
@@ -536,8 +534,6 @@ void testIC7402() {
     "11L11LGL11L11V"  // A=1, B=1 -> Y=LOW
   };
 
-  // CALL INPUT AND OUTPUT PINS HERE
-
   // Calculate the number of test cases based on the pattern
   const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
 
@@ -609,8 +605,6 @@ void testIC7404() {
     "0H0H0HGH0H0H0V", // A = 0, Y = 1
     "1L1L1LGL1L1L1V"  // A = 1, Y = 0
   };
-
-  // CALL INPUT AND OUTPUT PINS HERE
 
   // Calculate the number of test cases based on the pattern
   const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
@@ -763,8 +757,6 @@ void testIC7432() {
     "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
   };
 
-  // CALL INPUT AND OUTPUT PINS HERE
-
   // Calculate the number of test cases based on the pattern
   const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
 
@@ -838,8 +830,6 @@ void testIC7486() {
     "10H10HGH10H10V", // A = 1, B = 0, Y = 1
     "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
   };
-
-  // CALL INPUT AND OUTPUT PINS HERE
 
   // Calculate the number of test cases based on the pattern
   const int numTestCases = sizeof(testPattern) / sizeof(testPattern[0]);
@@ -978,12 +968,6 @@ void testIC747266() {
 }
 
 void loop() {
-  //pinMode(PIN_IC_PIN18, OUTPUT);
-  //pinMode(PIN_IC_PIN19, OUTPUT);
-  //digitalWrite(PIN_IC_PIN1, LOW);
-  //digitalWrite(PIN_IC_PIN2, LOW);
-  //Serial.println(digitalRead(PIN_IC_PIN3));
-
   buttonDebounce();
   buttonScanner();
   //potreader();
