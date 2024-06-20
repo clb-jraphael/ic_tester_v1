@@ -401,7 +401,7 @@ void update_menu() {
   }
 }
 
-//for manual 
+// calls all IC testing implementations for manual testing
 void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -502,41 +502,498 @@ void manual_user_interface() {
   }
 }
 
+// void testIC7400() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
 
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
 
-void testIC7400() {
+//   // Retrieve the test pattern for IC7400
+//   // const char* icType = "7400";
+//   const IC_TestPatterns icPattern = testPatterns[0];
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < icPattern.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = icPattern.testPatterns[test][0] - '0';
+//       byte inputB = icPattern.testPatterns[test][1] - '0';
+//       byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(icPattern.inputPinsA[gate], OUTPUT);
+//       pinMode(icPattern.inputPinsB[gate], OUTPUT);
+//       digitalWrite(icPattern.inputPinsA[gate], inputA); // WRITE TO IC
+//       digitalWrite(icPattern.inputPinsB[gate], inputB); // WRITE TO IC
+
+//       // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
+//       pinMode(icPattern.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(icPattern.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(gate + 1); // Y1, Y2, Y3, Y4
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(icPattern.inputPinsA[gate], INPUT);
+//     pinMode(icPattern.inputPinsB[gate], INPUT);
+//     pinMode(icPattern.outputPins[gate], INPUT);
+//   }
+// }
+// // Repeat the same approach for other IC test functions like testIC7402, testIC7404, etc.
+// void testIC7402() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve the test pattern for IC7402
+//   // const char* icType = "7402";
+//   const IC_TestPatterns icPattern = testPatterns[1];
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < icPattern.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = icPattern.testPatterns[test][0] - '0';
+//       byte inputB = icPattern.testPatterns[test][1] - '0';
+//       byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(icPattern.inputPinsA[gate], OUTPUT);
+//       pinMode(icPattern.inputPinsB[gate], OUTPUT);
+//       digitalWrite(icPattern.inputPinsA[gate], inputA);
+//       digitalWrite(icPattern.inputPinsB[gate], inputB);
+
+//       // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
+//       pinMode(icPattern.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(icPattern.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(gate + 1); // Y1, Y2, Y3, Y4
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(icPattern.inputPinsA[gate], INPUT);
+//     pinMode(icPattern.inputPinsB[gate], INPUT);
+//     pinMode(icPattern.outputPins[gate], INPUT);
+//   }
+// }
+
+// void testIC7404() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve the test pattern for IC7400
+//   // const char* icType = "7404";
+//   const IC_TestPatterns icPattern = testPatterns[2];
+
+//   // Loop through each inverter (six in total)
+//   for (byte inverter = 0; inverter < 6; inverter++) {
+//     Serial.print(F("Testing inverter "));
+//     Serial.println(inverter + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < icPattern.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = icPattern.testPatterns[test][0] - '0';
+//       byte expectedOutput = (icPattern.testPatterns[test][1] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4, A5, A6
+//       pinMode(inputPins7404[inverter], OUTPUT);
+//       digitalWrite(inputPins7404[inverter], inputA);
+
+//       // Set the output pins Y1, Y2, Y3, Y4, Y5, Y6 as inputs to read the result
+//       pinMode(outputPins7404[inverter], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(outputPins7404[inverter]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Inverter: "));
+//       Serial.print(inverter + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(outputPins7404[inverter]);
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next inverter test
+//     pinMode(inputPins7404[inverter], INPUT);
+//     pinMode(outputPins7404[inverter], INPUT);
+//   }
+// }
+
+// void testIC7408() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve the test pattern for IC7402
+//   // const char* icType = "7402";
+//   const IC_TestPatterns icPattern = testPatterns[3];
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < icPattern.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = icPattern.testPatterns[test][0] - '0';
+//       byte inputB = icPattern.testPatterns[test][1] - '0';
+//       byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(icPattern.inputPinsA[gate], OUTPUT);
+//       pinMode(icPattern.inputPinsB[gate], OUTPUT);
+//       digitalWrite(icPattern.inputPinsA[gate], inputA);
+//       digitalWrite(icPattern.inputPinsB[gate], inputB);
+
+//       // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
+//       pinMode(icPattern.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(icPattern.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(gate + 1); // Y1, Y2, Y3, Y4
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(icPattern.inputPinsA[gate], INPUT);
+//     pinMode(icPattern.inputPinsB[gate], INPUT);
+//     pinMode(icPattern.outputPins[gate], INPUT);
+//   }
+// }
+
+// void testIC7432() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve test pattern and pin configurations for IC7432 from testPatterns array
+//   const IC_TestPatterns patterns = testPatterns[4]; // Index 4 corresponds to IC7432
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < patterns.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = patterns.testPatterns[test][0] - '0';
+//       byte inputB = patterns.testPatterns[test][1] - '0';
+//       byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(patterns.inputPinsA[gate], OUTPUT);
+//       pinMode(patterns.inputPinsB[gate], OUTPUT);
+//       digitalWrite(patterns.inputPinsA[gate], inputA);
+//       digitalWrite(patterns.inputPinsB[gate], inputB);
+
+//       // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
+//       pinMode(patterns.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(patterns.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(patterns.outputPins[gate]);
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(patterns.inputPinsA[gate], INPUT);
+//     pinMode(patterns.inputPinsB[gate], INPUT);
+//     pinMode(patterns.outputPins[gate], INPUT);
+//   }
+// }
+
+// void testIC7486() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve test pattern and pin configurations for IC7486 from testPatterns array
+//   const IC_TestPatterns patterns = testPatterns[5]; // Index 5 corresponds to IC7486
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < patterns.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = patterns.testPatterns[test][0] - '0';
+//       byte inputB = patterns.testPatterns[test][1] - '0';
+//       byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(patterns.inputPinsA[gate], OUTPUT);
+//       pinMode(patterns.inputPinsB[gate], OUTPUT);
+//       digitalWrite(patterns.inputPinsA[gate], inputA);
+//       digitalWrite(patterns.inputPinsB[gate], inputB);
+
+//       // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
+//       pinMode(patterns.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(patterns.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(patterns.outputPins[gate]);
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(patterns.inputPinsA[gate], INPUT);
+//     pinMode(patterns.inputPinsB[gate], INPUT);
+//     pinMode(patterns.outputPins[gate], INPUT);
+//   }
+// }
+
+// void testIC747266() {
+//   // Set VCC and GND pins
+//   const byte PIN_GND = PINS_IC[6];   // Pin 7
+//   const byte PIN_VCC = PINS_IC[19];  // Pin 14
+
+//   pinMode(PIN_GND, OUTPUT);
+//   pinMode(PIN_VCC, OUTPUT);
+//   digitalWrite(PIN_GND, LOW);    // GND to LOW
+//   digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+
+//   // Retrieve test pattern and pin configurations for IC747266 from testPatterns array
+//   const IC_TestPatterns patterns = testPatterns[6]; // Index 6 corresponds to IC747266
+
+//   // Loop through each gate (four gates in total)
+//   for (byte gate = 0; gate < 4; gate++) {
+//     Serial.print(F("Testing gate "));
+//     Serial.println(gate + 1);
+
+//     // Loop through each test case pattern
+//     for (byte test = 0; test < patterns.numTestCases; test++) {
+//       // Parse the test pattern to set inputs and expected output
+//       byte inputA = patterns.testPatterns[test][0] - '0';
+//       byte inputB = patterns.testPatterns[test][1] - '0';
+//       byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
+
+//       // Set the inputs A1, A2, A3, A4
+//       pinMode(patterns.inputPinsA[gate], OUTPUT);
+//       pinMode(patterns.inputPinsB[gate], OUTPUT);
+//       digitalWrite(patterns.inputPinsA[gate], inputA);
+//       digitalWrite(patterns.inputPinsB[gate], inputB);
+
+//       // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
+//       pinMode(patterns.outputPins[gate], INPUT);
+//       delay(10); // Short delay for stabilization
+
+//       // Read and compare the actual output
+//       byte actualOutput = digitalRead(patterns.outputPins[gate]);
+//       Serial.print(F("A="));
+//       Serial.print(inputA);
+//       Serial.print(F(", B="));
+//       Serial.print(inputB);
+//       Serial.print(F(" => Y="));
+//       Serial.print(actualOutput);
+//       Serial.print(F(" (Expected: "));
+//       Serial.print(expectedOutput);
+//       Serial.print(F(") Gate: "));
+//       Serial.print(gate + 1);
+//       Serial.print(F(", Output Pin: "));
+//       Serial.print(patterns.outputPins[gate]);
+//       Serial.print(F(" Result: "));
+//       // Print result
+//       if (actualOutput == expectedOutput) {
+//         Serial.println(F("OK"));
+//       } else {
+//         Serial.println(F("NG"));
+//       }
+//     }
+//     Serial.println();
+
+//     // Reset pin modes to INPUT to ensure no interference in the next gate test
+//     pinMode(patterns.inputPinsA[gate], INPUT);
+//     pinMode(patterns.inputPinsB[gate], INPUT);
+//     pinMode(patterns.outputPins[gate], INPUT);
+//   }
+// }
+
+// Generic function to test any IC
+void testIC(const IC_TestPatterns& icPattern) {
   // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
+  const byte PIN_GND = PINS_IC[6]; // Pin 7
+  const byte PIN_VCC = PINS_IC[19]; // Pin 14
 
   pinMode(PIN_GND, OUTPUT);
   pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
+  digitalWrite(PIN_GND, LOW); // GND to LOW
+  digitalWrite(PIN_VCC, HIGH); // VCC to HIGH
 
-  // Retrieve the test pattern for IC7400
-  // const char* icType = "7400";
-  const IC_TestPatterns icPattern = testPatterns[0];
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
+  // Loop through each gate/inverter
+  for (byte gate = 0; gate < (icPattern.inputPinsB ? 4 : 6); gate++) {
+    Serial.print(F("Testing gate/inverter "));
     Serial.println(gate + 1);
 
     // Loop through each test case pattern
     for (byte test = 0; test < icPattern.numTestCases; test++) {
       // Parse the test pattern to set inputs and expected output
       byte inputA = icPattern.testPatterns[test][0] - '0';
-      byte inputB = icPattern.testPatterns[test][1] - '0';
-      byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
+      byte inputB = icPattern.inputPinsB ? icPattern.testPatterns[test][1] - '0' : 0;
+      byte expectedOutput = (icPattern.testPatterns[test][icPattern.inputPinsB ? 2 : 1] == 'L') ? LOW : HIGH;
 
-      // Set the inputs A1, A2, A3, A4
+      // Set the inputs
       pinMode(icPattern.inputPinsA[gate], OUTPUT);
-      pinMode(icPattern.inputPinsB[gate], OUTPUT);
-      digitalWrite(icPattern.inputPinsA[gate], inputA); // WRITE TO IC
-      digitalWrite(icPattern.inputPinsB[gate], inputB); // WRITE TO IC
+      digitalWrite(icPattern.inputPinsA[gate], inputA);
+      if (icPattern.inputPinsB) {
+        pinMode(icPattern.inputPinsB[gate], OUTPUT);
+        digitalWrite(icPattern.inputPinsB[gate], inputB);
+      }
 
-      // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
+      // Set the output pin as input to read the result
       pinMode(icPattern.outputPins[gate], INPUT);
       delay(10); // Short delay for stabilization
 
@@ -544,8 +1001,10 @@ void testIC7400() {
       byte actualOutput = digitalRead(icPattern.outputPins[gate]);
       Serial.print(F("A="));
       Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
+      if (icPattern.inputPinsB) {
+        Serial.print(F(", B="));
+        Serial.print(inputB);
+      }
       Serial.print(F(" => Y="));
       Serial.print(actualOutput);
       Serial.print(F(" (Expected: "));
@@ -553,417 +1012,44 @@ void testIC7400() {
       Serial.print(F(") Gate: "));
       Serial.print(gate + 1);
       Serial.print(F(", Output Pin: "));
-      Serial.print(gate + 1); // Y1, Y2, Y3, Y4
-      Serial.print(F(" Result: "));
-      // Print result
+      Serial.print(icPattern.outputPins[gate]);
       if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
+        Serial.println(F(" [PASS]"));
       } else {
-        Serial.println(F("NG"));
+        Serial.println(F(" [FAIL]"));
       }
+      delay(100); // Short delay between tests
     }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(icPattern.inputPinsA[gate], INPUT);
-    pinMode(icPattern.inputPinsB[gate], INPUT);
-    pinMode(icPattern.outputPins[gate], INPUT);
   }
 }
 
+// Example usage of generic test function
+void testIC7400() {
+  testIC(testPatterns[0]);
+}
 
-// Repeat the same approach for other IC test functions like testIC7402, testIC7404, etc.
 void testIC7402() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve the test pattern for IC7402
-  // const char* icType = "7402";
-  const IC_TestPatterns icPattern = testPatterns[1];
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
-    Serial.println(gate + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < icPattern.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = icPattern.testPatterns[test][0] - '0';
-      byte inputB = icPattern.testPatterns[test][1] - '0';
-      byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4
-      pinMode(icPattern.inputPinsA[gate], OUTPUT);
-      pinMode(icPattern.inputPinsB[gate], OUTPUT);
-      digitalWrite(icPattern.inputPinsA[gate], inputA);
-      digitalWrite(icPattern.inputPinsB[gate], inputB);
-
-      // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
-      pinMode(icPattern.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(icPattern.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(gate + 1); // Y1, Y2, Y3, Y4
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(icPattern.inputPinsA[gate], INPUT);
-    pinMode(icPattern.inputPinsB[gate], INPUT);
-    pinMode(icPattern.outputPins[gate], INPUT);
-  }
+  testIC(testPatterns[1]);
 }
 
 void testIC7404() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve the test pattern for IC7400
-  // const char* icType = "7404";
-  const IC_TestPatterns icPattern = testPatterns[2];
-
-  // Loop through each inverter (six in total)
-  for (byte inverter = 0; inverter < 6; inverter++) {
-    Serial.print(F("Testing inverter "));
-    Serial.println(inverter + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < icPattern.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = icPattern.testPatterns[test][0] - '0';
-      byte expectedOutput = (icPattern.testPatterns[test][1] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4, A5, A6
-      pinMode(inputPins7404[inverter], OUTPUT);
-      digitalWrite(inputPins7404[inverter], inputA);
-
-      // Set the output pins Y1, Y2, Y3, Y4, Y5, Y6 as inputs to read the result
-      pinMode(outputPins7404[inverter], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(outputPins7404[inverter]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Inverter: "));
-      Serial.print(inverter + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(outputPins7404[inverter]);
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next inverter test
-    pinMode(inputPins7404[inverter], INPUT);
-    pinMode(outputPins7404[inverter], INPUT);
-  }
+  testIC(testPatterns[2]);
 }
 
 void testIC7408() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve the test pattern for IC7402
-  // const char* icType = "7402";
-  const IC_TestPatterns icPattern = testPatterns[3];
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
-    Serial.println(gate + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < icPattern.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = icPattern.testPatterns[test][0] - '0';
-      byte inputB = icPattern.testPatterns[test][1] - '0';
-      byte expectedOutput = (icPattern.testPatterns[test][2] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4
-      pinMode(icPattern.inputPinsA[gate], OUTPUT);
-      pinMode(icPattern.inputPinsB[gate], OUTPUT);
-      digitalWrite(icPattern.inputPinsA[gate], inputA);
-      digitalWrite(icPattern.inputPinsB[gate], inputB);
-
-      // Set the output pin Y1, Y2, Y3, Y4 as input to read the result
-      pinMode(icPattern.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(icPattern.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(gate + 1); // Y1, Y2, Y3, Y4
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(icPattern.inputPinsA[gate], INPUT);
-    pinMode(icPattern.inputPinsB[gate], INPUT);
-    pinMode(icPattern.outputPins[gate], INPUT);
-  }
+  testIC(testPatterns[3]);
 }
 
 void testIC7432() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve test pattern and pin configurations for IC7432 from testPatterns array
-  const IC_TestPatterns patterns = testPatterns[4]; // Index 4 corresponds to IC7432
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
-    Serial.println(gate + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < patterns.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = patterns.testPatterns[test][0] - '0';
-      byte inputB = patterns.testPatterns[test][1] - '0';
-      byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4
-      pinMode(patterns.inputPinsA[gate], OUTPUT);
-      pinMode(patterns.inputPinsB[gate], OUTPUT);
-      digitalWrite(patterns.inputPinsA[gate], inputA);
-      digitalWrite(patterns.inputPinsB[gate], inputB);
-
-      // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
-      pinMode(patterns.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(patterns.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(patterns.outputPins[gate]);
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(patterns.inputPinsA[gate], INPUT);
-    pinMode(patterns.inputPinsB[gate], INPUT);
-    pinMode(patterns.outputPins[gate], INPUT);
-  }
+  testIC(testPatterns[4]);
 }
 
 void testIC7486() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve test pattern and pin configurations for IC7486 from testPatterns array
-  const IC_TestPatterns patterns = testPatterns[5]; // Index 5 corresponds to IC7486
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
-    Serial.println(gate + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < patterns.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = patterns.testPatterns[test][0] - '0';
-      byte inputB = patterns.testPatterns[test][1] - '0';
-      byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4
-      pinMode(patterns.inputPinsA[gate], OUTPUT);
-      pinMode(patterns.inputPinsB[gate], OUTPUT);
-      digitalWrite(patterns.inputPinsA[gate], inputA);
-      digitalWrite(patterns.inputPinsB[gate], inputB);
-
-      // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
-      pinMode(patterns.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(patterns.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(patterns.outputPins[gate]);
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(patterns.inputPinsA[gate], INPUT);
-    pinMode(patterns.inputPinsB[gate], INPUT);
-    pinMode(patterns.outputPins[gate], INPUT);
-  }
+  testIC(testPatterns[5]);
 }
 
 void testIC747266() {
-  // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6];   // Pin 7
-  const byte PIN_VCC = PINS_IC[19];  // Pin 14
-
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW);    // GND to LOW
-  digitalWrite(PIN_VCC, HIGH);   // VCC to HIGH
-
-  // Retrieve test pattern and pin configurations for IC747266 from testPatterns array
-  const IC_TestPatterns patterns = testPatterns[6]; // Index 6 corresponds to IC747266
-
-  // Loop through each gate (four gates in total)
-  for (byte gate = 0; gate < 4; gate++) {
-    Serial.print(F("Testing gate "));
-    Serial.println(gate + 1);
-
-    // Loop through each test case pattern
-    for (byte test = 0; test < patterns.numTestCases; test++) {
-      // Parse the test pattern to set inputs and expected output
-      byte inputA = patterns.testPatterns[test][0] - '0';
-      byte inputB = patterns.testPatterns[test][1] - '0';
-      byte expectedOutput = (patterns.testPatterns[test][2] == 'L') ? LOW : HIGH;
-
-      // Set the inputs A1, A2, A3, A4
-      pinMode(patterns.inputPinsA[gate], OUTPUT);
-      pinMode(patterns.inputPinsB[gate], OUTPUT);
-      digitalWrite(patterns.inputPinsA[gate], inputA);
-      digitalWrite(patterns.inputPinsB[gate], inputB);
-
-      // Set the output pins Y1, Y2, Y3, Y4 as inputs to read the result
-      pinMode(patterns.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
-
-      // Read and compare the actual output
-      byte actualOutput = digitalRead(patterns.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      Serial.print(F(", B="));
-      Serial.print(inputB);
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(patterns.outputPins[gate]);
-      Serial.print(F(" Result: "));
-      // Print result
-      if (actualOutput == expectedOutput) {
-        Serial.println(F("OK"));
-      } else {
-        Serial.println(F("NG"));
-      }
-    }
-    Serial.println();
-
-    // Reset pin modes to INPUT to ensure no interference in the next gate test
-    pinMode(patterns.inputPinsA[gate], INPUT);
-    pinMode(patterns.inputPinsB[gate], INPUT);
-    pinMode(patterns.outputPins[gate], INPUT);
-  }
+  testIC(testPatterns[6]);
 }
 
 void loop() {
