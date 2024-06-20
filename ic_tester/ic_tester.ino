@@ -956,22 +956,26 @@ void manual_user_interface() {
 // Generic function to test any IC
 bool testIC(const IC_TestPatterns& icPattern) {
   bool allTestsPassed = true;
+  const byte PIN_GND;
+  const byte PIN_VCC;
+
   // Set VCC and GND pins
-  const byte PIN_GND = PINS_IC[6]; // Pin 7
-  const byte PIN_VCC = PINS_IC[19]; // Pin 14
+  if (strlen(icPattern.testPatterns[0]) == 14) {
+    const byte PIN_GND = PINS_IC[6]; // Pin 7
+    const byte PIN_VCC = PINS_IC[19]; // Pin 14
 
-  pinMode(PIN_GND, OUTPUT);
-  pinMode(PIN_VCC, OUTPUT);
-  digitalWrite(PIN_GND, LOW); // GND to LOW
-  digitalWrite(PIN_VCC, HIGH); // VCC to HIGH
+    pinMode(PIN_GND, OUTPUT);
+    pinMode(PIN_VCC, OUTPUT);
+    digitalWrite(PIN_GND, LOW); // GND to LOW
+    digitalWrite(PIN_VCC, HIGH); // VCC to HIGH
 
-  // Display "Please wait..." on LCD
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(F("Please wait..."));
+    // Display "Please wait..." on LCD
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Please wait..."));
 
-  // Loop through each gate/inverter
-  for (byte gate = 0; gate < (icPattern.inputPinsB ? 4 : 6); gate++) {
+    // Loop through each gate/inverter
+    for (byte gate = 0; gate < (icPattern.inputPinsB ? 4 : 6); gate++) {
     Serial.print(F("Testing gate/inverter "));
     Serial.println(gate + 1);
 
@@ -992,34 +996,35 @@ bool testIC(const IC_TestPatterns& icPattern) {
 
       // Set the output pin as input to read the result
       pinMode(icPattern.outputPins[gate], INPUT);
-      delay(10); // Short delay for stabilization
+      //delay(10); // Short delay for stabilization
 
       // Read and compare the actual output
       byte actualOutput = digitalRead(icPattern.outputPins[gate]);
-      Serial.print(F("A="));
-      Serial.print(inputA);
-      if (icPattern.inputPinsB) {
-        Serial.print(F(", B="));
-        Serial.print(inputB);
-      }
-      Serial.print(F(" => Y="));
-      Serial.print(actualOutput);
-      Serial.print(F(" (Expected: "));
-      Serial.print(expectedOutput);
-      Serial.print(F(") Gate: "));
-      Serial.print(gate + 1);
-      Serial.print(F(", Output Pin: "));
-      Serial.print(icPattern.outputPins[gate]);
+      //Serial.print(F("A="));
+      //Serial.print(inputA);
+      //if (icPattern.inputPinsB) {
+      //  Serial.print(F(", B="));
+      //  Serial.print(inputB);
+      //}
+      //Serial.print(F(" => Y="));
+      //Serial.print(actualOutput);
+      //Serial.print(F(" (Expected: "));
+      //Serial.print(expectedOutput);
+      //Serial.print(F(") Gate: "));
+      //Serial.print(gate + 1);
+      //Serial.print(F(", Output Pin: "));
+      //Serial.print(icPattern.outputPins[gate]);
       if (actualOutput == expectedOutput) {
         Serial.println(F(" [PASS]"));
       } else {
         Serial.println(F(" [FAIL]"));
         allTestsPassed = false; // Set to false if any test fails
       }
-      delay(10); // Short delay between tests
+      //delay(5); // Short delay between tests
     }
   }
   return allTestsPassed;
+  }
 }
 
 void automatic_testing() {
@@ -1074,27 +1079,111 @@ void testIC7400() {
 }
 
 void testIC7402() {
-  testIC(testPatterns[1]);
+  if (testIC(testPatterns[1])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void testIC7404() {
-  testIC(testPatterns[2]);
+  if (testIC(testPatterns[2])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void testIC7408() {
-  testIC(testPatterns[3]);
+  if (testIC(testPatterns[3])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void testIC7432() {
-  testIC(testPatterns[4]);
+  if (testIC(testPatterns[4])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void testIC7486() {
-  testIC(testPatterns[5]);
+  if (testIC(testPatterns[5])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void testIC747266() {
-  testIC(testPatterns[6]);
+  if (testIC(testPatterns[6])) {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests passed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("All gates passed");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  } else {
+    lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+    lcd.print("Tests failed    ");
+    lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+    lcd.print("                ");
+    delay(3000);
+    return; // Exit the function once the IC is detected
+  }
 }
 
 void loop() {
