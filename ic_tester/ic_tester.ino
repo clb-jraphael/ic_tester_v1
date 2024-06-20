@@ -441,6 +441,7 @@ void execute_action() {
     case 1:
       // automaticUserInterface();
       // TO DO: Implement automatic through a different function
+      automatic_testing();
       break;
     case 2:
       manual_user_interface();
@@ -959,7 +960,7 @@ void manual_user_interface() {
 // }
 
 // Generic function to test any IC
-void testIC(const IC_TestPatterns& icPattern) {
+bool testIC(const IC_TestPatterns& icPattern) {
   // Set VCC and GND pins
   const byte PIN_GND = PINS_IC[6]; // Pin 7
   const byte PIN_VCC = PINS_IC[19]; // Pin 14
@@ -968,6 +969,8 @@ void testIC(const IC_TestPatterns& icPattern) {
   pinMode(PIN_VCC, OUTPUT);
   digitalWrite(PIN_GND, LOW); // GND to LOW
   digitalWrite(PIN_VCC, HIGH); // VCC to HIGH
+
+  bool allTestsPassed = true; // Variable to track the success of all tests
 
   // Loop through each gate/inverter
   for (byte gate = 0; gate < (icPattern.inputPinsB ? 4 : 6); gate++) {
@@ -1013,9 +1016,39 @@ void testIC(const IC_TestPatterns& icPattern) {
         Serial.println(F(" [PASS]"));
       } else {
         Serial.println(F(" [FAIL]"));
+        allTestsPassed = false; // Set to false if any test fails
       }
       delay(100); // Short delay between tests
     }
+  }
+  return allTestsPassed;
+}
+
+void automatic_testing() {
+  lcd.setCursor(0, 0);
+  lcd.print("Please wait...");
+  lcd.setCursor(0, 1);
+  lcd.print("                ");
+  byte size_array = sizeof(testPatterns) / sizeof(testPatterns[0]);
+  bool flag = false;
+  for (byte i = 0; i < size_array; i++) {
+    boolean check = testIC(testPatterns[i]); // Assuming testIC takes IC_TestPatterns as argument and returns boolean
+    if (check) {
+      lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+      lcd.print("Detected: ");
+      lcd.print(testPatterns[i].icType); // Display the detected IC type
+      lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+      lcd.print("All gates passed");
+      flag = true;
+      return; // Exit the function once the IC is detected
+    }
+  }
+  if (!flag) {
+      lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
+      lcd.print("Cannot detect IC");
+      lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
+      lcd.print("or tests failed");
+      return;
   }
 }
 
