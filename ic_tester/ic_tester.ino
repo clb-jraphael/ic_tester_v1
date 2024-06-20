@@ -183,7 +183,7 @@ IC_TestPatterns testPatterns[] = {
 };
 
 // GLOBAL VARIABLES
-byte menu = 1, submenu = 1, num = 1;
+byte menu = 1, submenu = 1, submenuAuto = 1, num = 1;
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
 bool btnDownPressed = false;
@@ -323,7 +323,17 @@ void buttonScanner() {
       if (menu < 2) menu++;
       update_menu();
     }
-  
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (menu == 1) {
+        automatic_user_interface(); // Enter submenu
+        menu = 4; // Switch to submenu mode
+      } else {
+        execute_action();
+      }
+    }
+
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       if (menu == 2) {
@@ -364,6 +374,32 @@ void buttonScanner() {
       menu = 1; // Go back to main menu
       update_menu();
     }
+  } else if (menu == 4) {
+    // Submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuAuto > 1) submenuAuto--;
+      else submenuAuto = 2; // Wrap around to last option
+      automatic_user_interface();
+    }
+  
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuAuto < 2) submenuAuto++;
+      else submenuAuto = 1; // Wrap around to first option
+      automatic_user_interface();
+    }
+  
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      automatic_options(); // Execute the selected IC test
+    }
+  
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 1; // Go back to main menu
+      update_menu();
+    }
   }
 }
 
@@ -386,6 +422,21 @@ void update_menu() {
     default:
       menu = 1;
       update_menu();
+      break;
+  }
+}
+
+void automatic_options() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  switch (submenuAuto) {
+    case 1:
+      lcd.print(F("Please wait...  "))
+      test_ic_14();
+      break;
+    case 2:
+      lcd.print(F("Please wait...  "))
+      test_ic_15();
       break;
   }
 }
@@ -434,11 +485,36 @@ void execute_action() {
     case 1:
       // automaticUserInterface();
       // TO DO: Implement automatic through a different function
-      automatic_testing();
+      // automatic_testing();
+      automatic_user_interface();
       break;
     case 2:
       manual_user_interface();
       num++;
+      break;
+  }
+}
+
+void automatic_user_interface() {
+  lcd.clear();
+  switch (submenuAuto) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">14-PIN IC      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" 16-PIN IC      "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" 14-PIN IC      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">16-PIN IC      "));
+      break;
+    default:
+      submenuAuto = 1;
+      automatic_user_interface();
       break;
   }
 }
@@ -736,6 +812,14 @@ byte detectNumPins() {
   }
 
   return detectedPins;
+}
+
+void test_ic_14() {
+
+}
+
+void test_ic_16() {
+  
 }
 
 void loop() {
