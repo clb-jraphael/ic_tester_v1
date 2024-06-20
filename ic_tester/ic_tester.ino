@@ -103,7 +103,6 @@ struct IC_TestPatterns {
 };
 
 
-
 // IC INPUT AND OUTPUT SETUPS
 const byte inputPinsA7400[] = {PINS_IC[0], PINS_IC[3], PINS_IC[15], PINS_IC[18]}; // A1, A2, A3, A4
 const byte inputPinsB7400[] = {PINS_IC[1], PINS_IC[4], PINS_IC[14], PINS_IC[17]}; // B1, B2, B3, B4
@@ -151,7 +150,7 @@ IC_TestPatterns testPatterns[] = {
   {"7404", 2, {
     "0H0H0HGH0H0H0V", // A = 0, Y = 1
     "1L1L1LGL1L1L1V"  // A = 1, Y = 0
-  }, inputPins7404, outputPins7404},
+  }, inputPins7404, nullptr, outputPins7404},
 
   {"7408", 4, {
     "00L00LGL00L00V",
@@ -194,16 +193,14 @@ bool btnCancelPressed = false;
 
 // FUNCTIONS
 
-void init_ic_pins()
-{
+void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
   } 
 }
 
 
-void potreader()
-{
+void potreader(){
   static unsigned long t;
   if (millis() - t < 50) return;
   t = millis();
@@ -273,8 +270,7 @@ void buttonDebounce(){
   }
 }
 
-bool get_button_ok()
-{
+bool get_button_ok(){
   for (byte i = 0; i < MAX_BUTTONS; i++) {
     if (flag_button[i]) {
       return true;  // Return true if any button is pressed
