@@ -199,7 +199,6 @@ void init_ic_pins(){
   } 
 }
 
-
 void potreader(){
   static unsigned long t;
   if (millis() - t < 50) return;
@@ -404,7 +403,6 @@ void display_placeholder_text() {
   switch (submenu) {
     case 1:
       lcd.print(F("Testing IC 7400"));
-      // Call corresponding method to execute testing
       testIC7400();
       break;
     case 2:
@@ -432,8 +430,9 @@ void display_placeholder_text() {
       testIC747266();
       break;
   }
-  lcd.setCursor(0, 1);
-  lcd.print(F("Please wait..."));
+  
+  // After testing, allow navigation back to submenu
+  manual_user_interface();
 }
 
 void execute_action() {
@@ -446,11 +445,6 @@ void execute_action() {
       manual_user_interface();
       num++;
       break;
-  }
-
-  // Check if submenu option 4 (IC 7408) is selected
-  if (menu == 3 && submenu == 4) {
-    testIC7408(); // Call the function to test IC 7408
   }
 }
 
@@ -960,6 +954,7 @@ void manual_user_interface() {
 
 // Generic function to test any IC
 void testIC(const IC_TestPatterns& icPattern) {
+  bool allTestsPassed = true;
   // Set VCC and GND pins
   const byte PIN_GND = PINS_IC[6]; // Pin 7
   const byte PIN_VCC = PINS_IC[19]; // Pin 14
@@ -968,6 +963,14 @@ void testIC(const IC_TestPatterns& icPattern) {
   pinMode(PIN_VCC, OUTPUT);
   digitalWrite(PIN_GND, LOW); // GND to LOW
   digitalWrite(PIN_VCC, HIGH); // VCC to HIGH
+
+  // Display "Please wait..." on LCD
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(F("Please wait..."));
+
+  // Delay to show "Please wait..." message
+  delay(1000);
 
   // Loop through each gate/inverter
   for (byte gate = 0; gate < (icPattern.inputPinsB ? 4 : 6); gate++) {
@@ -1013,13 +1016,31 @@ void testIC(const IC_TestPatterns& icPattern) {
         Serial.println(F(" [PASS]"));
       } else {
         Serial.println(F(" [FAIL]"));
+        allTestsPassed = false; // If any test fails, set flag to false
       }
       delay(100); // Short delay between tests
     }
   }
+
+  // After all tests, check if all tests passed
+  if (allTestsPassed) {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("PASS"));
+    delay(2000);  // Display "PASS" for 2 seconds
+  } else {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("FAIL"));
+    delay(2000);  // Display "PASS" for 2 seconds
+  }
+
+  // Clear pins after testing
+  digitalWrite(PIN_GND, LOW); // GND to LOW
+  digitalWrite(PIN_VCC, LOW); // VCC to LOW
 }
 
-// Example usage of generic test function
+
 void testIC7400() {
   testIC(testPatterns[0]);
 }
