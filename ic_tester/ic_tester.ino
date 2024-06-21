@@ -146,6 +146,17 @@ IC_TestPatterns testPatterns[] = {
     "10HH10G10HH10V", // A = 0, B = 1, Y = 0
     "01HH01G01HH01V", // A = 1, B = 0, Y = 0
     "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
+  }},
+
+  {"7427", 14, 4, {
+    "00000HGH000H0V",
+    "00100LGL100L1V",
+    "10010LGL010L0V",
+    "10110LGL110L1V",
+    "01001LGL001L0V",
+    "10101LGL101L1V",
+    "11011LGL011L0V",
+    "11111LGL111L1V"
   }}
 };
 
@@ -291,13 +302,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 8; // Wrap around to last option
+      else submenu = 9; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 8) submenu++;
+      if (submenu < 9) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -383,7 +394,7 @@ void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
   
-  if (submenu >= 1 && submenu <= 8) {
+  if (submenu >= 1 && submenu <= 9) {
     lcd.print(F("Testing IC "));
     lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
     bool result = testIC(testPatterns[submenu - 1], PINS_14);
@@ -482,6 +493,11 @@ void manual_user_interface() {
       lcd.print(F(" IC 747266      "));
       lcd.setCursor(0, 1);
       lcd.print(F(">IC 4070        "));
+      break;
+    case 9:
+      lcd.print(F(" IC 4070        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7427        "));
       break;
     default:
       submenu = 1;
@@ -585,37 +601,6 @@ bool testIC(const IC_TestPatterns& icPattern, const byte* pins) {
 
   return allTestsPassed;
 }
-
-
-// void automatic_testing() {
-//   lcd.setCursor(0, 0);
-//   lcd.print("Please wait...");
-//   lcd.setCursor(0, 1);
-//   lcd.print("                ");
-//   byte size_array = sizeof(testPatterns) / sizeof(testPatterns[0]);
-//   bool flag = false;
-//   for (byte i = 0; i < size_array; i++) {
-//     boolean check = testIC(testPatterns[i]); // Assuming testIC takes IC_TestPatterns as argument and returns boolean
-//     if (check) {
-//       lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
-//       lcd.print("Detected: ");
-//       lcd.print(testPatterns[i].icType); // Display the detected IC type
-//       lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
-//       lcd.print("All gates passed");
-//       flag = true;
-//       return; // Exit the function once the IC is detected
-//     }
-//   }
-//   if (!flag) {
-//       lcd.setCursor(0, 0); // Assuming the coordinates for setting the cursor
-//       lcd.print("Cannot detect IC");
-//       lcd.setCursor(0, 1); // Assuming the coordinates for setting the cursor
-//       lcd.print("or tests failed");
-//       return;
-//   }  
-// }
-
-
 
 byte detectNumPins() {
   byte detectedPins = 0;
