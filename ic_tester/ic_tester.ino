@@ -329,20 +329,22 @@ void buttonScanner() {
       if (menu == 1) {
         automatic_user_interface(); // Enter submenu
         menu = 4; // Switch to submenu mode
-      } else {
-        execute_action();
+      } else if (menu == 2) {
+        manual_user_interface();
+        menu = 3;
+        // execute_action();
       }
     }
 
-    if (flag_button[4]) { // OK button
-      flag_button[4] = false; // Reset flag
-      if (menu == 2) {
-        manual_user_interface(); // Enter submenu
-        menu = 3; // Switch to submenu mode
-      } else {
-        execute_action();
-      }
-    }
+    //if (flag_button[4]) { // OK button
+    //  flag_button[4] = false; // Reset flag
+    //  if (menu == 2) {
+    //    manual_user_interface(); // Enter submenu
+    //    menu = 3; // Switch to submenu mode
+    //  } else {
+    //    execute_action();
+    //  }
+    //}
   
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
@@ -431,12 +433,12 @@ void automatic_options() {
   lcd.setCursor(0, 0);
   switch (submenuAuto) {
     case 1:
-      lcd.print(F("Please wait...  "))
+      lcd.print(F("Please wait...  "));
       test_ic_14();
       break;
     case 2:
-      lcd.print(F("Please wait...  "))
-      test_ic_15();
+      lcd.print(F("Please wait...  "));
+      test_ic_16();
       break;
   }
 }
