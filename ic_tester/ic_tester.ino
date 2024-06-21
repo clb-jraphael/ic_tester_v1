@@ -200,7 +200,8 @@ IC_TestPatterns testPatterns[] = {
 };
 
 // GLOBAL VARIABLES
-byte menu = 1, submenu = 1, submenuAuto = 1, num = 1;
+byte menu = 1, submenu = 1, submenuAuto = 1, num = 1, currentModelIndex = 0, passedCount = 0;
+String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
 bool btnDownPressed = false;
@@ -322,16 +323,6 @@ void buttonScanner() {
       }
     }
 
-    //if (flag_button[4]) { // OK button
-    //  flag_button[4] = false; // Reset flag
-    //  if (menu == 2) {
-    //    manual_user_interface(); // Enter submenu
-    //    menu = 3; // Switch to submenu mode
-    //  } else {
-    //    execute_action();
-    //  }
-    //}
-  
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
       // Implement cancel action if needed
@@ -387,6 +378,25 @@ void buttonScanner() {
       flag_button[5] = false; // Reset flag
       menu = 1; // Go back to main menu
       update_menu();
+    }
+  } else if (menu == 5) {
+    // Scroll through passed IC models
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (currentModelIndex > 0) currentModelIndex--;
+      updatePassedModelsDisplay();
+    }
+  
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (currentModelIndex < passedCount - 1) currentModelIndex++;
+      updatePassedModelsDisplay();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      menu = 4; // Go back to automatic submenu
+      automatic_user_interface();
     }
   }
 }
@@ -542,6 +552,19 @@ void manual_user_interface() {
       submenu = 1;
       manual_user_interface();
       break;
+  }
+}
+
+void updatePassedModelsDisplay() {
+  lcd.clear();
+  if (passedCount > 0) {
+    lcd.setCursor(0, 0);
+    lcd.print("Passed Models:");
+    lcd.setCursor(0, 1);
+    lcd.print(passedModels[currentModelIndex]);
+  } else {
+    lcd.setCursor(0, 0);
+    lcd.print("No models passed");
   }
 }
 
@@ -752,10 +775,10 @@ boolean testCase(String test, byte pins)
 }
 
 void autoSearch(byte pins) {
-  bool overallResult;
+  passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
   for (byte i = 0; i < size_db; i++) {
-    overallResult = true;
+    bool overallResult = true;
     if (testPatterns[i].pinCount == pins) {
       Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
       for (int j = 0; j < testPatterns[i].numTestCases; j++) {
@@ -764,11 +787,22 @@ void autoSearch(byte pins) {
         }
       }
       if (overallResult) {
+        passedModels[passedCount++] = testPatterns[i].icType;
         Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
       } else {
         Serial.println("IC Model " + String(testPatterns[i].icType) + " failed.\n");
       }
     }
+  }
+
+  if (passedCount > 0) {
+    currentModelIndex = 0; // Reset to first model
+    menu = 5; // Set menu to passed models display
+    updatePassedModelsDisplay();
+  } else {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("No models passed");
   }
 }
 
