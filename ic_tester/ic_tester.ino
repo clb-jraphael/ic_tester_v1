@@ -370,11 +370,11 @@ void automatic_options() {
   switch (submenuAuto) {
     case 1:
       lcd.print(F("Please wait...  "));
-      test_ic_14();
+      autoSearch(14);
       break;
     case 2:
       lcd.print(F("Please wait...  "));
-      test_ic_16();
+      autoSearch(16);
       break;
   }
 }
@@ -648,12 +648,104 @@ byte detectNumPins() {
   return detectedPins;
 }
 
-void test_ic_14() {
+boolean testCase(String test, byte pins)
+{
+  if (pins == 14) {
+  boolean result = true;
+  int clkPin = -1;
 
+  Serial.println("SignalIn : " + test);
+  Serial.print("Response : ");
+
+  //Setting Vcc, GND and INPUTS
+  for (int i = 0; i < pins; i++)
+  {
+    switch (test[i])
+    {
+      case 'V' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
+        break;
+      case 'G' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+        break;
+      case 'L' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
+        break;
+      case 'H' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
+        break;
+    }
+  }
+
+  delay(5);
+
+  //Setting Input Signals
+  for (int i = 0; i < pins; i++)
+  {
+    switch (test[i])
+    {
+      case 'X' :
+      case '0' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+        break;
+      case '1' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
+        break;
+      case 'C' : clkPin = PINS_14[i]; pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+        break;
+    }
+  }
+
+  if (clkPin != -1)
+  {
+    //Clock Trigger
+    pinMode(clkPin, INPUT_PULLUP);
+    delay(10);
+    pinMode(clkPin, OUTPUT);
+    digitalWrite(clkPin, LOW);
+  }
+
+  delay(5);
+
+  //Reading Outputs
+  for (int i = 0; i < pins; i++)
+  {
+    switch (test[i])
+    {
+      case 'H' : if (!digitalRead(PINS_14[i])) {
+          result = false;
+          Serial.print('L');
+        }
+        else Serial.print(' ');
+        break;
+      case 'L' : if (digitalRead(PINS_14[i])) {
+          result = false;
+          Serial.print('H');
+        }
+        else Serial.print(' ');
+        break;
+      default : Serial.print(' ');
+    }
+  }
+  Serial.println(";");
+  //Serial.println("\nCase Result : "+String(result));
+  return result;
+  }
 }
 
-void test_ic_16() {
-  
+void autoSearch(byte pins) {
+  bool overallResult;
+  byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
+  for (byte k = 0; k < size_db; k++) {
+    overallResult = true;
+    if (testPatterns[k].pinCount == pins) {
+      Serial.println("\nTesting IC Model: " + String(testPatterns[k].icType));
+      for (int i = 0; i < testPatterns[k].numTestCases; i++) {
+        if (!testCase(testPatterns[k].testPatterns[i], pins)) {
+          overallResult = false;
+        }
+      }
+      if (overallResult) {
+        Serial.println("IC Model " + String(testPatterns[k].icType) + " passed all tests.\n");
+      } else {
+        Serial.println("IC Model " + String(testPatterns[k].icType) + " failed.\n");
+      }
+    }
+  }
 }
 
 void setup() {
