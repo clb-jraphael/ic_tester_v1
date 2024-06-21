@@ -68,6 +68,11 @@ const byte PINS_IC[20] = {
   PIN_IC_PIN19, PIN_IC_PIN20
 };
 
+const byte PINS_14[14] = {
+  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7,
+  PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
+};
+
 const byte PIN_RGBLED_R = 6;
 const byte PIN_RGBLED_G = 4;
 const byte PIN_RGBLED_B = 2;
@@ -134,8 +139,14 @@ IC_TestPatterns testPatterns[] = {
     "01L01LGL01L01V", // A = 0, B = 1, Y = 0
     "10L10LGL10L10V", // A = 1, B = 0, Y = 0
     "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
-  }}
+  }},
   // Add more IC test patterns here as needed
+  {"4070", 14, 4, {
+    "00LL00G00LL00V", // A = 0, B = 0, Y = 1
+    "10HH10G10HH10V", // A = 0, B = 1, Y = 0
+    "01HH01G01HH01V", // A = 1, B = 0, Y = 0
+    "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
+  }}
 };
 
 // GLOBAL VARIABLES
@@ -280,13 +291,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 7; // Wrap around to last option
+      else submenu = 8; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 7) submenu++;
+      if (submenu < 8) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -372,10 +383,10 @@ void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
   
-  if (submenu >= 1 && submenu <= 7) {
+  if (submenu >= 1 && submenu <= 8) {
     lcd.print(F("Testing IC "));
     lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
-    bool result = testIC(testPatterns[submenu - 1], PINS_IC);
+    bool result = testIC(testPatterns[submenu - 1], PINS_14);
     
     lcd.setCursor(0, 1);
     if (result) {
@@ -464,6 +475,13 @@ void manual_user_interface() {
       break;
     case 7:
       lcd.print(F(">IC 747266      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4070        "));
+      break;
+    case 8:
+      lcd.print(F(" IC 747266      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4070        "));
       break;
     default:
       submenu = 1;
@@ -540,7 +558,6 @@ bool testIC(const IC_TestPatterns& icPattern, const byte* pins) {
       if (testPattern[gate] == 'L' || testPattern[gate] == 'H') {
         pinMode(pins[gate], INPUT);
         byte actualOutput = digitalRead(pins[gate]);
-
         Serial.print(F("A => "));
         Serial.print(testPattern[0] == '0' ? "0" : "1");
         Serial.print(F(" B => "));
@@ -557,6 +574,8 @@ bool testIC(const IC_TestPatterns& icPattern, const byte* pins) {
           Serial.println(F("FAIL"));
           allTestsPassed = false;
         }
+      } else {
+        continue;
       }
     }
 
