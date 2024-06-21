@@ -148,15 +148,54 @@ IC_TestPatterns testPatterns[] = {
     "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
   }},
 
-  {"7427", 14, 4, {
-    "00000HGH000H0V",
-    "00100LGL100L1V",
-    "10010LGL010L0V",
+  {"7427", 14, 8, {
+    "00000HGH000H0V", 
+    "00100LGL100L1V", 
+    "10010LGL010L0V", 
     "10110LGL110L1V",
     "01001LGL001L0V",
     "10101LGL101L1V",
     "11011LGL011L0V",
     "11111LGL111L1V"
+  }},
+
+  {"4081", 14, 4, {
+    "00LH11G11HL00V",
+    "10LL10G10LL10V",
+    "01LL01G01LL01V",
+    "11HL00G00LH11V"
+  }},
+
+  {"7421", 14, 4, {
+    "11X11HGH11X11V",
+    "01X01LGL01X01V",
+    "10X10LGL10X10V",
+    "00X00LGL00X00V"
+  }},
+
+  {"4077", 14, 4, {
+    "00HH00G00HH00V",
+    "10LL10G10LL10V",
+    "01LL01G01LL01V",
+    "11HH11G11HH11V"
+  }},
+
+  {"4068", 14, 10, {
+    "011110G01111LV",
+    "010100G01010HV",
+    "001010G00101HV",
+    "000110G00011HV",
+    "011000G01100HV",
+    "000000G01111HV",
+    "000000G00000HV",
+    "011110G01110HV",
+    "011010G01111HV",
+    "001110G00111HV"
+  }},
+
+  {"4069", 14, 2, {
+    "0H0H0HGH0H0H0V",
+    "1L1L1LGL1L1L1V"
   }}
 };
 
@@ -715,19 +754,19 @@ boolean testCase(String test, byte pins)
 void autoSearch(byte pins) {
   bool overallResult;
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
-  for (byte k = 0; k < size_db; k++) {
+  for (byte i = 0; i < size_db; i++) {
     overallResult = true;
-    if (testPatterns[k].pinCount == pins) {
-      Serial.println("\nTesting IC Model: " + String(testPatterns[k].icType));
-      for (int i = 0; i < testPatterns[k].numTestCases; i++) {
-        if (!testCase(testPatterns[k].testPatterns[i], pins)) {
+    if (testPatterns[i].pinCount == pins) {
+      Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
+      for (int j = 0; j < testPatterns[i].numTestCases; j++) {
+        if (!testCase(testPatterns[i].testPatterns[j], pins)) {
           overallResult = false;
         }
       }
       if (overallResult) {
-        Serial.println("IC Model " + String(testPatterns[k].icType) + " passed all tests.\n");
+        Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
       } else {
-        Serial.println("IC Model " + String(testPatterns[k].icType) + " failed.\n");
+        Serial.println("IC Model " + String(testPatterns[i].icType) + " failed.\n");
       }
     }
   }
