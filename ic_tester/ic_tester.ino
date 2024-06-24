@@ -265,6 +265,45 @@ IC_TestPatterns testPatterns[] = {
     "0000HL0G1100100V",
     "1111LH0G1110111V",
     "0000HL0G1111000V"
+  }},
+
+  {"74192", 16, 7, {
+    "0LL11LLG1011110V",
+    "0LL11LLG1011100V",
+    "0LL11LHG1001100V",
+    "0LL11LHG1011100V",
+    "0LL10LHG1011100V",
+    "0LH11LHG1011100V",
+    "0LH10LHG1010100V"
+  }},
+
+  {"7474", 14, 8, {
+    "01C1LHGHL1000V",
+    "10C0HLGHL1000V",
+    "10C1LHGHL1000V",
+    "11C1HLGHL1000V",
+    "0001LHGHL1C10V",
+    "0001LHGLH0C01V",
+    "0001LHGHL1C01V",
+    "0001LHGLH1C11V"
+  }},
+
+  {"74173", 16, 15, {
+    "00LLLLCG0000001V",
+    "00LLLLCG1111111V",
+    "00LHLHCG0010100V",
+    "00LHLHCG1001010V",
+    "00LHLHCG0101010V",
+    "00LHLHCG1101010V",
+    "00HLHLCG0001010V",
+    "00HLHLCG1010100V",
+    "00HLHLCG0110100V",
+    "00HLHLCG1110100V",
+    "00LHLHCG0010100V",
+    "00LLHHCG0011000V",
+    "00LLLLCG1111111V",
+    "00HHLLCG0000110V",
+    "00LLLLCG1111111V"
   }}
 };
 
@@ -535,7 +574,6 @@ void display_placeholder_text() {
   manual_user_interface();
 }
 
-
 void execute_action() {
   switch (menu) {
     case 1:
@@ -696,6 +734,7 @@ void configurePins(const char* testPattern, const byte* pins, int pinCount) {
         break;
       case 'C':
         // Handle clock pin if needed, currently not used in this example
+        pinMode(pins[i], INPUT);
         break;
       default:
         break;
