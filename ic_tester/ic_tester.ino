@@ -793,79 +793,155 @@ byte detectNumPins() {
 boolean testCase(String test, byte pins)
 {
   if (pins == 14) {
-  boolean result = true;
-  int clkPin = -1;
+    boolean result = true;
+    int clkPin = -1;
 
-  Serial.println("SignalIn : " + test);
-  Serial.print("Response : ");
+    Serial.println("SignalIn : " + test);
+    Serial.print("Response : ");
 
-  //Setting Vcc, GND and INPUTS
-  for (int i = 0; i < pins; i++)
-  {
-    switch (test[i])
+    //Setting Vcc, GND and INPUTS
+    for (int i = 0; i < pins; i++)
     {
-      case 'V' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
-        break;
-      case 'G' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
-        break;
-      case 'L' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
-        break;
-      case 'H' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
-        break;
+      switch (test[i])
+      {
+        case 'V' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
+          break;
+        case 'G' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+          break;
+        case 'L' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
+          break;
+        case 'H' : digitalWrite(PINS_14[i], LOW); pinMode(PINS_14[i], INPUT_PULLUP);
+          break;
+      }
     }
-  }
 
-  delay(5);
+    delay(5);
 
-  //Setting Input Signals
-  for (int i = 0; i < pins; i++)
-  {
-    switch (test[i])
+    //Setting Input Signals
+    for (int i = 0; i < pins; i++)
     {
-      case 'X' :
-      case '0' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
-        break;
-      case '1' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
-        break;
-      case 'C' : clkPin = PINS_14[i]; pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
-        break;
+      switch (test[i])
+      {
+        case 'X' :
+        case '0' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+          break;
+        case '1' : pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], HIGH);
+          break;
+        case 'C' : clkPin = PINS_14[i]; pinMode(PINS_14[i], OUTPUT); digitalWrite(PINS_14[i], LOW);
+          break;
+      }
     }
-  }
 
-  if (clkPin != -1)
-  {
-    //Clock Trigger
-    pinMode(clkPin, INPUT_PULLUP);
-    delay(10);
-    pinMode(clkPin, OUTPUT);
-    digitalWrite(clkPin, LOW);
-  }
-
-  delay(5);
-
-  //Reading Outputs
-  for (int i = 0; i < pins; i++)
-  {
-    switch (test[i])
+    if (clkPin != -1)
     {
-      case 'H' : if (!digitalRead(PINS_14[i])) {
-          result = false;
-          Serial.print('L');
-        }
-        else Serial.print(' ');
-        break;
-      case 'L' : if (digitalRead(PINS_14[i])) {
-          result = false;
-          Serial.print('H');
-        }
-        else Serial.print(' ');
-        break;
-      default : Serial.print(' ');
+      //Clock Trigger
+      pinMode(clkPin, INPUT_PULLUP);
+      delay(10);
+      pinMode(clkPin, OUTPUT);
+      digitalWrite(clkPin, LOW);
     }
+
+    delay(5);
+
+    //Reading Outputs
+    for (int i = 0; i < pins; i++)
+    {
+      switch (test[i])
+      {
+        case 'H' : if (!digitalRead(PINS_14[i])) {
+            result = false;
+            Serial.print('L');
+          }
+          else Serial.print(' ');
+          break;
+        case 'L' : if (digitalRead(PINS_14[i])) {
+            result = false;
+            Serial.print('H');
+          }
+          else Serial.print(' ');
+          break;
+        default : Serial.print(' ');
+      }
+    }
+    Serial.println(";");
+    //Serial.println("\nCase Result : "+String(result));
+    return result;
   }
-  Serial.println(";");
-  //Serial.println("\nCase Result : "+String(result));
-  return result;
+
+  if (pins == 16) {
+    boolean result = true;
+    int clkPin = -1;
+
+    Serial.println("SignalIn : " + test);
+    Serial.print("Response : ");
+
+    //Setting Vcc, GND and INPUTS
+    for (int i = 0; i < pins; i++)
+    {
+      switch (test[i])
+      {
+        case 'V' : pinMode(PINS_16[i], OUTPUT); digitalWrite(PINS_16[i], HIGH);
+          break;
+        case 'G' : pinMode(PINS_16[i], OUTPUT); digitalWrite(PINS_16[i], LOW);
+          break;
+        case 'L' : digitalWrite(PINS_16[i], LOW); pinMode(PINS_16[i], INPUT_PULLUP);
+          break;
+        case 'H' : digitalWrite(PINS_16[i], LOW); pinMode(PINS_16[i], INPUT_PULLUP);
+          break;
+      }
+    }
+
+    delay(5);
+
+    //Setting Input Signals
+    for (int i = 0; i < pins; i++)
+    {
+      switch (test[i])
+      {
+        case 'X' :
+        case '0' : pinMode(PINS_16[i], OUTPUT); digitalWrite(PINS_16[i], LOW);
+          break;
+        case '1' : pinMode(PINS_16[i], OUTPUT); digitalWrite(PINS_16[i], HIGH);
+          break;
+        case 'C' : clkPin = PINS_16[i]; pinMode(PINS_16[i], OUTPUT); digitalWrite(PINS_16[i], LOW);
+          break;
+      }
+    }
+
+    if (clkPin != -1)
+    {
+      //Clock Trigger
+      pinMode(clkPin, INPUT_PULLUP);
+      delay(10);
+      pinMode(clkPin, OUTPUT);
+      digitalWrite(clkPin, LOW);
+    }
+
+    delay(5);
+
+    //Reading Outputs
+    for (int i = 0; i < pins; i++)
+    {
+      switch (test[i])
+      {
+        case 'H' : if (!digitalRead(PINS_14[i])) {
+            result = false;
+            Serial.print('L');
+          }
+          else Serial.print(' ');
+          break;
+        case 'L' : if (digitalRead(PINS_14[i])) {
+            result = false;
+            Serial.print('H');
+          }
+          else Serial.print(' ');
+          break;
+        default : Serial.print(' ');
+      }
+    }
+    Serial.println(";");
+    //Serial.println("\nCase Result : "+String(result));
+    return result;
   }
 }
 
