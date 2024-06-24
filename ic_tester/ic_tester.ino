@@ -207,6 +207,48 @@ IC_TestPatterns testPatterns[] = {
   {"4069", 14, 2, {
     "0H0H0HGH0H0H0V",
     "1L1L1LGL1L1L1V"
+  }},
+
+  {"4066", 14, 4, {
+    "0HH000G0HH000V",
+    "1HH100G1HH100V",
+    "0LL011G0LL011V",
+    "1HH111G1HH111V"
+  }},
+
+  {"7474", 14, 8, {
+    "01C1LHGHL1000V",
+    "10C0HLGHL1000V",
+    "10C1LHGHL1000V",
+    "11C1HLGHL1000V",
+    "0001LHGHL1C10V",
+    "0001LHGLH0C01V",
+    "0001LHGHL1C01V",
+    "0001LHGLH1C11V"
+  }},
+
+  {"4066", 14, 4, {
+    "0HH000G0HH000V",
+    "1HH100G1HH100V",
+    "0LL011G0LL011V",
+    "1HH111G1HH111V"
+  }},
+
+  {"4094", 16, 14, {
+    "1X0XXXXGXXXXXX1V",
+    "11CHXXXGXXXXXX1V",
+    "10CLHXXGXXXXXX1V",
+    "11CHLHXGXXXXXX1V",
+    "10CLHLHGXXXXXX1V",
+    "11CHLHLGXXXXXH1V",
+    "10CLHLHGXXXXHL1V",
+    "11CHLHLGXXXHLH1V",
+    "10CLHLHGXXHLHL1V",
+    "11CHLHLGLXLHLH1V",
+    "10CLHLHGHXHLHL1V",
+    "01CLHLHGLXHLHL1V",
+    "110HLHLGLXLHLH1V",
+    "100HHHHGLXHHHH0V"
   }}
 };
 
@@ -343,13 +385,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 9; // Wrap around to last option
+      else submenu = 13; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 9) submenu++;
+      if (submenu < 13) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -407,6 +449,12 @@ void buttonScanner() {
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       menu = 4; // Go back to automatic submenu
+      automatic_user_interface();
+    }
+    
+    if (flag_button[5]) {
+      flag_button[5] = false;
+      menu = 4;
       automatic_user_interface();
     }
   }
@@ -555,9 +603,29 @@ void manual_user_interface() {
       lcd.print(F(">IC 4070        "));
       break;
     case 9:
-      lcd.print(F(" IC 4070        "));
+      lcd.print(F(">IC 4081        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7427        "));
+      lcd.print(F(" IC 7421        "));
+      break;
+    case 10:
+      lcd.print(F(" IC 4081        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7421        "));
+      break;
+    case 11:
+      lcd.print(F(">IC 4077        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4068        "));
+      break;
+    case 12:
+      lcd.print(F(" IC 4077        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4068        "));
+      break;
+    case 13:
+      lcd.print(F(">IC 4069        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F("                "));
       break;
     default:
       submenu = 1;
