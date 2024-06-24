@@ -73,6 +73,16 @@ const byte PINS_14[14] = {
   PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
 
+const byte PINS_16[16] = {
+  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8,
+  PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
+}
+
+const byte PINS_20[20] = {
+  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8, PIN_IC_PIN9, PIN_IC_PIN10, 
+  PIN_IC_PIN11, PIN_IC_PIN12, PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
+}
+
 const byte PIN_RGBLED_R = 6;
 const byte PIN_RGBLED_G = 4;
 const byte PIN_RGBLED_B = 2;
@@ -140,13 +150,6 @@ IC_TestPatterns testPatterns[] = {
     "10L10LGL10L10V", // A = 1, B = 0, Y = 0
     "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
   }},
-  // Add more IC test patterns here as needed
-  {"4070", 14, 4, {
-    "00LL00G00LL00V", // A = 0, B = 0, Y = 1
-    "10HH10G10HH10V", // A = 0, B = 1, Y = 0
-    "01HH01G01HH01V", // A = 1, B = 0, Y = 0
-    "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
-  }},
 
   {"7427", 14, 8, {
     "00000HGH000H0V", 
@@ -157,6 +160,14 @@ IC_TestPatterns testPatterns[] = {
     "10101LGL101L1V",
     "11011LGL011L0V",
     "11111LGL111L1V"
+  }},
+
+  // Add more IC test patterns here as needed
+  {"4070", 14, 4, {
+    "00LL00G00LL00V", // A = 0, B = 0, Y = 1
+    "10HH10G10HH10V", // A = 0, B = 1, Y = 0
+    "01HH01G01HH01V", // A = 1, B = 0, Y = 0
+    "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
   }},
 
   {"4081", 14, 4, {
@@ -608,7 +619,7 @@ void configurePins(const char* testPattern, const byte* pins, int pinCount) {
   }
 }
 
-bool testIC(const IC_TestPatterns& icPattern, const byte* pins) {
+bool testIC(const IC_TestPatterns & icPattern, const byte* pins) {
   bool allTestsPassed = true;
 
   // Display "Please wait..." on LCD
