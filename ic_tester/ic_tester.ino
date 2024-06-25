@@ -626,7 +626,8 @@ void buttonScanner() {
   
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-      display_manual_result(); // Execute the selected IC test
+      get_test_case(submenu);
+      //display_manual_result(); // Execute the selected IC test
     }
   
     if (flag_button[5]) { // CANCEL button
@@ -759,6 +760,45 @@ void display_manual_result() {
 
   // After testing, allow navigation back to submenu
   manual_user_interface();
+}
+
+void get_test_case(byte icModel) {
+  bool overallResult = true;
+  if (testPatterns[icModel - 1].pinCount == 14) {
+    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
+      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_14, 14)) {
+          overallResult = false;
+      }
+    }
+  } else if (testPatterns[icModel - 1].pinCount == 16) {
+    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
+      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_16, 16)) {
+          overallResult = false;
+      }
+    }
+  }
+
+  reset_pin_config(testPatterns[icModel - 1].pinCount);
+
+  if (overallResult) {
+    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
+  } else {
+    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
+  }
+}
+
+void reset_pin_config(byte pinCount) {
+  if (pinCount == 14) {
+    for (int i = 0; i < sizeof(PINS_14) / sizeof(PINS_14[0]); i++) {
+      pinMode(PINS_14[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_14[i], LOW); // Reset pin state to LOW
+    }
+  } else if (pinCount == 16) {
+    for (int i = 0; i < sizeof(PINS_16) / sizeof(PINS_16[0]); i++) {
+      pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
+    }
+  }
 }
 
 /**
