@@ -311,17 +311,6 @@ IC_TestPatterns testPatterns[] =
     "11111HGH111H1V",
   }},
 
-  {"74112", 16, 8, {
-    "C000HLLGH000C11V",
-    "C110HLLGH011C11V",
-    "C001LHHGL100C00V",
-    "C111LHHGL100C00V",
-    "C001LHHGL100C11V",
-    "C011HLLGH110C11V",
-    "C101LHHGL101C11V",
-    "C111HLLGH111C11V"
-  }},
-
   {"74125", 14, 8, {
     "01H01HGH10H10V",
     "00L00LGL00L00V",
@@ -333,7 +322,7 @@ IC_TestPatterns testPatterns[] =
     "10H11HGH11H01V"
   }},
 
-  {"74138", 16, 12, {
+   {"74138", 16, 12, {
     "111111HGHHHHHHHV",
     "000110HGHHHHHHHV",
     "111110HGHHHHHHHV",
@@ -471,6 +460,17 @@ IC_TestPatterns testPatterns[] =
     "01CLHLHGLXHLHL1V",
     "110HLHLGLXLHLH1V",
     "100HHHHGLXHHHH0V"
+  }},
+
+  {"74112", 16, 8, {
+    "C000HLLGH000C11V",
+    "C110HLLGH011C11V",
+    "C001LHHGL100C00V",
+    "C111LHHGL100C00V",
+    "C001LHHGL100C11V",
+    "C011HLLGH110C11V",
+    "C101LHHGL101C11V",
+    "C111HLLGH111C11V"
   }}
 };
 
@@ -742,7 +742,12 @@ void display_manual_result() {
   if (submenu >= 1 && submenu <= 33) {
     lcd.print(F("Testing IC "));
     lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
-    bool result = testIC(testPatterns[submenu - 1], PINS_14);
+    bool result;
+    if (testPatterns[submenu - 1].pinCount == 14) {
+      result = testIC(testPatterns[submenu - 1], PINS_14);
+    } else if (testPatterns[submenu - 1].pinCount == 16) {
+      result = testIC(testPatterns[submenu - 1], PINS_16);
+    }
     
     lcd.setCursor(0, 1);
     if (result) {
@@ -1002,7 +1007,7 @@ void updatePassedModelsDisplay() {
  * @param pins The array of pin numbers.
  * @param pinCount The number of pins.
  */
-void configurePins(const char* testPattern, const byte* pins, int pinCount) {
+void configurePins(const char* testPattern, const byte* pins, byte pinCount) {
   for (int i = 0; i < pinCount; i++) {
     switch (testPattern[i]) {
       case 'V':
@@ -1062,13 +1067,14 @@ bool testIC(const IC_TestPatterns & icPattern, const byte* pins) {
   for (int test = 0; test < icPattern.numTestCases; test++) {
     // Set pins according to the current test pattern
     const char* testPattern = icPattern.testPatterns[test];
-    int pinCount = icPattern.pinCount; // Get the pin count for this IC test pattern
+    byte pinCount = icPattern.pinCount; // Get the pin count for this IC test pattern
 
     configurePins(testPattern, pins, pinCount);
 
     // Delay for stabilization
     delay(10);
 
+    Serial.println(icPattern.icType);
     // Read and compare the actual outputs
     Serial.print(F("Testing gate "));
     Serial.println(test + 1);
