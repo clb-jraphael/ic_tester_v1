@@ -703,7 +703,7 @@ void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
   
-  if (submenu >= 1 && submenu <= 9) {
+  if (submenu >= 1 && submenu <= 33) {
     lcd.print(F("Testing IC "));
     lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
     bool result = testIC(testPatterns[submenu - 1], PINS_14);
