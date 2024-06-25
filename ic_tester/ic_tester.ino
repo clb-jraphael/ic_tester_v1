@@ -185,16 +185,6 @@ IC_TestPatterns testPatterns[] =
     "00X00LGL00X00V"
   }},
 
-  {"74193", 16, 7, {
-    "0LL11LLG1011110V",
-    "0LL11LLG1011100V",
-    "0LL11LHG1001100V",
-    "0LL11LHG1011100V",
-    "0LL10LHG1011100V",
-    "0LH11LHG1011100V",
-    "0LH10LHG1010100V"
-  }},
-
   {"7474", 14, 8, {
     "01C1LHGHL1000V",
     "10C0HLGHL1000V",
@@ -504,7 +494,6 @@ void potreader(){
   Serial.print(a);
   Serial.print(" - Mapped Contrast Value: ");
   Serial.println(contrastValue);
-
 }
 
 void heartbeatLED() {
