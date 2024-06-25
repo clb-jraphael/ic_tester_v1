@@ -1,3 +1,16 @@
+/**
+ * @file IC_Tester.ino
+ * @brief Arduino-based IC Tester with automatic and manual testing modes.
+ * 
+ * This project is an IC tester using an Arduino, an LCD screen, and buttons for navigation.
+ * It supports both automatic and manual IC testing and displays results on an LCD screen.
+ * 
+ * @version 1.0
+ * @date 2024-06-25
+ * 
+ * 
+ */
+
 #include <LiquidCrystal.h>
 
 // CONSTANTS AND OBJECTS
@@ -58,6 +71,15 @@ const byte PIN_IC_PIN18 = 34;
 const byte PIN_IC_PIN19 = 32;
 const byte PIN_IC_PIN20 = A14;
 
+const byte PIN_RGBLED_R = 6;
+const byte PIN_RGBLED_G = 4;
+const byte PIN_RGBLED_B = 2;
+const byte PIN_LED1 = 8;
+
+const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+//pin definitions/configurations 
 const byte PINS_IC[20] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3,
   PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, 
@@ -67,36 +89,34 @@ const byte PINS_IC[20] = {
   PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18,
   PIN_IC_PIN19, PIN_IC_PIN20
 };
-
 const byte PINS_14[14] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7,
   PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
-
 const byte PINS_16[16] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8,
   PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
 
-const byte PIN_RGBLED_R = 6;
-const byte PIN_RGBLED_G = 4;
-const byte PIN_RGBLED_B = 2;
-
-const byte PIN_LED1 = 8;
-
-const int PIN_LCD_CONTRAST = A10;
-
-const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
-
-// Define the structure to hold IC test patterns
+// Defined structure to hold IC test patterns
 struct IC_TestPatterns {
-  const char* icType;      // IC type (e.g., "7400", "7402", etc.)
+  const char* icType;             // IC type (e.g., "7400", "7402", etc.)
   byte pinCount;
-  byte numTestCases;        // Number of test cases for this IC
-  const char* testPatterns[36]; // Array to hold test patterns (adjust size as needed)
+  byte numTestCases;              // Number of test cases for this IC
+  const char* testPatterns[36];   // Array to hold test patterns (adjust size as needed)
 };
 
+// GLOBAL VARIABLES
+byte menu = 1, submenu = 1, submenuAuto = 1, num = 1, currentModelIndex = 0, passedCount = 0;
+String passedModels[5];
+unsigned long lastMillis = 0; // Variable to store last time LED was updated
+
+bool btnDownPressed = false;
+bool btnUpPressed = false;
+bool btnOkPressed = false;
+bool btnCancelPressed = false;
+
+// test input data
 IC_TestPatterns testPatterns[] = 
 {
   {"7400", 14, 4, {
@@ -454,48 +474,42 @@ IC_TestPatterns testPatterns[] =
   }}
 };
 
-// GLOBAL VARIABLES
-byte menu = 1, submenu = 1, submenuAuto = 1, num = 1, currentModelIndex = 0, passedCount = 0;
-String passedModels[5];
-unsigned long lastMillis = 0; // Variable to store last time LED was updated
-
-bool btnDownPressed = false;
-bool btnUpPressed = false;
-bool btnOkPressed = false;
-bool btnCancelPressed = false;
-
 // FUNCTIONS
 
+/**
+ * Initializes IC pins by setting each pin in the PINS_IC array to INPUT mode.
+ */
 void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
   } 
 }
 
+/**
+ * Reads the value from a potentiometer connected to PIN_POT.
+ * The value is read 10 times, averaged, and assigned to variable 'a'.
+ * This function runs every 50 milliseconds.
+ */
 void potreader(){
   static unsigned long t;
-  if (millis() - t < 50) return;
+  if(millis() - t < 50) return;
   t = millis();
 
-  unsigned int a = 0;
-  for (byte i = 0; i < 10; i++) {
-    a += analogRead(PIN_POT);
+  unsigned int a;
+   a = 0;
+  for(byte i=0;i<10;i++) 
+  {
+    a+=analogRead(PIN_POT);    
   }
-  a /= 10;
-  
-  // Map the analog value to the PWM range (0-255)
-  int contrastValue = map(a, 0, 1023, 0, 255);
+  a/=10;
 
-  // Write the contrast value to the LCD contrast pin
-  analogWrite(PIN_LCD_CONTRAST, contrastValue);
-
-  // Debug output
-  Serial.print("Potentiometer Value: ");
-  Serial.print(a);
-  Serial.print(" - Mapped Contrast Value: ");
-  Serial.println(contrastValue);
+  //a is the final value. this is between 0 and 1023
 }
 
+/**
+ * Toggles the heartbeat LED (connected to PIN_LED1) every second.
+ * The LED blinks to indicate the system is running.
+ */
 void heartbeatLED() {
   unsigned long currentMillis = millis();
   static unsigned long lastMillis = 0;
@@ -510,6 +524,10 @@ void heartbeatLED() {
   }
 }
 
+/**
+ * Handles button debouncing for multiple buttons connected to PINS_BUTTONS array.
+ * If a button press is detected and debounced, it sets the corresponding flag_button to true.
+ */
 void buttonDebounce(){
   static unsigned t; //for loop tracking
   static unsigned last_unpress[MAX_BUTTONS];
@@ -541,6 +559,11 @@ void buttonDebounce(){
   }
 }
 
+/**
+ * Checks if any button has been pressed.
+ *
+ * @return true if any button is pressed, false otherwise.
+ */
 bool get_button_ok(){
   for (byte i = 0; i < MAX_BUTTONS; i++) {
     if (flag_button[i]) {
@@ -550,6 +573,10 @@ bool get_button_ok(){
   return false;  // Return false if no button is pressed
 }
 
+/**
+ * Scans buttons and performs actions based on the current menu context.
+ * It handles navigation through main menu, submenus, and executing actions.
+ */
 void buttonScanner() {
   if (menu == 1 || menu == 2) {
     // Main menu navigation
@@ -661,6 +688,9 @@ void buttonScanner() {
   }
 }
 
+/**
+ * Updates the menu display on the LCD based on the current menu state.
+ */
 void update_menu() {
   switch (menu) {
     case 1:
@@ -684,6 +714,9 @@ void update_menu() {
   }
 }
 
+/**
+ * Displays automatic testing options on the LCD.
+ */
 void automatic_options() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -699,6 +732,9 @@ void automatic_options() {
   }
 }
 
+/**
+ * Displays placeholder text and tests an IC based on the current submenu selection.
+ */
 void display_placeholder_text() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -720,6 +756,9 @@ void display_placeholder_text() {
   manual_user_interface();
 }
 
+/**
+ * Executes the action corresponding to the current menu selection.
+ */
 void execute_action() {
   switch (menu) {
     case 1:
@@ -735,6 +774,9 @@ void execute_action() {
   }
 }
 
+/**
+ * Displays the automatic user interface options on the LCD.
+ */
 void automatic_user_interface() {
   lcd.clear();
   switch (submenuAuto) {
@@ -759,6 +801,9 @@ void automatic_user_interface() {
   }
 }
 
+/**
+ * Displays the manual user interface options on the LCD.
+ */
 void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
@@ -934,7 +979,9 @@ void manual_user_interface() {
   }
 }
 
-
+/**
+ * Updates the LCD to display the passed models.
+ */
 void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
@@ -948,6 +995,13 @@ void updatePassedModelsDisplay() {
   }
 }
 
+/**
+ * Configures the pins for a test pattern.
+ * 
+ * @param testPattern The pattern of the test.
+ * @param pins The array of pin numbers.
+ * @param pinCount The number of pins.
+ */
 void configurePins(const char* testPattern, const byte* pins, int pinCount) {
   for (int i = 0; i < pinCount; i++) {
     switch (testPattern[i]) {
@@ -989,6 +1043,13 @@ void configurePins(const char* testPattern, const byte* pins, int pinCount) {
   }
 }
 
+/**
+ * Tests an IC based on its test patterns. Used for manual testing.
+ * 
+ * @param icPattern The test patterns for the IC.
+ * @param pins The array of pin numbers.
+ * @return true if all tests pass, false otherwise.
+ */
 bool testIC(const IC_TestPatterns & icPattern, const byte* pins) {
   bool allTestsPassed = true;
 
@@ -1045,7 +1106,11 @@ bool testIC(const IC_TestPatterns & icPattern, const byte* pins) {
   return allTestsPassed;
 }
 
-
+/**
+ * Detects the number of pins connected to the IC.
+ * 
+ * @return The number of detected pins.
+ */
 byte detectNumPins() {
   byte detectedPins = 0;
 
@@ -1167,7 +1232,11 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
   return result;
 }
 
-
+/**
+ * Automatically tests IC models based on pin count.
+ * 
+ * @param pins The number of pins to test (14 or 16).
+ */
 void autoSearch(byte pins) {
   passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
@@ -1200,7 +1269,9 @@ void autoSearch(byte pins) {
   }
 }
 
-
+/**
+ * Arduino setup function, called once at startup.
+ */
 void setup() {
   Serial.begin(9600);
   init_ic_pins();
@@ -1232,13 +1303,11 @@ void setup() {
   update_menu();
 }
 
+/**
+ * Arduino main loop function, continuously called after setup.
+ */
 void loop() {
   buttonDebounce();
   buttonScanner();
-  //potreader();
   //heartbeatLED();
-  //byte numPins = detectNumPins();
-  //Serial.print("Detected number of pins: ");
-  //Serial.println(numPins);
-  //delay(1000); // Wait 5 seconds before checking again
 }
