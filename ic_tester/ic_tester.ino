@@ -127,10 +127,10 @@ IC_TestPatterns testPatterns[] =
   }},
   
   {"7402", 14, 4, {
-    "00H00HGH00H00V", // A=0, B=0 -> Y=HIGH
-    "01L01LGL01L01V", // A=0, B=1 -> Y=LOW
-    "10L10LGL10L10V", // A=1, B=0 -> Y=LOW
-    "11L11LGL11L11V"  // A=1, B=1 -> Y=LOW
+    "H00H00G00H00HV",
+    "L10L10G10L10LV",
+    "L01L01G01L01LV",
+    "L11L11G11L11LV"
   }},
 
   {"7404", 14, 2, {
@@ -160,10 +160,10 @@ IC_TestPatterns testPatterns[] =
   }},
 
   {"747266", 14, 4, {
-    "00H00HGH00H00V", // A = 0, B = 0, Y = 1
-    "01L01LGL01L01V", // A = 0, B = 1, Y = 0
-    "10L10LGL10L10V", // A = 1, B = 0, Y = 0
-    "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
+    "00HH00G00HH00V",
+    "10LL10G10LL10V",
+    "01LL01G01LL01V",
+    "11HH11G11HH11V"
   }},
 
   {"7427", 14, 8, {
@@ -203,6 +203,16 @@ IC_TestPatterns testPatterns[] =
     "01X01LGL01X01V",
     "10X10LGL10X10V",
     "00X00LGL00X00V"
+  }},
+
+  {"74192", 16, 7, {
+    "0LL11LLG1011110V",
+    "0LL11LLG1011100V",
+    "0LL11LHG1001100V",
+    "0LL11LHG1011100V",
+    "0LL10LHG1011100V",
+    "0LH11LHG1011100V",
+    "0LH10LHG1010100V"
   }},
 
   {"7474", 14, 8, {
@@ -267,16 +277,6 @@ IC_TestPatterns testPatterns[] =
     "1HH1CHLG111HH01V",
     "1LL1CLHG111HH01V",
     "1LL11LLG111HHC1V"
-  }},
-
-  {"74192", 16, 7, {
-    "0LL11LLG1011110V",
-    "0LL11LLG1011100V",
-    "0LL11LHG1001100V",
-    "0LL11LHG1011100V",
-    "0LL10LHG1011100V",
-    "0LH11LHG1011100V",
-    "0LH10LHG1010100V"
   }},
 
   {"74195", 16, 7, {
