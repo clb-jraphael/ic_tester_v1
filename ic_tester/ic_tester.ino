@@ -600,7 +600,7 @@ void buttonScanner() {
       } else if (menu == 2) {
         manual_user_interface();
         menu = 3;
-        // execute_action();
+        // switch_menu();
       }
     }
 
@@ -626,7 +626,7 @@ void buttonScanner() {
   
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-      display_placeholder_text(); // Execute the selected IC test
+      display_manual_result(); // Execute the selected IC test
     }
   
     if (flag_button[5]) { // CANCEL button
@@ -735,7 +735,7 @@ void automatic_options() {
 /**
  * Displays placeholder text and tests an IC based on the current submenu selection.
  */
-void display_placeholder_text() {
+void display_manual_result() {
   lcd.clear();
   lcd.setCursor(0, 0);
   
@@ -759,7 +759,7 @@ void display_placeholder_text() {
 /**
  * Executes the action corresponding to the current menu selection.
  */
-void execute_action() {
+void switch_menu() {
   switch (menu) {
     case 1:
       // automaticUserInterface();
@@ -1142,6 +1142,23 @@ byte detectNumPins() {
   return detectedPins;
 }
 
+/**
+ * Configures the specified pins of an IC according to a test pattern,
+ * triggers clock signals if necessary, and verifies the output pins.
+ * 
+ * @param test A string representing the test pattern for the IC:
+ *        'V' - Set pin to HIGH (Vcc)
+ *        'G' - Set pin to LOW (Ground)
+ *        'L' - Set pin as input with pull-up, expect LOW
+ *        'H' - Set pin as input with pull-up, expect HIGH
+ *        '0' - Set pin to LOW (output)
+ *        '1' - Set pin to HIGH (output)
+ *        'C' - Clock pin
+ *        'X' - Ignore pin
+ * @param pins An array of pin numbers corresponding to the test pattern.
+ * @param pinCount The number of pins to be tested.
+ * @return True if the outputs match the expected values, false otherwise.
+ */
 boolean testCase(const char* test, const byte* pins, int pinCount) {
   boolean result = true;
   int clkPin = -1;
