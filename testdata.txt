@@ -1,0 +1,37 @@
+1. 7400 	//passed manual and automatic 
+2. 7402 	//failed automatic and failed manual (probable cause: pin misconfiguration or broken IC, manual testing is advised and code refactoring)
+3. 7404 	//passed automatic, also passed 4069 on automatic, passed manual on 7404 failed on manual 4069
+4. 7408 	//passed automatic, also passed on automatic 7421, passed manual, passed manual 7421 
+5. 7432 	//passed automatic, passed 74125, passed manual 7432, failed 74125
+6. 7486 	//passed automatic passed manual
+7. 747266 	//failed both manual and automatic (probable cause: pin misconfiguration or broken IC, manual testing is advised and code refactoring)
+8. 7427 	//passed automatic passed manual
+9. 74151 	//passed automatic failed manual
+10. 7421 	//passed automatic passed manual
+11. 74192 	//passed automatic failed manual
+13. 7474 	//passed automatic failed manual
+14. 7437 	
+15. 74190 	//passed automatic failed manual
+16. 74193 	//passed automatic also on 74192, failed manual for both 192 and 193
+18. 74195 	//passed automatic failed manual
+19. 7410 	//passed automatic passed manual
+20. 7411 	//broken IC
+21. 74125 	//passed automatic, passed automatic 7432, passed manual 7432, failed manual 74125
+22. 74138	//failed automatic failed manual
+23. 7447 	//passed automatic failed manual
+24. 74173 	//passed automatic failed manual
+25. 4070 	//passed automatic failed manual
+26. 4071 	//passed automatic failed manual
+27. 4017 	//passed automatic failed manual
+28. 4511 	//passed automatic failed manual
+29. 4081 	//passed automatic failed manual
+30. 4077 	//passed automatic failed manual
+31. 4068 	//passed automatic failed manual
+32. 4069 	//passed automatic passed manual on 7404, passed manual on 4069
+33. 4066 	//passed automatic failed manual
+34. 4094 	//passed automatic failed manual
+
+
+
+
+
