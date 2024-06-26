@@ -778,14 +778,18 @@ void get_test_case(byte icModel) {
 
   if (overallResult) {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
-    lcd.print("IC Model " + String(testPatterns[icModel - 1].icType));
+    lcd.setCursor(0, 0);
+    lcd.print(F("Test Passed"));
     lcd.setCursor(0, 1);
-    lcd.print("Test Passed");
+    lcd.print(F("                "));
+    delay(2000);
   } else {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
-    lcd.print("IC Model " + String(testPatterns[icModel - 1].icType));
+    lcd.setCursor(0, 0);
+    lcd.print(F("Test Failed"));
     lcd.setCursor(0, 1);
-    lcd.print("Test Failed     ");
+    lcd.print(F("                "));
+    delay(2000);
   }
 }
 
@@ -811,7 +815,6 @@ void reset_pin_config(byte pinCount) {
       digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
     }
   }
-  delay(2000);
 }
 
 /**
