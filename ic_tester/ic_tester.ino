@@ -119,53 +119,54 @@ bool btnCancelPressed = false;
 // test input data
 IC_TestPatterns testPatterns[] = 
 {
+  //1
   {"7400", 14, 4, {
     "00H00HGH00H00V", // A = 0, B = 0, Y = 1
     "01H01HGH01H01V", // A = 0, B = 1, Y = 1
     "10H10HGH10H10V", // A = 1, B = 0, Y = 1
     "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
   }},
-  
+  //2
   {"7402", 14, 4, {
     "H00H00G00H00HV",
     "L10L10G10L10LV",
     "L01L01G01L01LV",
     "L11L11G11L11LV"
   }},
-
+  //3
   {"7404", 14, 2, {
     "0H0H0HGH0H0H0V", // A = 0, Y = 1
     "1L1L1LGL1L1L1V"  // A = 1, Y = 0
   }},
-
+  //4
   {"7408", 14, 4, {
     "00L00LGL00L00V",
     "01L01LGL01L01V",
     "10L10LGL10L10V",
     "11H11HGH11H11V"
   }},
-
+  //5
   {"7432", 14, 4, {
     "00L00LGL00L00V", // A = 0, B = 0, Y = 0
     "01H01HGH01H01V", // A = 0, B = 1, Y = 1
     "10H10HGH10H10V", // A = 1, B = 0, Y = 1
     "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
   }},
-
+  //6
   {"7486", 14, 4, {
     "00L00LGL00L00V", // A = 0, B = 0, Y = 0
     "01H01HGH01H01V", // A = 0, B = 1, Y = 1
     "10H10HGH10H10V", // A = 1, B = 0, Y = 1
     "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
   }},
-
+  //7
   {"747266", 14, 4, {
     "00HH00G00HH00V",
     "10LL10G10LL10V",
     "01LL01G01LL01V",
     "11HH11G11HH11V"
   }},
-
+  //8
   {"7427", 14, 8, {
     "00000HGH000H0V", 
     "00100LGL100L1V", 
@@ -176,7 +177,7 @@ IC_TestPatterns testPatterns[] =
     "11011LGL011L0V",
     "11111LGL111L1V"
   }},
-
+  //9
   {"74151", 16, 18, {
     "0101LH1G1010101V",
     "1010LH1G0101010V",
@@ -197,14 +198,14 @@ IC_TestPatterns testPatterns[] =
     "1111LH0G1110111V",
     "0000HL0G1111000V"
   }},
-
+  //10
   {"7421", 14, 4, {
     "11X11HGH11X11V",
     "01X01LGL01X01V",
     "10X10LGL10X10V",
     "00X00LGL00X00V"
   }},
-
+  //11
   {"74192", 16, 7, {
     "0LL11LLG1011110V",
     "0LL11LLG1011100V",
@@ -214,7 +215,7 @@ IC_TestPatterns testPatterns[] =
     "0LH11LHG1011100V",
     "0LH10LHG1010100V"
   }},
-
+  //12
   {"7474", 14, 8, {
     "01C1LHGHL1000V",
     "10C0HLGHL1000V",
@@ -226,13 +227,7 @@ IC_TestPatterns testPatterns[] =
     "0001LHGLH1C11V"
   }},
 
-  {"7437", 14, 4, {
-    "00H00HGH00H00V",
-    "10H10HGH10H10V",
-    "01H01HGH01H01V",
-    "11L11LGL11L11V"
-  }},
-
+  //13
   {"74190", 16, 9, {
     "0LL00LLG000LHC0V",
     "0LL10LLG001LHC0V",
@@ -244,7 +239,7 @@ IC_TestPatterns testPatterns[] =
     "0HL01LLG001LHC0V",
     "0LH01LLG001LHC0V"
   }},
-
+  //14
   {"74193", 16, 9, {
     "1HL11LHG100HH00V",
     "0LH11HLG010HH01V",
@@ -278,7 +273,7 @@ IC_TestPatterns testPatterns[] =
     "1LL1CLHG111HH01V",
     "1LL11LLG111HHC1V"
   }},
-
+  //15
   {"74195", 16, 7, {
     "0000000G0CHLLLLV",
     "1000000G0CHLLLLV",
@@ -288,7 +283,7 @@ IC_TestPatterns testPatterns[] =
     "1110000G1CHLLLHV",
     "1100000G1CHLLHLV"
   }},
-
+  //16
   {"7410", 14, 8, {
     "00000HGH000H0V",
     "00100HGH100H1V",
@@ -299,7 +294,7 @@ IC_TestPatterns testPatterns[] =
     "11011HGH011H0V",
     "11111LGL111L1V"
   }},
-
+  //17
    {"7411", 14, 8, {
     "00000LGL000L0V",
     "00001LGL001L1V",
@@ -310,7 +305,7 @@ IC_TestPatterns testPatterns[] =
     "10101LGL101L1V",
     "11111HGH111H1V",
   }},
-
+  //18
   {"74125", 14, 8, {
     "01H01HGH10H10V",
     "00L00LGL00L00V",
@@ -321,7 +316,7 @@ IC_TestPatterns testPatterns[] =
     "11H10HGH01H11V",
     "10H11HGH11H01V"
   }},
-
+  //19
    {"74138", 16, 12, {
     "111111HGHHHHHHHV",
     "000110HGHHHHHHHV",
@@ -336,7 +331,7 @@ IC_TestPatterns testPatterns[] =
     "011001HGLHHHHHHV",
     "111001LGHHHHHHHV"
   }},
-
+  //20
   {"7447", 16, 10, {
     "001H100GLLLLLHLV",
     "001H001GHHLLHHHV",
@@ -349,7 +344,7 @@ IC_TestPatterns testPatterns[] =
     "001H110GLLLLLLLV",
     "001H011GHHLLLLLV"
   }},
-
+  //21
   {"74173", 16, 15, {
     "00LLLLCG0000001V",
     "00LLLLCG1111111V",
@@ -369,20 +364,22 @@ IC_TestPatterns testPatterns[] =
   }},
   
   // Add more IC test patterns here as needed
+
+  //22
   {"4070", 14, 4, {
     "00LL00G00LL00V", // A = 0, B = 0, Y = 1
     "10HH10G10HH10V", // A = 0, B = 1, Y = 0
     "01HH01G01HH01V", // A = 1, B = 0, Y = 0
     "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
   }},
-
+  //23
   {"4071", 14, 4, {
     "00LH11G11HL00V",
     "10HH10G10HH10V",
     "01HH01G01HH01V",
     "11HL00G00LH11V"
   }},
-
+  //24
   {"4017", 16, 12, {
     "LLHLLLLGLLLH0C1V", 
     "LHLLLLLGLLLH0C0V", 
@@ -397,7 +394,7 @@ IC_TestPatterns testPatterns[] =
     "LLHLLLLGLLLH0C0V", 
     "LLHLLLLGLLLH1C0V"
   }},
-
+  //25
   {"4511", 16, 5, {
     "0001000GHHHHHHHV",
     "0011001GLLHHLLLV",
@@ -405,21 +402,21 @@ IC_TestPatterns testPatterns[] =
     "0011000GHHHHHLHV",
     "0010000GLLLLLLLV"
   }},
-
+  //26
   {"4081", 14, 4, {
     "00LH11G11HL00V",
     "10LL10G10LL10V",
     "01LL01G01LL01V",
     "11HL00G00LH11V"
   }},
-
+  //27
   {"4077", 14, 4, {
     "00HH00G00HH00V",
     "10LL10G10LL10V",
     "01LL01G01LL01V",
     "11HH11G11HH11V"
   }},
-
+  //28
   {"4068", 14, 10, {
     "011110G01111LV",
     "010100G01010HV",
@@ -432,19 +429,19 @@ IC_TestPatterns testPatterns[] =
     "011010G01111HV",
     "001110G00111HV"
   }},
-
+  //29
   {"4069", 14, 2, {
     "0H0H0HGH0H0H0V",
     "1L1L1LGL1L1L1V"
   }},
-
+  //30
   {"4066", 14, 4, {
     "0HH000G0HH000V",
     "1HH100G1HH100V",
     "0LL011G0LL011V",
     "1HH111G1HH111V"
   }},
-
+  //31
   {"4094", 16, 14, {
     "1X0XXXXGXXXXXX1V",
     "11CHXXXGXXXXXX1V",
@@ -461,7 +458,7 @@ IC_TestPatterns testPatterns[] =
     "110HLHLGLXLHLH1V",
     "100HHHHGLXHHHH0V"
   }},
-
+  
   {"74112", 16, 8, {
     "C000HLLGH000C11V",
     "C110HLLGH011C11V",
@@ -613,13 +610,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 33; // Wrap around to last option
+      else submenu = 32; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 33) submenu++;
+      if (submenu < 32) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -740,7 +737,7 @@ void display_manual_result() {
   lcd.clear();
   lcd.setCursor(0, 0);
   
-  if (submenu >= 1 && submenu <= 33) {
+  if (submenu >= 1 && submenu <= 32) {
     lcd.print(F("Testing IC "));
     lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
     bool result;
@@ -913,109 +910,104 @@ void manual_user_interface() {
       lcd.print(F(">IC 7474        "));
       break;
     case 13:
-      lcd.print(F(">IC 7437        "));
+      lcd.print(F(">IC 74190       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74190       "));
+      lcd.print(F(" IC 74193       "));
       break;
     case 14:
-      lcd.print(F(" IC 7437        "));
+      lcd.print(F(" IC 74190       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74190       "));
+      lcd.print(F(">IC 74193       "));
       break;
     case 15:
-      lcd.print(F(">IC 74193       "));
+      lcd.print(F(">IC 74195       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74195       "));
+      lcd.print(F(" IC 7410        "));
       break;
     case 16:
-      lcd.print(F(" IC 74193       "));
+      lcd.print(F(" IC 74195       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74195       "));
+      lcd.print(F(">IC 7410        "));
       break;
     case 17:
-      lcd.print(F(">IC 7410        "));
+      lcd.print(F(">IC 7411        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7411        "));
+      lcd.print(F(" IC 74125       "));
       break;
     case 18:
-      lcd.print(F(" IC 7410        "));
+      lcd.print(F(" IC 7411        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7411        "));
+      lcd.print(F(">IC 74125       "));
       break;
     case 19:
-      lcd.print(F(">IC 74125       "));
+      lcd.print(F(">IC 74138       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74138       "));
+      lcd.print(F(" IC 7447        "));
       break;
     case 20:
-      lcd.print(F(" IC 74125       "));
+      lcd.print(F(" IC 74138       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74138       "));
+      lcd.print(F(">IC 7447        "));
       break;
     case 21:
-      lcd.print(F(">IC 7447        "));
+      lcd.print(F(">IC 74173       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74173       "));
+      lcd.print(F(" IC 4070        "));
       break;
     case 22:
-      lcd.print(F(" IC 7447        "));
+      lcd.print(F(" IC 74173       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74173       "));
+      lcd.print(F(">IC 4070        "));
       break;
     case 23:
-      lcd.print(F(">IC 4070        "));
+      lcd.print(F(">IC 4071        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4071        "));
+      lcd.print(F(" IC 4017        "));
       break;
     case 24:
-      lcd.print(F(" IC 4070        "));
+      lcd.print(F(" IC 4071        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4071        "));
+      lcd.print(F(">IC 4017        "));
       break;
     case 25:
-      lcd.print(F(">IC 4017        "));
+      lcd.print(F(">IC 4511        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4511        "));
+      lcd.print(F(" IC 4081        "));
       break;
     case 26:
-      lcd.print(F(" IC 4017        "));
+      lcd.print(F(" IC 4511        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4511        "));
+      lcd.print(F(">IC 4081        "));
       break;
     case 27:
-      lcd.print(F(">IC 4081        "));
+      lcd.print(F(">IC 4077        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4077        "));
+      lcd.print(F(" IC 4068        "));
       break;
     case 28:
-      lcd.print(F(" IC 4081        "));
+      lcd.print(F(" IC 4077        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4077        "));
+      lcd.print(F(">IC 4068        "));
       break;
     case 29:
-      lcd.print(F(">IC 4068        "));
+      lcd.print(F(">IC 4069        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4069        "));
+      lcd.print(F(" IC 4066        "));
       break;
     case 30:
-      lcd.print(F(" IC 4068        "));
+      lcd.print(F(" IC 4069        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4069        "));
+      lcd.print(F(">IC 4066        "));
       break;
     case 31:
-      lcd.print(F(">IC 4066        "));
+      lcd.print(F(">IC 4094        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4094        "));
+      lcd.print(F(" IC 74112       "));
       break;
     case 32:
-      lcd.print(F(" IC 4066        "));
+      lcd.print(F(" IC 4094        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4094        "));
-      break;
-    case 33:
       lcd.print(F(">IC 74112       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F("                "));
       break;
     default:
       submenu = 1;
