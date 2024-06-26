@@ -471,12 +471,7 @@ IC_TestPatterns testPatterns[] =
     "C011HLLGH110C11V",
     "C101LHHGL101C11V",
     "C111HLLGH111C11V"
-  }},
-
-  "741", 8, 2, {
-    "X10GXHVX",
-    "X01GXHVX"
-  }
+  }}
 };
 
 // FUNCTIONS
@@ -618,13 +613,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 33; // Wrap around to last option
+      else submenu = 32; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 33) submenu++;
+      if (submenu < 32) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -644,13 +639,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuAuto > 1) submenuAuto--;
-      else submenuAuto = 4; // Wrap around to last option
+      else submenuAuto = 2; // Wrap around to last option
       automatic_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenuAuto < 4) submenuAuto++;
+      if (submenuAuto < 2) submenuAuto++;
       else submenuAuto = 1; // Wrap around to first option
       automatic_user_interface();
     }
@@ -734,14 +729,6 @@ void automatic_options() {
       lcd.print(F("Please wait...  "));
       autoSearch(16);
       break;
-    case 3:
-      lcd.print(F("Please wait...  "));
-      autoSearch(8);
-      break;
-    case 4:
-      lcd.print(F("Please wait...  "));
-      autoSearch(20);
-      break;
   }
 }
 
@@ -763,12 +750,6 @@ void get_test_case(byte icModel) {
   } else if (testPatterns[icModel - 1].pinCount == 16) {
     for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
       if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_16, 16)) {
-          overallResult = false;
-      }
-    }
-  } else if (testPatterns[icModel - 1].pinCount == 8) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_8, 8)) {
           overallResult = false;
       }
     }
@@ -854,20 +835,6 @@ void automatic_user_interface() {
       lcd.print(F(" 14-PIN IC      "));
       lcd.setCursor(0, 1);
       lcd.print(F(">16-PIN IC      "));
-      break;
-    case 3:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(">8-PIN IC       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" 20-PIN IC      "));
-      break;
-    case 4:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(" 8-PIN IC       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">20-PIN IC      "));
       break;
     default:
       submenuAuto = 1;
@@ -1042,11 +1009,6 @@ void manual_user_interface() {
       lcd.setCursor(0, 1);
       lcd.print(F(">IC 74112       "));
       break;
-    case 33:
-      lcd.print(F(">IC 741         "));
-      lcd.setCursor(0, 1);
-      lcd.print(F("                "));
-      break;
     default:
       submenu = 1;
       manual_user_interface();
@@ -1124,7 +1086,7 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
       case 'X':
       case '0':
         digitalWrite(pins[i], LOW);
-        pinMode(pins[i], OUTPUT);  
+        pinMode(pins[i], OUTPUT);
         break;
       case '1':
         digitalWrite(pins[i], HIGH);
