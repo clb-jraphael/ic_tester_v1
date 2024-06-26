@@ -97,6 +97,9 @@ const byte PINS_16[16] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8,
   PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
+const byte PINS_8[8] {
+  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
+};
 
 // Defined structure to hold IC test patterns
 struct IC_TestPatterns {
@@ -458,7 +461,7 @@ IC_TestPatterns testPatterns[] =
     "110HLHLGLXLHLH1V",
     "100HHHHGLXHHHH0V"
   }},
-  
+  //32
   {"74112", 16, 8, {
     "C000HLLGH000C11V",
     "C110HLLGH011C11V",
@@ -624,7 +627,6 @@ void buttonScanner() {
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       get_test_case(submenu);
-      //display_manual_result(); // Execute the selected IC test
     }
   
     if (flag_button[5]) { // CANCEL button
@@ -728,35 +730,6 @@ void automatic_options() {
       autoSearch(16);
       break;
   }
-}
-
-/**
- * Displays placeholder text and tests an IC based on the current submenu selection.
- */
-void display_manual_result() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  
-  if (submenu >= 1 && submenu <= 32) {
-    lcd.print(F("Testing IC "));
-    lcd.print(testPatterns[submenu - 1].icType); // Assuming icType is the field holding IC name/type
-    bool result;
-    if (testPatterns[submenu - 1].pinCount == 14) {
-      result = testIC(testPatterns[submenu - 1], PINS_14);
-    } else if (testPatterns[submenu - 1].pinCount == 16) {
-      result = testIC(testPatterns[submenu - 1], PINS_16);
-    }
-    
-    lcd.setCursor(0, 1);
-    if (result) {
-      lcd.print(F("Test Passed"));
-    } else {
-      lcd.print(F("Test Failed"));
-    }
-  }
-
-  // After testing, allow navigation back to submenu
-  manual_user_interface();
 }
 
 /**
@@ -1063,12 +1036,13 @@ void updatePassedModelsDisplay() {
  */
 boolean testCase(const char* test, const byte* pins, int pinCount) {
   boolean result = true;
-  int clkPin = -1;
+  const int MAX_CLK_PINS = 2;
+  int clkPins[MAX_CLK_PINS];
+  int clkPinCount = 0;
 
   Serial.println("SignalIn : " + String(test));
   Serial.print("Response : ");
 
-  // Setting Vcc, GND and INPUTS
   for (int i = 0; i < pinCount; i++) {
     switch (test[i]) {
       case 'V':
@@ -1092,7 +1066,6 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
 
   delay(5);
 
-  // Setting Input Signals
   for (int i = 0; i < pinCount; i++) {
     switch (test[i]) {
       case 'X':
@@ -1105,24 +1078,27 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
         pinMode(pins[i], OUTPUT);
         break;
       case 'C':
-        clkPin = pins[i];
-        pinMode(pins[i], OUTPUT);
-        digitalWrite(pins[i], LOW);
+        if (clkPinCount < MAX_CLK_PINS) {
+          clkPins[clkPinCount++] = pins[i];
+          pinMode(pins[i], OUTPUT);
+          digitalWrite(pins[i], LOW);
+        } else {
+          Serial.println("Error: Too many clock pins defined.");
+          return false;
+        }
         break;
     }
   }
 
-  if (clkPin != -1) {
-    // Clock Trigger
-    pinMode(clkPin, INPUT_PULLUP);
-    delay(10);
-    pinMode(clkPin, OUTPUT);
-    digitalWrite(clkPin, LOW);
+  for (int i = 0; i < clkPinCount; i++) {
+    pinMode(clkPins[i], INPUT_PULLUP);
+    delay(1);
+    pinMode(clkPins[i], OUTPUT);
+    digitalWrite(clkPins[i], LOW);
   }
 
   delay(5);
 
-  // Reading Outputs
   for (int i = 0; i < pinCount; i++) {
     switch (test[i]) {
       case 'H':
