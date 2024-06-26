@@ -759,6 +759,13 @@ void display_manual_result() {
   manual_user_interface();
 }
 
+/**
+ * Determines the pin count of the IC model and runs the corresponding 
+ * test cases. After running the tests, it resets the pin configuration to its default state.
+ * 
+ * @param icModel The index of the IC model to be tested. This index corresponds to 
+ * the position of the IC model in the testPatterns array.
+ */
 void get_test_case(byte icModel) {
   bool overallResult = true;
   if (testPatterns[icModel - 1].pinCount == 14) {
@@ -784,6 +791,11 @@ void get_test_case(byte icModel) {
   }
 }
 
+/**
+ * Resets the pin configuration of the specified IC model to its default state.
+ * 
+ * @param pinCount The number of pins on the IC model (14 or 16).
+ */
 void reset_pin_config(byte pinCount) {
   if (pinCount == 14) {
     for (int i = 0; i < sizeof(PINS_14) / sizeof(PINS_14[0]); i++) {
