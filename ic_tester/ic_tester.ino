@@ -778,8 +778,14 @@ void get_test_case(byte icModel) {
 
   if (overallResult) {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
+    lcd.print("IC Model " + String(testPatterns[icModel - 1].icType));
+    lcd.setCursor(0, 1);
+    lcd.print("Test Passed");
   } else {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
+    lcd.print("IC Model " + String(testPatterns[icModel - 1].icType));
+    lcd.setCursor(0, 1);
+    lcd.print("Test Failed     ");
   }
 }
 
@@ -799,7 +805,13 @@ void reset_pin_config(byte pinCount) {
       pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
       digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
     }
+  } else if (pinCount == 8) {
+    for (int i = 0; i < sizeof(PINS_8) / sizeof(PINS_8[0]); i++) {
+      pinMode(PINS_8[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
+    }
   }
+  delay(2000);
 }
 
 /**
