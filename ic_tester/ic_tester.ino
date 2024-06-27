@@ -477,15 +477,13 @@ IC_TestPatterns testPatterns[] = {
     "~01G~HV~"
   }},
 
-  {"072", 8, 4,{
-    "L10G10HV", //OUT1 will always be close to ground, OUT2 will always be close to power
-    "L01G01HV",
-    "L01G10HV",
-    "L10G01HV"
+  {"072", 8, 2,{
+    "L10G10HV",
+    "H01G01LV"
   }},
 
   {"071", 8, 2,{
-    "~10G~HV~", //double check
+    "~10G~HV~", // out 1 should be low, probable cause could be incorrect voltage input
     "~01G~HV~"
 
   }}
@@ -630,13 +628,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 33; // Wrap around to last option
+      else submenu = 35; // Wrap around to last option
       manual_user_interface();
     }
   
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 33) submenu++;
+      if (submenu < 35) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -786,20 +784,16 @@ void get_test_case(byte icModel) {
     }
   }
 
-  reset_pin_config(testPatterns[icModel - 1].pinCount);
-
   if (overallResult) {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
-    lcd.setCursor(0, 0);
-    lcd.setCursor(0, 1);
-    lcd.print(F("                "));
+    
   } else {
     Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
-    lcd.setCursor(0, 0);
-    lcd.setCursor(0, 1);
-    lcd.print(F("                "));
+    
     
   }
+
+  reset_pin_config(testPatterns[icModel - 1].pinCount);
 }
 
 /**
@@ -1054,6 +1048,16 @@ void manual_user_interface() {
     case 33:
       lcd.print(F(">IC 741         "));
       lcd.setCursor(0, 1);
+      lcd.print(F(" IC 072         "));
+      break;
+    case 34:
+      lcd.print(F(" IC 741         "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 072         "));
+      break;
+    case 35:
+      lcd.print(F(">IC 071         "));
+      lcd.setCursor(0, 1);
       lcd.print(F("                "));
       break;
     default:
@@ -1206,11 +1210,15 @@ void autoSearch(byte pins) {
     if (testPatterns[i].pinCount == pins) {
       Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
       for (int j = 0; j < testPatterns[i].numTestCases; j++) {
-        if (!testCase(testPatterns[i].testPatterns[j], pins == 14 ? PINS_14 : PINS_16, pins)) {
+        if (!testCase(testPatterns[i].testPatterns[j], 
+                      pins == 14 ? PINS_14 : 
+                      (pins == 16 ? PINS_16 : PINS_8), 
+                      pins)) {
           overallResult = false;
         }
         reset_pin_config(pins);  // Ensure pins are reset after each test case
       }
+      
       if (overallResult) {
         passedModels[passedCount++] = testPatterns[i].icType;
         Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
@@ -1230,6 +1238,7 @@ void autoSearch(byte pins) {
     lcd.print("No models passed");
   }
 }
+
 
 /**
  * Arduino setup function, called once at startup.
