@@ -120,8 +120,7 @@ bool btnOkPressed = false;
 bool btnCancelPressed = false;
 
 // test input data
-IC_TestPatterns testPatterns[] = 
-{
+IC_TestPatterns testPatterns[] = {
   //1
   {"7400", 14, 4, {
     "00H00HGH00H00V", // A = 0, B = 0, Y = 1
@@ -474,11 +473,22 @@ IC_TestPatterns testPatterns[] =
   }},
 
   {"741", 8, 2,{
-    "~10G~HV~",
+    "~10G~LV~",
     "~01G~HV~"
-  }
+  }},
 
-  }
+  {"072", 8, 4,{
+    "L10G10HV", //OUT1 will always be close to ground, OUT2 will always be close to power
+    "L01G01HV",
+    "L01G10HV",
+    "L10G01HV"
+  }},
+
+  {"071", 8, 2,{
+    "~10G~HV~", //double check
+    "~01G~HV~"
+
+  }}
 };
 
 // FUNCTIONS
@@ -808,7 +818,12 @@ void reset_pin_config(byte pinCount) {
       pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
       digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
     }
-  } 
+  } else if (pinCount == 8) {
+    for (int i = 0; i < sizeof(PINS_8) / sizeof(PINS_8[0]); i++) {
+      pinMode(PINS_8[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
+    }
+  }  
 }
 
 /**
@@ -848,6 +863,7 @@ void automatic_user_interface() {
       lcd.print(F(" 14-PIN IC      "));
       lcd.setCursor(0, 1);
       lcd.print(F(">16-PIN IC      "));
+      break;
     case 3:
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -1108,7 +1124,6 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
         pinMode(pins[i], INPUT_PULLUP);
         break;
       case '~':
-        digitalWrite(pins[i], LOW);  // Clear previous state
         pinMode(pins[i], INPUT);
         break;
     }
@@ -1173,7 +1188,8 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
     }
   }
   Serial.println(";");
-
+  // Reset all pins to input mode
+  reset_pin_config(pinCount);
   return result;
 }
 
@@ -1193,6 +1209,7 @@ void autoSearch(byte pins) {
         if (!testCase(testPatterns[i].testPatterns[j], pins == 14 ? PINS_14 : PINS_16, pins)) {
           overallResult = false;
         }
+        reset_pin_config(pins);  // Ensure pins are reset after each test case
       }
       if (overallResult) {
         passedModels[passedCount++] = testPatterns[i].icType;
