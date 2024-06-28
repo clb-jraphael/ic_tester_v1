@@ -117,374 +117,28 @@ bool btnUpPressed = false;
 bool btnOkPressed = false;
 bool btnCancelPressed = false;
 
-// test input data
-IC_TestPatterns testPatterns[] = {
-  //1
-  {"7400", 14, 4, {
-    "00H00HGH00H00V", // A = 0, B = 0, Y = 1
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
-  }},
-  //2
-  {"7402", 14, 4, {
-    "H00H00G00H00HV",
-    "L10L10G10L10LV",
-    "L01L01G01L01LV",
-    "L11L11G11L11LV"
-  }},
-  //3
-  {"7404", 14, 2, {
-    "0H0H0HGH0H0H0V", // A = 0, Y = 1
-    "1L1L1LGL1L1L1V"  // A = 1, Y = 0
-  }},
-  //4
-  {"7408", 14, 4, {
-    "00L00LGL00L00V",
-    "01L01LGL01L01V",
-    "10L10LGL10L10V",
-    "11H11HGH11H11V"
-  }},
-  //5
-  {"7432", 14, 4, {
-    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
-  }},
-  //6
-  {"7486", 14, 4, {
-    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
-  }},
-  //7
-  {"747266", 14, 4, {
-    "00HH00G00HH00V",
-    "10LL10G10LL10V",
-    "01LL01G01LL01V",
-    "11HH11G11HH11V"
-  }},
-  //8
-  {"7427", 14, 8, {
-    "00000HGH000H0V", 
-    "00100LGL100L1V", 
-    "10010LGL010L0V", 
-    "10110LGL110L1V",
-    "01001LGL001L0V",
-    "10101LGL101L1V",
-    "11011LGL011L0V",
-    "11111LGL111L1V"
-  }},
-  //9
-  {"74151", 16, 18, {
-    "0101LH1G1010101V",
-    "1010LH1G0101010V",
-    "1110LH0G0001111V",
-    "0001HL0G0000000V",
-    "1101LH0G0011111V",
-    "0010HL0G0010000V",
-    "1011LH0G0101111V",
-    "0100HL0G0100000V",
-    "0111LH0G0111111V",
-    "1000HL0G0110000V",
-    "1111LH0G1001110V",
-    "0000HL0G1000001V",
-    "1111LH0G1011101V",
-    "0000HL0G1010010V",
-    "1111LH0G1101011V",
-    "0000HL0G1100100V",
-    "1111LH0G1110111V",
-    "0000HL0G1111000V"
-  }},
-  //10
-  {"7421", 14, 4, {
-    "11X11HGH11X11V",
-    "01X01LGL01X01V",
-    "10X10LGL10X10V",
-    "00X00LGL00X00V"
-  }},
-  //11
-  {"74192", 16, 7, {
-    "0LL11LLG1011110V",
-    "0LL11LLG1011100V",
-    "0LL11LHG1001100V",
-    "0LL11LHG1011100V",
-    "0LL10LHG1011100V",
-    "0LH11LHG1011100V",
-    "0LH10LHG1010100V"
-  }},
-  //12
-  {"7474", 14, 8, {
-    "01C1LHGHL1000V",
-    "10C0HLGHL1000V",
-    "10C1LHGHL1000V",
-    "11C1HLGHL1000V",
-    "0001LHGHL1C10V",
-    "0001LHGLH0C01V",
-    "0001LHGHL1C01V",
-    "0001LHGLH1C11V"
-  }},
+// Test pattern strings stored in PROGMEM
+const char str_7400_1[] PROGMEM = "00H00HGH00H00V";
+const char str_7400_2[] PROGMEM = "01H01HGH01H01V";
+const char str_7400_3[] PROGMEM = "10H10HGH10H10V";
+const char str_7400_4[] PROGMEM = "11L11LGL11L11V";
+const char* const testPatterns_7400[] PROGMEM = {str_7400_1, str_7400_2, str_7400_3, str_7400_4};
 
-  //13
-  {"74190", 16, 9, {
-    "0LL00LLG000LHC0V",
-    "0LL10LLG001LHC0V",
-    "0LH00LLG001LHC0V",
-    "0HL00LLG001LHC0V",
-    "0HH00LLG001LHC0V",
-    "0LL00HLG001LHC0V",
-    "0HH01LLG001LHC0V",
-    "0HL01LLG001LHC0V",
-    "0LH01LLG001LHC0V"
-  }},
-  //14
-  {"74193", 16, 9, {
-    "1HL11LHG100HH00V",
-    "0LH11HLG010HH01V",
-    "1HH11HHG110HH01V",
-    "1HLC1HHG111HH01V",
-    "1LHC1HHG111HH01V",
-    "1LLC1HHG111HH01V",
-    "1HHC1LHG111HH01V",
-    "1HLC1LHG111HH01V",
-    "1LHC1LHG111HH01V",
-    "1LLC1LHG111HH01V",
-    "1HHC1HLG111HH01V",
-    "1HLC1HLG111HH01V",
-    "1LHC1HLG111HH01V",
-    "1LLC1HLG111HH01V",
-    "1HHC1LLG111HH01V",
-    "1HLC1LLG111HH01V",
-    "1LHC1LLG111HH01V",
-    "1LL11LLG111HH01V",
-    "1LL01LLG111HL01V",
-    "1HH11HHG111HH01V",
-    "1HH10HHG111LH01V",
-    "1LL11LLG111HH01V",
-    "1LH1CLLG111HH01V",
-    "1HL1CLLG111HH01V",
-    "1HH1CLLG111HH01V",
-    "1LL1CHLG111HH01V",
-    "1LH1CHLG111HH01V",
-    "1HL1CHLG111HH01V",
-    "1HH1CHLG111HH01V",
-    "1LL1CLHG111HH01V",
-    "1LL11LLG111HHC1V"
-  }},
-  //15
-  {"74195", 16, 7, {
-    "0000000G0CHLLLLV",
-    "1000000G0CHLLLLV",
-    "1000000G1CHLLLLV",
-    "1010000G1CHLLLLV",
-    "1000000G1CHLLLLV",
-    "1110000G1CHLLLHV",
-    "1100000G1CHLLHLV"
-  }},
-  //16
-  {"7410", 14, 8, {
-    "00000HGH000H0V",
-    "00100HGH100H1V",
-    "10010HGH010H0V",
-    "10110HGH110H1V",
-    "01001HGH001H0V",
-    "01101HGH101H1V",
-    "11011HGH011H0V",
-    "11111LGL111L1V"
-  }},
-  //17
-   {"7411", 14, 8, {
-    "00000LGL000L0V",
-    "00001LGL001L1V",
-    "01010LGL010L0V",
-    "10100LGL100L0V",
-    "11110LGL110L0V",
-    "01011LGL011L1V",
-    "10101LGL101L1V",
-    "11111HGH111H1V",
-  }},
-  //18
-  {"74125", 14, 8, {
-    "01H01HGH10H10V",
-    "00L00LGL00L00V",
-    "10H10HGH01H01V",
-    "11H11HGH11H11V",
-    "10H11HGH01H11V",
-    "11H10HGH11H01V",
-    "11H10HGH01H11V",
-    "10H11HGH11H01V"
-  }},
-  //19
-   {"74138", 16, 12, {
-    "111111HGHHHHHHHV",
-    "000110HGHHHHHHHV",
-    "111110HGHHHHHHHV",
-    "000000HGHHHHHHHV",
-    "000001HGHHHHHHLV",
-    "100001HGHHHHHLHV",
-    "010001HGHHHHLHHV",
-    "110001HGHHHLHHHV",
-    "001001HGHHLHHHHV",
-    "101001HGHLHHHHHV",
-    "011001HGLHHHHHHV",
-    "111001LGHHHHHHHV"
-  }},
-  //20
-  {"7447", 16, 10, {
-    "001H100GLLLLLHLV",
-    "001H001GHHLLHHHV",
-    "101H100GLLHLLLHV",
-    "101H001GHLLLLLHV",
-    "011H100GHHLLHLLV",
-    "011H001GHLLHLLLV",
-    "111H100GLLLHHLLV",
-    "111H001GHHLLLHHV",
-    "001H110GLLLLLLLV",
-    "001H011GHHLLLLLV"
-  }},
-  //21
-  {"74173", 16, 15, {
-    "00LLLLCG0000001V",
-    "00LLLLCG1111111V",
-    "00LHLHCG0010100V",
-    "00LHLHCG1001010V",
-    "00LHLHCG0101010V",
-    "00LHLHCG1101010V",
-    "00HLHLCG0001010V",
-    "00HLHLCG1010100V",
-    "00HLHLCG0110100V",
-    "00HLHLCG1110100V",
-    "00LHLHCG0010100V",
-    "00LLHHCG0011000V",
-    "00LLLLCG1111111V",
-    "00HHLLCG0000110V",
-    "00LLLLCG1111111V"
-  }},
-  
-  // Add more IC test patterns here as needed
+// IC model strings stored in PROGMEM
+const char ic_model_7400[] PROGMEM = "7400";
 
-  //22
-  {"4070", 14, 4, {
-    "00LL00G00LL00V", // A = 0, B = 0, Y = 1
-    "10HH10G10HH10V", // A = 0, B = 1, Y = 0
-    "01HH01G01HH01V", // A = 1, B = 0, Y = 0
-    "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
-  }},
-  //23
-  {"4071", 14, 4, {
-    "00LH11G11HL00V",
-    "10HH10G10HH10V",
-    "01HH01G01HH01V",
-    "11HL00G00LH11V"
-  }},
-  //24
-  {"4017", 16, 12, {
-    "LLHLLLLGLLLH0C1V", 
-    "LHLLLLLGLLLH0C0V", 
-    "LLLHLLLGLLLH0C0V", 
-    "LLLLLLHGLLLH0C0V", 
-    "LLLLLLLGLHLH0C0V", 
-    "HLLLLLLGLLLL0C0V", 
-    "LLLLHLLGLLLL0C0V", 
-    "LLLLLHLGLLLL0C0V", 
-    "LLLLLLLGHLLL0C0V", 
-    "LLLLLLLGLLHL0C0V", 
-    "LLHLLLLGLLLH0C0V", 
-    "LLHLLLLGLLLH1C0V"
-  }},
-  //25
-  {"4511", 16, 5, {
-    "0001000GHHHHHHHV",
-    "0011001GLLHHLLLV",
-    "0111001GLHHLHHHV",
-    "0011000GHHHHHLHV",
-    "0010000GLLLLLLLV"
-  }},
-  //26
-  {"4081", 14, 4, {
-    "00LH11G11HL00V",
-    "10LL10G10LL10V",
-    "01LL01G01LL01V",
-    "11HL00G00LH11V"
-  }},
-  //27
-  {"4077", 14, 4, {
-    "00HH00G00HH00V",
-    "10LL10G10LL10V",
-    "01LL01G01LL01V",
-    "11HH11G11HH11V"
-  }},
-  //28
-  {"4068", 14, 10, {
-    "011110G01111LV",
-    "010100G01010HV",
-    "001010G00101HV",
-    "000110G00011HV",
-    "011000G01100HV",
-    "000000G01111HV",
-    "000000G00000HV",
-    "011110G01110HV",
-    "011010G01111HV",
-    "001110G00111HV"
-  }},
-  //29
-  {"4069", 14, 2, {
-    "0H0H0HGH0H0H0V",
-    "1L1L1LGL1L1L1V"
-  }},
-  //30
-  {"4066", 14, 4, {
-    "0HH000G0HH000V",
-    "1HH100G1HH100V",
-    "0LL011G0LL011V",
-    "1HH111G1HH111V"
-  }},
-  //31
-  {"4094", 16, 14, {
-    "1X0XXXXGXXXXXX1V",
-    "11CHXXXGXXXXXX1V",
-    "10CLHXXGXXXXXX1V",
-    "11CHLHXGXXXXXX1V",
-    "10CLHLHGXXXXXX1V",
-    "11CHLHLGXXXXXH1V",
-    "10CLHLHGXXXXHL1V",
-    "11CHLHLGXXXHLH1V",
-    "10CLHLHGXXHLHL1V",
-    "11CHLHLGLXLHLH1V",
-    "10CLHLHGHXHLHL1V",
-    "01CLHLHGLXHLHL1V",
-    "110HLHLGLXLHLH1V",
-    "100HHHHGLXHHHH0V"
-  }},
-  //32
-  {"74112", 16, 8, {
-    "C000HLLGH000C11V",
-    "C110HLLGH011C11V",
-    "C001LHHGL100C00V",
-    "C111LHHGL100C00V",
-    "C001LHHGL100C11V",
-    "C011HLLGH110C11V",
-    "C101LHHGL101C11V",
-    "C111HLLGH111C11V"
-  }},
+// Pin counts and test case numbers stored in PROGMEM
+const byte pinCounts[] PROGMEM = {14};
+const byte numTestCases[] PROGMEM = {4};
 
-  {"741", 8, 2,{
-    "~10G~LV~",
-    "~01G~HV~"
-  }},
-
-  {"072", 8, 2,{
-    "L10G10HV",
-    "H01G01LV"
-  }},
-
-  {"071", 8, 2,{
-    "~10G~LV~",
-    "X01GXHVX"
-
-  }}
+// Define an array of IC_TestPatterns, using PROGMEM for the array itself
+const struct IC_TestPattern {
+  const char* icType;
+  const byte* pinCount;
+  const byte* numTestCases;
+  const char* const* testPatterns;
+} testPatterns[] PROGMEM = {
+  {reinterpret_cast<const char*>(ic_model_7400), pinCounts, numTestCases, testPatterns_7400}
 };
 
 // FUNCTIONS
@@ -516,17 +170,19 @@ void init_ic_pins(){
  * @param pinCount The number of pins to be tested.
  * @return True if the outputs match the expected values, false otherwise.
  */
-boolean testCase(const char* test, const byte* pins, int pinCount) {
+boolean testCase(PGM_P test, const byte* pins, int pinCount) {
   boolean result = true;
   const int MAX_CLK_PINS = 2;
   int clkPins[MAX_CLK_PINS];
   int clkPinCount = 0;
 
-  Serial.println("SignalIn : " + String(test));
+  Serial.println("SignalIn : " + String((const __FlashStringHelper*)test));
   Serial.print("Response : ");
 
+  // Phase 1: Pin Configuration
   for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
+    char c = pgm_read_byte(test + i);
+    switch (c) {
       case 'V':
         pinMode(pins[i], OUTPUT);
         digitalWrite(pins[i], HIGH);
@@ -551,8 +207,10 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
 
   delay(5);
 
+  // Phase 2: Special Pin Configurations ('X', '0', '1', 'C')
   for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
+    char c = pgm_read_byte(test + i);
+    switch (c) {
       case 'X':
       case '0':
         digitalWrite(pins[i], LOW);
@@ -575,43 +233,61 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
     }
   }
 
-  for (int i = 0; i < clkPinCount; i++) {
-    pinMode(clkPins[i], INPUT_PULLUP);
-    delay(1);
-    pinMode(clkPins[i], OUTPUT);
-    digitalWrite(clkPins[i], LOW);
-  }
-
-  delay(5);
-
+  // Phase 3: Verification of Outputs
   for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
+    char expected = pgm_read_byte(test + i);
+    char actual = ' ';
+    switch (expected) {
       case 'H':
         if (!digitalRead(pins[i])) {
           result = false;
-          Serial.print('L');
+          actual = 'L';
         } else {
-          Serial.print(' ');
+          actual = 'H';
         }
         break;
       case 'L':
         if (digitalRead(pins[i])) {
           result = false;
-          Serial.print('H');
+          actual = 'H';
         } else {
-          Serial.print(' ');
+          actual = 'L';
+        }
+        break;
+      case 'V':
+        if (!digitalRead(pins[i])) {
+          result = false;
+          actual = 'L';
+        } else {
+          actual = 'V';
+        }
+        break;
+      case 'G':
+        if (digitalRead(pins[i])) {
+          result = false;
+          actual = 'V';
+        } else {
+          actual = 'G';
         }
         break;
       default:
-        Serial.print(' ');
+        actual = ' ';
         break;
+    }
+    Serial.print(actual);
+    if (actual != ' ') {
+      Serial.print(" ");
     }
   }
   Serial.println(";");
+
   // Reset all pins to input mode
   reset_pin_config(pinCount);
+
   return result;
 }
+
+
 
 //core logic
 /**
@@ -622,38 +298,41 @@ boolean testCase(const char* test, const byte* pins, int pinCount) {
  * the position of the IC model in the testPatterns array.
  */
 void get_test_case(byte icModel) {
-  bool overallResult = true;
-  if (testPatterns[icModel - 1].pinCount == 14) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_14, 14)) {
-          overallResult = false;
-      }
+  // Read PROGMEM pointers for the specified icModel
+  PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].icType));
+  PGM_P pinCount_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].pinCount));
+  PGM_P numTestCases_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].numTestCases));
+  PGM_P testPatterns_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].testPatterns));
+
+  // Print IC Type
+  char icType_buffer[20];
+  strcpy_P(icType_buffer, icType_p);
+  Serial.print(F("Testing IC: "));
+  Serial.println(icType_buffer);
+
+  // Print each test pattern and its result
+  byte numTestCases = pgm_read_byte(numTestCases_p);
+  for (byte i = 0; i < numTestCases; ++i) {
+    PGM_P pattern_p = reinterpret_cast<PGM_P>(pgm_read_ptr(testPatterns_p + i * sizeof(PGM_P)));
+    char testPattern_buffer[30]; // Adjust size as needed
+    strcpy_P(testPattern_buffer, pattern_p);
+
+    // Execute test case and print results
+    boolean passed = testCase(pattern_p, reinterpret_cast<const byte*>(pgm_read_word(pinCount_p)), pgm_read_byte(pinCount_p));
+    Serial.print(F("Signal: "));
+    for (int j = 0; j < pgm_read_byte(pinCount_p); j++) {
+      Serial.print(testPattern_buffer[j]);
     }
-  } else if (testPatterns[icModel - 1].pinCount == 16) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_16, 16)) {
-          overallResult = false;
-      }
-    }
-  } else if (testPatterns[icModel - 1].pinCount == 8) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_8, 8)) {
-          overallResult = false;
-      }
+    Serial.println();
+    if (passed) {
+      Serial.println(F("Response:                          ;"));
+    } else {
+      Serial.println(F("Response:          L                         ;"));
+      Serial.println(F("Failed"));
     }
   }
-
-  if (overallResult) {
-    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
-    
-  } else {
-    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
-    
-    
-  }
-
-  reset_pin_config(testPatterns[icModel - 1].pinCount);
 }
+
 
 //core logic
 /**
@@ -664,29 +343,45 @@ void get_test_case(byte icModel) {
 void autoSearch(byte pins) {
   passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
+
   for (byte i = 0; i < size_db; i++) {
     bool overallResult = true;
-    if (testPatterns[i].pinCount == pins) {
-      Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
-      for (int j = 0; j < testPatterns[i].numTestCases; j++) {
-        if (!testCase(testPatterns[i].testPatterns[j], 
-                      pins == 14 ? PINS_14 : 
-                      (pins == 16 ? PINS_16 : PINS_8), 
-                      pins)) {
+
+    // Check if pinCount matches the IC model's pin configuration
+    if (pgm_read_byte(reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[i].pinCount))) == pins) {
+      // Print IC model being tested
+      PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[i].icType));
+      char icType_buffer[20];
+      strcpy_P(icType_buffer, icType_p);
+      Serial.print(F("\nTesting IC Model: "));
+      Serial.println(icType_buffer);
+
+      // Get number of test cases for the current IC model
+      byte numTestCases = pgm_read_byte(reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[i].numTestCases)));
+
+      // Iterate through each test case for the current IC model
+      for (int j = 0; j < numTestCases; j++) {
+        PGM_P pattern_p = reinterpret_cast<PGM_P>(pgm_read_ptr(reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[i].testPatterns)) + j * sizeof(PGM_P)));
+        boolean testResult = testCase(pattern_p, pins == 14 ? PINS_14 : (pins == 16 ? PINS_16 : PINS_8), pins);
+        
+        // Check if current test case passed or failed
+        if (!testResult) {
           overallResult = false;
         }
         reset_pin_config(pins);  // Ensure pins are reset after each test case
       }
-      
+
+      // Output result for the current IC model
       if (overallResult) {
-        passedModels[passedCount++] = testPatterns[i].icType;
-        Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
+        passedModels[passedCount++] = icType_buffer;
+        Serial.println(F("All tests passed.\n"));
       } else {
-        Serial.println("IC Model " + String(testPatterns[i].icType) + " failed.\n");
+        Serial.println(F("Failed.\n"));
       }
     }
   }
 
+  // Display results
   if (passedCount > 0) {
     currentModelIndex = 0; // Reset to first model
     menu = 5; // Set menu to passed models display
@@ -694,9 +389,10 @@ void autoSearch(byte pins) {
   } else {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print("No models passed");
+    lcd.print(F("No models passed"));
   }
 }
+
 
 //core logic
 /**
@@ -705,23 +401,27 @@ void autoSearch(byte pins) {
  * @param pinCount The number of pins on the IC model (14 or 16).
  */
 void reset_pin_config(byte pinCount) {
-  if (pinCount == 14) {
-    for (int i = 0; i < sizeof(PINS_14) / sizeof(PINS_14[0]); i++) {
-      pinMode(PINS_14[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_14[i], LOW); // Reset pin state to LOW
-    }
-  } else if (pinCount == 16) {
-    for (int i = 0; i < sizeof(PINS_16) / sizeof(PINS_16[0]); i++) {
-      pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
-    }
-  } else if (pinCount == 8) {
-    for (int i = 0; i < sizeof(PINS_8) / sizeof(PINS_8[0]); i++) {
-      pinMode(PINS_8[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
-    }
-  }  
+  const byte* pins;
+  switch (pinCount) {
+    case 14:
+      pins = PINS_14;
+      break;
+    case 16:
+      pins = PINS_16;
+      break;
+    case 8:
+      pins = PINS_8;
+      break;
+    default:
+      return; // Handle error or other pin counts as needed
+  }
+
+  for (int i = 0; i < pinCount; i++) {
+    pinMode(pgm_read_byte(pins + i), INPUT);  // Reset pin mode to INPUT
+    digitalWrite(pgm_read_byte(pins + i), LOW); // Reset pin state to LOW
+  }
 }
+
 
 //core logic
 /**
@@ -1276,6 +976,7 @@ void setup() {
   Serial.println(F("Hello"));
   delay(3000);
   update_menu();
+
 }
 
 /**
