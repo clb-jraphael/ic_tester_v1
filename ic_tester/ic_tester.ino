@@ -7,8 +7,6 @@
  * 
  * @version 1.0
  * @date 2024-06-25
- * 
- * 
  */
 
 #include <LiquidCrystal.h>
@@ -22,19 +20,6 @@ const byte PIN_BTN_LEFT = 22;
 const byte PIN_BTN_RIGHT = 27;
 const byte PIN_BTN_OK = 24;
 const byte PIN_BTN_CANCEL = 26;
-
-
-const byte MAX_BUTTONS = 6;
-const  byte PINS_BUTTONS[MAX_BUTTONS] = {
-  PIN_BTN_UP,
-  PIN_BTN_DOWN,
-  PIN_BTN_LEFT,
-  PIN_BTN_RIGHT,
-  PIN_BTN_OK,
-  PIN_BTN_CANCEL
-};
-
-byte flag_button[MAX_BUTTONS];
 
 const byte PIN_PROBE= A2;
 
@@ -79,7 +64,7 @@ const byte PIN_LED1 = 8;
 const int rs = A10, en = A12, d4 = 28, d5 = 29, d6 = 30, d7 = 31;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
-//pin definitions/configurations 
+//pin configurations 
 const byte PINS_IC[20] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3,
   PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, 
@@ -104,12 +89,25 @@ const byte PINS_8[8] {
 // Defined structure to hold IC test patterns
 struct IC_TestPatterns {
   const char* icType;             // IC type (e.g., "7400", "7402", etc.)
-  byte pinCount;
+  byte pinCount;                  // 20, 8, 14, 16-pin, etc.
   byte numTestCases;              // Number of test cases for this IC
   const char* testPatterns[36];   // Array to hold test patterns (adjust size as needed)
 };
 
 // GLOBAL VARIABLES
+
+const byte MAX_BUTTONS = 6;
+const  byte PINS_BUTTONS[MAX_BUTTONS] = {
+  PIN_BTN_UP,
+  PIN_BTN_DOWN,
+  PIN_BTN_LEFT,
+  PIN_BTN_RIGHT,
+  PIN_BTN_OK,
+  PIN_BTN_CANCEL
+};
+
+byte flag_button[MAX_BUTTONS];
+
 byte menu = 1, submenu = 1, submenuAuto = 1, num = 1, currentModelIndex = 0, passedCount = 0;
 String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
@@ -483,8 +481,8 @@ IC_TestPatterns testPatterns[] = {
   }},
 
   {"071", 8, 2,{
-    "~10G~HV~", // out 1 should be low, probable cause could be incorrect voltage input
-    "~01G~HV~"
+    "~10G~LV~",
+    "X01GXHVX"
 
   }}
 };
@@ -498,6 +496,549 @@ void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
   } 
+}
+
+//core logic
+/**
+ * Configures the specified pins of an IC according to a test pattern,
+ * triggers clock signals if necessary, and verifies the output pins.
+ * 
+ * @param test A string representing the test pattern for the IC:
+ *        'V' - Set pin to HIGH (Vcc)
+ *        'G' - Set pin to LOW (Ground)
+ *        'L' - Set pin as input with pull-up, expect LOW
+ *        'H' - Set pin as input with pull-up, expect HIGH
+ *        '0' - Set pin to LOW (output)
+ *        '1' - Set pin to HIGH (output)
+ *        'C' - Clock pin
+ *        'X' - Ignore pin
+ * @param pins An array of pin numbers corresponding to the test pattern.
+ * @param pinCount The number of pins to be tested.
+ * @return True if the outputs match the expected values, false otherwise.
+ */
+boolean testCase(const char* test, const byte* pins, int pinCount) {
+  boolean result = true;
+  const int MAX_CLK_PINS = 2;
+  int clkPins[MAX_CLK_PINS];
+  int clkPinCount = 0;
+
+  Serial.println("SignalIn : " + String(test));
+  Serial.print("Response : ");
+
+  for (int i = 0; i < pinCount; i++) {
+    switch (test[i]) {
+      case 'V':
+        pinMode(pins[i], OUTPUT);
+        digitalWrite(pins[i], HIGH);
+        break;
+      case 'G':
+        pinMode(pins[i], OUTPUT);
+        digitalWrite(pins[i], LOW);
+        break;
+      case 'L':
+        digitalWrite(pins[i], LOW);
+        pinMode(pins[i], INPUT_PULLUP);
+        break;
+      case 'H':
+        digitalWrite(pins[i], HIGH);
+        pinMode(pins[i], INPUT_PULLUP);
+        break;
+      case '~':
+        pinMode(pins[i], INPUT);
+        break;
+    }
+  }
+
+  delay(5);
+
+  for (int i = 0; i < pinCount; i++) {
+    switch (test[i]) {
+      case 'X':
+      case '0':
+        digitalWrite(pins[i], LOW);
+        pinMode(pins[i], OUTPUT);
+        break;
+      case '1':
+        digitalWrite(pins[i], HIGH);
+        pinMode(pins[i], OUTPUT);
+        break;
+      case 'C':
+        if (clkPinCount < MAX_CLK_PINS) {
+          clkPins[clkPinCount++] = pins[i];
+          pinMode(pins[i], OUTPUT);
+          digitalWrite(pins[i], LOW);
+        } else {
+          Serial.println("Error: Too many clock pins defined.");
+          return false;
+        }
+        break;
+    }
+  }
+
+  for (int i = 0; i < clkPinCount; i++) {
+    pinMode(clkPins[i], INPUT_PULLUP);
+    delay(1);
+    pinMode(clkPins[i], OUTPUT);
+    digitalWrite(clkPins[i], LOW);
+  }
+
+  delay(5);
+
+  for (int i = 0; i < pinCount; i++) {
+    switch (test[i]) {
+      case 'H':
+        if (!digitalRead(pins[i])) {
+          result = false;
+          Serial.print('L');
+        } else {
+          Serial.print(' ');
+        }
+        break;
+      case 'L':
+        if (digitalRead(pins[i])) {
+          result = false;
+          Serial.print('H');
+        } else {
+          Serial.print(' ');
+        }
+        break;
+      default:
+        Serial.print(' ');
+        break;
+    }
+  }
+  Serial.println(";");
+  // Reset all pins to input mode
+  reset_pin_config(pinCount);
+  return result;
+}
+
+//core logic
+/**
+ * Determines the pin count of the IC model and runs the corresponding 
+ * test cases. After running the tests, it resets the pin configuration to its default state.
+ * 
+ * @param icModel The index of the IC model to be tested. This index corresponds to 
+ * the position of the IC model in the testPatterns array.
+ */
+void get_test_case(byte icModel) {
+  bool overallResult = true;
+  if (testPatterns[icModel - 1].pinCount == 14) {
+    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
+      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_14, 14)) {
+          overallResult = false;
+      }
+    }
+  } else if (testPatterns[icModel - 1].pinCount == 16) {
+    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
+      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_16, 16)) {
+          overallResult = false;
+      }
+    }
+  } else if (testPatterns[icModel - 1].pinCount == 8) {
+    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
+      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_8, 8)) {
+          overallResult = false;
+      }
+    }
+  }
+
+  if (overallResult) {
+    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
+    
+  } else {
+    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
+    
+    
+  }
+
+  reset_pin_config(testPatterns[icModel - 1].pinCount);
+}
+
+//core logic
+/**
+ * Automatically tests IC models based on pin count.
+ * 
+ * @param pins The number of pins to test (14 or 16).
+ */
+void autoSearch(byte pins) {
+  passedCount = 0; // Reset passed count
+  byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
+  for (byte i = 0; i < size_db; i++) {
+    bool overallResult = true;
+    if (testPatterns[i].pinCount == pins) {
+      Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
+      for (int j = 0; j < testPatterns[i].numTestCases; j++) {
+        if (!testCase(testPatterns[i].testPatterns[j], 
+                      pins == 14 ? PINS_14 : 
+                      (pins == 16 ? PINS_16 : PINS_8), 
+                      pins)) {
+          overallResult = false;
+        }
+        reset_pin_config(pins);  // Ensure pins are reset after each test case
+      }
+      
+      if (overallResult) {
+        passedModels[passedCount++] = testPatterns[i].icType;
+        Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
+      } else {
+        Serial.println("IC Model " + String(testPatterns[i].icType) + " failed.\n");
+      }
+    }
+  }
+
+  if (passedCount > 0) {
+    currentModelIndex = 0; // Reset to first model
+    menu = 5; // Set menu to passed models display
+    updatePassedModelsDisplay();
+  } else {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("No models passed");
+  }
+}
+
+//core logic
+/**
+ * Resets the pin configuration of the specified IC model to its default state.
+ * 
+ * @param pinCount The number of pins on the IC model (14 or 16).
+ */
+void reset_pin_config(byte pinCount) {
+  if (pinCount == 14) {
+    for (int i = 0; i < sizeof(PINS_14) / sizeof(PINS_14[0]); i++) {
+      pinMode(PINS_14[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_14[i], LOW); // Reset pin state to LOW
+    }
+  } else if (pinCount == 16) {
+    for (int i = 0; i < sizeof(PINS_16) / sizeof(PINS_16[0]); i++) {
+      pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
+    }
+  } else if (pinCount == 8) {
+    for (int i = 0; i < sizeof(PINS_8) / sizeof(PINS_8[0]); i++) {
+      pinMode(PINS_8[i], INPUT);  // Reset pin mode to INPUT
+      digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
+    }
+  }  
+}
+
+//core logic
+/**
+ * Displays the automatic user interface options on the LCD.
+ */
+void automatic_user_interface() {
+  lcd.clear();
+  switch (submenuAuto) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">14-PIN IC      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" 16-PIN IC      "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" 14-PIN IC      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">16-PIN IC      "));
+      break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">8-PIN IC       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" 20-PIN IC      "));
+      break;
+    case 4:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" 8-PIN IC       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">20-PIN IC      "));
+      break;
+    default:
+      submenuAuto = 1;
+      automatic_user_interface();
+      break;
+  }
+}
+
+//core logic
+/**
+ * Displays the manual user interface options on the LCD.
+ */
+void manual_user_interface() {
+  lcd.clear();
+  switch (submenu) {
+    case 1:
+      lcd.print(F(">IC 7400        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7402        "));
+      break;
+    case 2:
+      lcd.print(F(" IC 7400        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7402        "));
+      break;
+    case 3:
+      lcd.print(F(">IC 7404        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7408        "));
+      break;
+    case 4:
+      lcd.print(F(" IC 7404        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7408        "));
+      break;
+    case 5:
+      lcd.print(F(">IC 7432        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7486        "));
+      break;
+    case 6:
+      lcd.print(F(" IC 7432        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7486        "));
+      break;
+    case 7:
+      lcd.print(F(">IC 747266      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7427        "));
+      break;
+    case 8:
+      lcd.print(F(" IC 747266      "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7427        "));
+      break;
+    case 9:
+      lcd.print(F(">IC 74151       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7421        "));
+      break;
+    case 10:
+      lcd.print(F(" IC 74151       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7421        "));
+      break;
+    case 11:
+      lcd.print(F(">IC 74192       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7474        "));
+      break;
+    case 12:
+      lcd.print(F(" IC 74192       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7474        "));
+      break;
+    case 13:
+      lcd.print(F(">IC 74190       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 74193       "));
+      break;
+    case 14:
+      lcd.print(F(" IC 74190       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 74193       "));
+      break;
+    case 15:
+      lcd.print(F(">IC 74195       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7410        "));
+      break;
+    case 16:
+      lcd.print(F(" IC 74195       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7410        "));
+      break;
+    case 17:
+      lcd.print(F(">IC 7411        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 74125       "));
+      break;
+    case 18:
+      lcd.print(F(" IC 7411        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 74125       "));
+      break;
+    case 19:
+      lcd.print(F(">IC 74138       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 7447        "));
+      break;
+    case 20:
+      lcd.print(F(" IC 74138       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 7447        "));
+      break;
+    case 21:
+      lcd.print(F(">IC 74173       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4070        "));
+      break;
+    case 22:
+      lcd.print(F(" IC 74173       "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4070        "));
+      break;
+    case 23:
+      lcd.print(F(">IC 4071        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4017        "));
+      break;
+    case 24:
+      lcd.print(F(" IC 4071        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4017        "));
+      break;
+    case 25:
+      lcd.print(F(">IC 4511        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4081        "));
+      break;
+    case 26:
+      lcd.print(F(" IC 4511        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4081        "));
+      break;
+    case 27:
+      lcd.print(F(">IC 4077        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4068        "));
+      break;
+    case 28:
+      lcd.print(F(" IC 4077        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4068        "));
+      break;
+    case 29:
+      lcd.print(F(">IC 4069        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 4066        "));
+      break;
+    case 30:
+      lcd.print(F(" IC 4069        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 4066        "));
+      break;
+    case 31:
+      lcd.print(F(">IC 4094        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 74112       "));
+      break;
+    case 32:
+      lcd.print(F(" IC 4094        "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 74112       "));
+      break;
+    case 33:
+      lcd.print(F(">IC 741         "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" IC 072         "));
+      break;
+    case 34:
+      lcd.print(F(" IC 741         "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 072         "));
+      break;
+    case 35:
+      lcd.print(F(">IC 071         "));
+      lcd.setCursor(0, 1);
+      lcd.print(F("                "));
+      break;
+    default:
+      submenu = 1;
+      manual_user_interface();
+      break;
+  }
+}
+
+//core logic
+/**
+ * Displays automatic testing options on the LCD.
+ */
+void automatic_options() {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  switch (submenuAuto) {
+    case 1:
+      lcd.print(F("Please wait...  "));
+      autoSearch(14);
+      break;
+    case 2:
+      lcd.print(F("Please wait...  "));
+      autoSearch(16);
+      break;
+    case 3:
+      lcd.print(F("Please wait...  "));
+      autoSearch(8);
+      break;
+    case 4:
+      lcd.print(F("Please wait...  "));
+      autoSearch(20);
+      break;
+  }
+}
+
+/**
+ * Updates the menu display on the LCD based on the current menu state.
+ */
+void update_menu() {
+  switch (menu) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Automatic"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" Manual"));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Automatic"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">Manual"));
+      break;
+    default:
+      menu = 1;
+      update_menu();
+      break;
+  }
+}
+
+/**
+ * Executes the action corresponding to the current menu selection.
+ */
+void switch_menu() {
+  switch (menu) {
+    case 1:
+      // automaticUserInterface();
+      // TO DO: Implement automatic through a different function
+      // automatic_testing();
+      automatic_user_interface();
+      break;
+    case 2:
+      manual_user_interface();
+      num++;
+      break;
+  }
+}
+
+/**
+ * Updates the LCD to display the passed models.
+ */
+void updatePassedModelsDisplay() {
+  lcd.clear();
+  if (passedCount > 0) {
+    lcd.setCursor(0, 0);
+    lcd.print("Passed Models:");
+    lcd.setCursor(0, 1);
+    lcd.print(passedModels[currentModelIndex]);
+  } else {
+    lcd.setCursor(0, 0);
+    lcd.print("No models passed");
+  }
 }
 
 /**
@@ -702,543 +1243,6 @@ void buttonScanner() {
     }
   }
 }
-
-/**
- * Updates the menu display on the LCD based on the current menu state.
- */
-void update_menu() {
-  switch (menu) {
-    case 1:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(">Automatic"));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" Manual"));
-      break;
-    case 2:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(" Automatic"));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">Manual"));
-      break;
-    default:
-      menu = 1;
-      update_menu();
-      break;
-  }
-}
-
-/**
- * Displays automatic testing options on the LCD.
- */
-void automatic_options() {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  switch (submenuAuto) {
-    case 1:
-      lcd.print(F("Please wait...  "));
-      autoSearch(14);
-      break;
-    case 2:
-      lcd.print(F("Please wait...  "));
-      autoSearch(16);
-      break;
-    case 3:
-      lcd.print(F("Please wait...  "));
-      autoSearch(8);
-      break;
-    case 4:
-      lcd.print(F("Please wait...  "));
-      autoSearch(20);
-      break;
-  }
-}
-
-/**
- * Determines the pin count of the IC model and runs the corresponding 
- * test cases. After running the tests, it resets the pin configuration to its default state.
- * 
- * @param icModel The index of the IC model to be tested. This index corresponds to 
- * the position of the IC model in the testPatterns array.
- */
-void get_test_case(byte icModel) {
-  bool overallResult = true;
-  if (testPatterns[icModel - 1].pinCount == 14) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_14, 14)) {
-          overallResult = false;
-      }
-    }
-  } else if (testPatterns[icModel - 1].pinCount == 16) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_16, 16)) {
-          overallResult = false;
-      }
-    }
-  } else if (testPatterns[icModel - 1].pinCount == 8) {
-    for (byte i = 0; i < testPatterns[icModel - 1].numTestCases; i++) {
-      if (!testCase(testPatterns[icModel - 1].testPatterns[i], PINS_8, 8)) {
-          overallResult = false;
-      }
-    }
-  }
-
-  if (overallResult) {
-    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " passed all tests.\n");
-    
-  } else {
-    Serial.println("IC Model " + String(testPatterns[icModel - 1].icType) + " failed.\n");
-    
-    
-  }
-
-  reset_pin_config(testPatterns[icModel - 1].pinCount);
-}
-
-/**
- * Resets the pin configuration of the specified IC model to its default state.
- * 
- * @param pinCount The number of pins on the IC model (14 or 16).
- */
-void reset_pin_config(byte pinCount) {
-  if (pinCount == 14) {
-    for (int i = 0; i < sizeof(PINS_14) / sizeof(PINS_14[0]); i++) {
-      pinMode(PINS_14[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_14[i], LOW); // Reset pin state to LOW
-    }
-  } else if (pinCount == 16) {
-    for (int i = 0; i < sizeof(PINS_16) / sizeof(PINS_16[0]); i++) {
-      pinMode(PINS_16[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_16[i], LOW); // Reset pin state to LOW
-    }
-  } else if (pinCount == 8) {
-    for (int i = 0; i < sizeof(PINS_8) / sizeof(PINS_8[0]); i++) {
-      pinMode(PINS_8[i], INPUT);  // Reset pin mode to INPUT
-      digitalWrite(PINS_8[i], LOW); // Reset pin state to LOW
-    }
-  }  
-}
-
-/**
- * Executes the action corresponding to the current menu selection.
- */
-void switch_menu() {
-  switch (menu) {
-    case 1:
-      // automaticUserInterface();
-      // TO DO: Implement automatic through a different function
-      // automatic_testing();
-      automatic_user_interface();
-      break;
-    case 2:
-      manual_user_interface();
-      num++;
-      break;
-  }
-}
-
-/**
- * Displays the automatic user interface options on the LCD.
- */
-void automatic_user_interface() {
-  lcd.clear();
-  switch (submenuAuto) {
-    case 1:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(">14-PIN IC      "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" 16-PIN IC      "));
-      break;
-    case 2:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(" 14-PIN IC      "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">16-PIN IC      "));
-      break;
-    case 3:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(">8-PIN IC       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" 20-PIN IC      "));
-      break;
-    case 4:
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(F(" 8-PIN IC       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">20-PIN IC      "));
-      break;
-    default:
-      submenuAuto = 1;
-      automatic_user_interface();
-      break;
-  }
-}
-
-/**
- * Displays the manual user interface options on the LCD.
- */
-void manual_user_interface() {
-  lcd.clear();
-  switch (submenu) {
-    case 1:
-      lcd.print(F(">IC 7400        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7402        "));
-      break;
-    case 2:
-      lcd.print(F(" IC 7400        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7402        "));
-      break;
-    case 3:
-      lcd.print(F(">IC 7404        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7408        "));
-      break;
-    case 4:
-      lcd.print(F(" IC 7404        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7408        "));
-      break;
-    case 5:
-      lcd.print(F(">IC 7432        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7486        "));
-      break;
-    case 6:
-      lcd.print(F(" IC 7432        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7486        "));
-      break;
-    case 7:
-      lcd.print(F(">IC 747266      "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7427        "));
-      break;
-    case 8:
-      lcd.print(F(" IC 747266      "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7427        "));
-      break;
-    case 9:
-      lcd.print(F(">IC 74151       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7421        "));
-      break;
-    case 10:
-      lcd.print(F(" IC 74151       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7421        "));
-      break;
-    case 11:
-      lcd.print(F(">IC 74192       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7474        "));
-      break;
-    case 12:
-      lcd.print(F(" IC 74192       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7474        "));
-      break;
-    case 13:
-      lcd.print(F(">IC 74190       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74193       "));
-      break;
-    case 14:
-      lcd.print(F(" IC 74190       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74193       "));
-      break;
-    case 15:
-      lcd.print(F(">IC 74195       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7410        "));
-      break;
-    case 16:
-      lcd.print(F(" IC 74195       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7410        "));
-      break;
-    case 17:
-      lcd.print(F(">IC 7411        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74125       "));
-      break;
-    case 18:
-      lcd.print(F(" IC 7411        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74125       "));
-      break;
-    case 19:
-      lcd.print(F(">IC 74138       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7447        "));
-      break;
-    case 20:
-      lcd.print(F(" IC 74138       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7447        "));
-      break;
-    case 21:
-      lcd.print(F(">IC 74173       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4070        "));
-      break;
-    case 22:
-      lcd.print(F(" IC 74173       "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4070        "));
-      break;
-    case 23:
-      lcd.print(F(">IC 4071        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4017        "));
-      break;
-    case 24:
-      lcd.print(F(" IC 4071        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4017        "));
-      break;
-    case 25:
-      lcd.print(F(">IC 4511        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4081        "));
-      break;
-    case 26:
-      lcd.print(F(" IC 4511        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4081        "));
-      break;
-    case 27:
-      lcd.print(F(">IC 4077        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4068        "));
-      break;
-    case 28:
-      lcd.print(F(" IC 4077        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4068        "));
-      break;
-    case 29:
-      lcd.print(F(">IC 4069        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4066        "));
-      break;
-    case 30:
-      lcd.print(F(" IC 4069        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4066        "));
-      break;
-    case 31:
-      lcd.print(F(">IC 4094        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74112       "));
-      break;
-    case 32:
-      lcd.print(F(" IC 4094        "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74112       "));
-      break;
-    case 33:
-      lcd.print(F(">IC 741         "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(" IC 072         "));
-      break;
-    case 34:
-      lcd.print(F(" IC 741         "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 072         "));
-      break;
-    case 35:
-      lcd.print(F(">IC 071         "));
-      lcd.setCursor(0, 1);
-      lcd.print(F("                "));
-      break;
-    default:
-      submenu = 1;
-      manual_user_interface();
-      break;
-  }
-}
-
-/**
- * Updates the LCD to display the passed models.
- */
-void updatePassedModelsDisplay() {
-  lcd.clear();
-  if (passedCount > 0) {
-    lcd.setCursor(0, 0);
-    lcd.print("Passed Models:");
-    lcd.setCursor(0, 1);
-    lcd.print(passedModels[currentModelIndex]);
-  } else {
-    lcd.setCursor(0, 0);
-    lcd.print("No models passed");
-  }
-}
-
-/**
- * Configures the specified pins of an IC according to a test pattern,
- * triggers clock signals if necessary, and verifies the output pins.
- * 
- * @param test A string representing the test pattern for the IC:
- *        'V' - Set pin to HIGH (Vcc)
- *        'G' - Set pin to LOW (Ground)
- *        'L' - Set pin as input with pull-up, expect LOW
- *        'H' - Set pin as input with pull-up, expect HIGH
- *        '0' - Set pin to LOW (output)
- *        '1' - Set pin to HIGH (output)
- *        'C' - Clock pin
- *        'X' - Ignore pin
- * @param pins An array of pin numbers corresponding to the test pattern.
- * @param pinCount The number of pins to be tested.
- * @return True if the outputs match the expected values, false otherwise.
- */
-boolean testCase(const char* test, const byte* pins, int pinCount) {
-  boolean result = true;
-  const int MAX_CLK_PINS = 2;
-  int clkPins[MAX_CLK_PINS];
-  int clkPinCount = 0;
-
-  Serial.println("SignalIn : " + String(test));
-  Serial.print("Response : ");
-
-  for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
-      case 'V':
-        pinMode(pins[i], OUTPUT);
-        digitalWrite(pins[i], HIGH);
-        break;
-      case 'G':
-        pinMode(pins[i], OUTPUT);
-        digitalWrite(pins[i], LOW);
-        break;
-      case 'L':
-        digitalWrite(pins[i], LOW);
-        pinMode(pins[i], INPUT_PULLUP);
-        break;
-      case 'H':
-        digitalWrite(pins[i], HIGH);
-        pinMode(pins[i], INPUT_PULLUP);
-        break;
-      case '~':
-        pinMode(pins[i], INPUT);
-        break;
-    }
-  }
-
-  delay(5);
-
-  for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
-      case 'X':
-      case '0':
-        digitalWrite(pins[i], LOW);
-        pinMode(pins[i], OUTPUT);
-        break;
-      case '1':
-        digitalWrite(pins[i], HIGH);
-        pinMode(pins[i], OUTPUT);
-        break;
-      case 'C':
-        if (clkPinCount < MAX_CLK_PINS) {
-          clkPins[clkPinCount++] = pins[i];
-          pinMode(pins[i], OUTPUT);
-          digitalWrite(pins[i], LOW);
-        } else {
-          Serial.println("Error: Too many clock pins defined.");
-          return false;
-        }
-        break;
-    }
-  }
-
-  for (int i = 0; i < clkPinCount; i++) {
-    pinMode(clkPins[i], INPUT_PULLUP);
-    delay(1);
-    pinMode(clkPins[i], OUTPUT);
-    digitalWrite(clkPins[i], LOW);
-  }
-
-  delay(5);
-
-  for (int i = 0; i < pinCount; i++) {
-    switch (test[i]) {
-      case 'H':
-        if (!digitalRead(pins[i])) {
-          result = false;
-          Serial.print('L');
-        } else {
-          Serial.print(' ');
-        }
-        break;
-      case 'L':
-        if (digitalRead(pins[i])) {
-          result = false;
-          Serial.print('H');
-        } else {
-          Serial.print(' ');
-        }
-        break;
-      default:
-        Serial.print(' ');
-        break;
-    }
-  }
-  Serial.println(";");
-  // Reset all pins to input mode
-  reset_pin_config(pinCount);
-  return result;
-}
-
-/**
- * Automatically tests IC models based on pin count.
- * 
- * @param pins The number of pins to test (14 or 16).
- */
-void autoSearch(byte pins) {
-  passedCount = 0; // Reset passed count
-  byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
-  for (byte i = 0; i < size_db; i++) {
-    bool overallResult = true;
-    if (testPatterns[i].pinCount == pins) {
-      Serial.println("\nTesting IC Model: " + String(testPatterns[i].icType));
-      for (int j = 0; j < testPatterns[i].numTestCases; j++) {
-        if (!testCase(testPatterns[i].testPatterns[j], 
-                      pins == 14 ? PINS_14 : 
-                      (pins == 16 ? PINS_16 : PINS_8), 
-                      pins)) {
-          overallResult = false;
-        }
-        reset_pin_config(pins);  // Ensure pins are reset after each test case
-      }
-      
-      if (overallResult) {
-        passedModels[passedCount++] = testPatterns[i].icType;
-        Serial.println("IC Model " + String(testPatterns[i].icType) + " passed all tests.\n");
-      } else {
-        Serial.println("IC Model " + String(testPatterns[i].icType) + " failed.\n");
-      }
-    }
-  }
-
-  if (passedCount > 0) {
-    currentModelIndex = 0; // Reset to first model
-    menu = 5; // Set menu to passed models display
-    updatePassedModelsDisplay();
-  } else {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("No models passed");
-  }
-}
-
 
 /**
  * Arduino setup function, called once at startup.
