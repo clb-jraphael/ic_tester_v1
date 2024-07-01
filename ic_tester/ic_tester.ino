@@ -621,6 +621,7 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
   {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071}  //35
+  
 };
 
 // FUNCTIONS
@@ -780,9 +781,11 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
 void get_test_case(byte icModel) {
   // Read PROGMEM pointers for the specified icModel
   PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].icType));
-  PGM_P pinCount_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].pinCount));
-  PGM_P numTestCases_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].numTestCases));
-  PGM_P testPatterns_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].testPatterns));
+  const byte* pinCount_p = reinterpret_cast<const byte*>(pgm_read_ptr(&testPatterns[icModel - 1].pinCount));
+  byte pinCount = pgm_read_byte(pinCount_p);
+  const byte* numTestCases_p = reinterpret_cast<const byte*>(pgm_read_ptr(&testPatterns[icModel - 1].numTestCases));
+  byte numTestCases = pgm_read_byte(numTestCases_p);
+  const char* const* testPatterns_p = reinterpret_cast<const char* const*>(pgm_read_ptr(&testPatterns[icModel - 1].testPatterns));
 
   // Print IC Type
   char icType_buffer[20];
@@ -790,27 +793,45 @@ void get_test_case(byte icModel) {
   Serial.print(F("Testing IC: "));
   Serial.println(icType_buffer);
 
-  // Print each test pattern and its result
-  byte numTestCases = pgm_read_byte(numTestCases_p);
-  for (byte i = 0; i < numTestCases; ++i) {
-    PGM_P pattern_p = reinterpret_cast<PGM_P>(pgm_read_ptr(testPatterns_p + i * sizeof(PGM_P)));
-    char testPattern_buffer[30]; // Adjust size as needed
-    strcpy_P(testPattern_buffer, pattern_p);
+  const byte* pins = nullptr;
+  switch (pinCount) {
+    case 8:
+      pins = PINS_8;
+      break;
+    case 14:
+      pins = PINS_14;
+      break;
+    case 16:
+      pins = PINS_16;
+      break;
+    case 20:
+      pins = PINS_IC; // Assuming PINS_IC is used for 20 pin ICs
+      break;
+    default:
+      Serial.println(F("Unsupported pin count"));
+      return;
+  }
 
-    // Execute test case and print results
-    boolean passed = testCase(pattern_p, reinterpret_cast<const byte*>(pgm_read_word(pinCount_p)), pgm_read_byte(pinCount_p));
-    Serial.print(F("Signal: "));
-    for (int j = 0; j < pgm_read_byte(pinCount_p); j++) {
-      Serial.print(testPattern_buffer[j]);
-    }
-    Serial.println();
-    if (passed) {
-      Serial.println(F("Response:                          ;"));
-    } else {
-      Serial.println(F("Response:          L                         ;"));
-      Serial.println(F("Failed"));
+  if (pins == nullptr) {
+    Serial.println(F("Error: Pins not configured correctly."));
+    return;
+  }
+
+  bool overallResult = true;
+
+  for (byte i = 0; i < numTestCases; ++i) {
+    const char* pattern_p = reinterpret_cast<const char*>(pgm_read_ptr(&testPatterns_p[i]));
+    if (!testCase(pattern_p, pins, pinCount)) {
+      overallResult = false;
     }
   }
+
+  if (overallResult) {
+    Serial.println("IC Model " + String(icType_buffer) + " passed all tests.\n");
+  } else {
+    Serial.println("IC Model " + String(icType_buffer) + " failed.\n");
+  }
+  reset_pin_config(pinCount);
 }
 
 //core logic
