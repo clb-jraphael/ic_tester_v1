@@ -769,8 +769,6 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
   return result;
 }
 
-
-
 //core logic
 /**
  * Determines the pin count of the IC model and runs the corresponding 
@@ -814,7 +812,6 @@ void get_test_case(byte icModel) {
     }
   }
 }
-
 
 //core logic
 /**
