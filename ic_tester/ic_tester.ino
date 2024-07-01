@@ -66,13 +66,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 //pin configurations 
 const byte PINS_IC[20] = {
-  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3,
-  PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, 
-  PIN_IC_PIN7, PIN_IC_PIN8, PIN_IC_PIN9, 
-  PIN_IC_PIN10, PIN_IC_PIN11, PIN_IC_PIN12, 
-  PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15,
-  PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18,
-  PIN_IC_PIN19, PIN_IC_PIN20
+  PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8, PIN_IC_PIN9, PIN_IC_PIN10, 
+  PIN_IC_PIN11, PIN_IC_PIN12, PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
 const byte PINS_14[14] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7,
@@ -118,18 +113,467 @@ bool btnOkPressed = false;
 bool btnCancelPressed = false;
 
 // Test pattern strings stored in PROGMEM
+//1
 const char str_7400_1[] PROGMEM = "00H00HGH00H00V";
 const char str_7400_2[] PROGMEM = "01H01HGH01H01V";
 const char str_7400_3[] PROGMEM = "10H10HGH10H10V";
 const char str_7400_4[] PROGMEM = "11L11LGL11L11V";
 const char* const testPatterns_7400[] PROGMEM = {str_7400_1, str_7400_2, str_7400_3, str_7400_4};
+//2
+const char str_7402_1[] PROGMEM = "H00H00G00H00HV";
+const char str_7402_2[] PROGMEM = "L10L10G10L10LV";
+const char str_7402_3[] PROGMEM = "L01L01G01L01LV";
+const char str_7402_4[] PROGMEM = "L11L11G11L11LV";
+const char* const testPatterns_7402[] PROGMEM = {str_7402_1, str_7402_2, str_7402_3, str_7402_4};
+//3
+const char str_7404_1[] PROGMEM = "0H0H0HGH0H0H0V";
+const char str_7404_2[] PROGMEM = "1L1L1LGL1L1L1V";
+const char* const testPatterns_7404[] PROGMEM = {str_7404_1, str_7404_2};
+//4
+const char str_7408_1[] PROGMEM = "00L00LGL00L00V";
+const char str_7408_2[] PROGMEM = "01L01LGL01L01V";
+const char str_7408_3[] PROGMEM = "10L10LGL10L10V";
+const char str_7408_4[] PROGMEM = "11H11HGH11H11V";
+const char* const testPatterns_7408[] PROGMEM = {str_7408_1, str_7402_2, str_7408_3, str_7408_4};
+//5
+const char str_7432_1[] PROGMEM =  "00L00LGL00L00V";
+const char str_7432_2[] PROGMEM =  "01H01HGH01H01V"; 
+const char str_7432_3[] PROGMEM =  "10H10HGH10H10V"; 
+const char str_7432_4[] PROGMEM =  "11H11HGH11H11V";  
+const char* const testPatterns_7432[] PROGMEM = {str_7432_1, str_7432_2, str_7432_3, str_7432_4};
+//6
+const char str_7486_1[] PROGMEM =  "00L00LGL00L00V"; 
+const char str_7486_2[] PROGMEM =  "01H01HGH01H01V"; 
+const char str_7486_3[] PROGMEM =  "10H10HGH10H10V"; 
+const char str_7486_4[] PROGMEM =  "11L11LGL11L11V";   
+const char* const testPatterns_7486[] PROGMEM = {str_7486_1, str_7486_2, str_7486_3, str_7486_4};
+//7
+const char str_747266_1[] PROGMEM = "00HH00G00HH00V";  
+const char str_747266_2[] PROGMEM = "10LL10G10LL10V"; 
+const char str_747266_3[] PROGMEM = "01LL01G01LL01V"; 
+const char str_747266_4[] PROGMEM = "11HH11G11HH11V";    
+const char* const testPatterns_747266[] PROGMEM = {str_747266_1, str_7486_2, str_747266_3, str_747266_4};
+//8
+const char str_7427_1[] PROGMEM = "00000HGH000H0V";  
+const char str_7427_2[] PROGMEM = "00100LGL100L1V"; 
+const char str_7427_3[] PROGMEM = "10010LGL010L0V"; 
+const char str_7427_4[] PROGMEM = "10110LGL110L1V"; 
+const char str_7427_5[] PROGMEM = "01001LGL001L0V"; 
+const char str_7427_6[] PROGMEM = "10101LGL101L1V";
+const char str_7427_7[] PROGMEM = "11011LGL011L0V";
+const char str_7427_8[] PROGMEM = "11111LGL111L1V"; 
+const char* const testPatterns_7427[] PROGMEM = {str_7427_1, str_7427_2, str_7427_3, str_7427_4, str_7427_5, str_7427_6, str_7427_7, str_7427_8};
+//9
+const char str_74151_1[] PROGMEM =  "0101LH1G1010101V"; 
+const char str_74151_2[] PROGMEM =  "1010LH1G0101010V";
+const char str_74151_3[] PROGMEM =  "1110LH0G0001111V";
+const char str_74151_4[] PROGMEM =  "0001HL0G0000000V";
+const char str_74151_5[] PROGMEM =  "1101LH0G0011111V";
+const char str_74151_6[] PROGMEM =  "0010HL0G0010000V";
+const char str_74151_7[] PROGMEM =  "1011LH0G0101111V";
+const char str_74151_8[] PROGMEM =  "0100HL0G0100000V";
+const char str_74151_9[] PROGMEM =  "0111LH0G0111111V";
+const char str_74151_10[] PROGMEM = "1000HL0G0110000V";  
+const char str_74151_11[] PROGMEM = "1111LH0G1001110V"; 
+const char str_74151_12[] PROGMEM = "0000HL0G1000001V"; 
+const char str_74151_13[] PROGMEM = "1111LH0G1011101V"; 
+const char str_74151_14[] PROGMEM = "0000HL0G1010010V"; 
+const char str_74151_15[] PROGMEM = "1111LH0G1101011V";
+const char str_74151_16[] PROGMEM = "0000HL0G1100100V";
+const char str_74151_17[] PROGMEM = "1111LH0G1110111V"; 
+const char str_74151_18[] PROGMEM = "0000HL0G1111000V";
+const char* const testPatterns_74151[] PROGMEM = {str_74151_1, str_74151_2, str_74151_3, str_74151_4, str_74151_5, str_74151_6, str_74151_7, str_74151_8, str_74151_9, str_74151_10, str_74151_11, str_74151_12, str_74151_13, str_74151_14, str_74151_15, str_74151_16, str_74151_17, str_74151_18};
+//10
+const char str_7421_1[] PROGMEM = "11X11HGH11X11V";  
+const char str_7421_2[] PROGMEM = "01X01LGL01X01V"; 
+const char str_7421_3[] PROGMEM = "10X10LGL10X10V"; 
+const char str_7421_4[] PROGMEM = "00X00LGL00X00V";    
+const char* const testPatterns_7421[] PROGMEM = {str_7421_1, str_7421_2, str_7421_3, str_7421_4};
+//11
+const char str_74192_1[] PROGMEM = "0LL11LLG1011110V"; 
+const char str_74192_2[] PROGMEM = "0LL11LLG1011100V";
+const char str_74192_3[] PROGMEM = "0LL11LHG1001100V";
+const char str_74192_4[] PROGMEM = "0LL11LHG1011100V";
+const char str_74192_5[] PROGMEM = "0LL10LHG1011100V";
+const char str_74192_6[] PROGMEM = "0LH11LHG1011100V";
+const char str_74192_7[] PROGMEM = "0LH10LHG1010100V";
+const char* const testPatterns_74192[] PROGMEM = {str_74192_1, str_74192_2, str_74192_3, str_74192_4, str_74192_5, str_74192_6, str_74192_7};
+//12
+const char str_7474_1[] PROGMEM = "01C1LHGHL1000V";
+const char str_7474_2[] PROGMEM = "10C0HLGHL1000V";
+const char str_7474_3[] PROGMEM = "10C1LHGHL1000V";
+const char str_7474_4[] PROGMEM = "11C1HLGHL1000V";
+const char str_7474_5[] PROGMEM = "0001LHGHL1C10V";
+const char str_7474_6[] PROGMEM = "0001LHGLH0C01V";
+const char str_7474_7[] PROGMEM = "0001LHGHL1C01V";
+const char str_7474_8[] PROGMEM = "0001LHGLH1C11V";
+const char* const testPatterns_7474[] PROGMEM = {str_7474_1, str_7474_2, str_7474_3, str_7474_4, str_7474_5, str_7474_6, str_7474_7, str_7474_8};
+//13
+const char str_74190_1[] PROGMEM = "0LL00LLG000LHC0V";
+const char str_74190_2[] PROGMEM = "0LL10LLG001LHC0V";
+const char str_74190_3[] PROGMEM = "0LH00LLG001LHC0V";
+const char str_74190_4[] PROGMEM = "0HL00LLG001LHC0V";
+const char str_74190_5[] PROGMEM = "0HH00LLG001LHC0V";
+const char str_74190_6[] PROGMEM = "0LL00HLG001LHC0V";
+const char str_74190_7[] PROGMEM = "0HH01LLG001LHC0V";
+const char str_74190_8[] PROGMEM = "0HL01LLG001LHC0V";
+const char str_74190_9[] PROGMEM = "0LH01LLG001LHC0V";
+const char* const testPatterns_74190[] PROGMEM = {str_74190_1, str_74190_2, str_74190_3, str_74190_4, str_74190_5, str_74190_6, str_74190_7, str_74190_8, str_74190_9};
+//14
+const char str_74193_1[] PROGMEM =    "1HL11LHG100HH00V";
+const char str_74193_2[] PROGMEM =    "0LH11HLG010HH01V";
+const char str_74193_3[] PROGMEM =    "1HH11HHG110HH01V";
+const char str_74193_4[] PROGMEM =    "1HLC1HHG111HH01V";
+const char str_74193_5[] PROGMEM =    "1LHC1HHG111HH01V";
+const char str_74193_6[] PROGMEM =    "1LLC1HHG111HH01V";
+const char str_74193_7[] PROGMEM =    "1HHC1LHG111HH01V";
+const char str_74193_8[] PROGMEM =    "1HLC1LHG111HH01V";
+const char str_74193_9[] PROGMEM =    "1LHC1LHG111HH01V";
+const char str_74193_10[] PROGMEM =   "1LLC1LHG111HH01V";
+const char str_74193_11[] PROGMEM =   "1HHC1HLG111HH01V";
+const char str_74193_12[] PROGMEM =   "1HLC1HLG111HH01V";
+const char str_74193_13[] PROGMEM =   "1LHC1HLG111HH01V";
+const char str_74193_14[] PROGMEM =   "1LLC1HLG111HH01V";
+const char str_74193_15[] PROGMEM =   "1HHC1LLG111HH01V";
+const char str_74193_16[] PROGMEM =   "1HLC1LLG111HH01V";
+const char str_74193_17[] PROGMEM =   "1LHC1LLG111HH01V";
+const char str_74193_18[] PROGMEM =   "1LL11LLG111HH01V";
+const char str_74193_19[] PROGMEM =   "1LL01LLG111HL01V";
+const char str_74193_20[] PROGMEM =   "1HH11HHG111HH01V";
+const char str_74193_21[] PROGMEM =   "1HH10HHG111LH01V";
+const char str_74193_22[] PROGMEM =   "1LL11LLG111HH01V";
+const char str_74193_23[] PROGMEM =   "1LH1CLLG111HH01V";
+const char str_74193_24[] PROGMEM =   "1HL1CLLG111HH01V";
+const char str_74193_25[] PROGMEM =   "1HH1CLLG111HH01V";
+const char str_74193_26[] PROGMEM =   "1LL1CHLG111HH01V";
+const char str_74193_27[] PROGMEM =   "1LH1CHLG111HH01V";
+const char str_74193_28[] PROGMEM =   "1HL1CHLG111HH01V";
+const char str_74193_29[] PROGMEM =   "1HH1CHLG111HH01V";
+const char str_74193_30[] PROGMEM =   "1LL1CLHG111HH01V";
+const char str_74193_31[] PROGMEM =   "1LL11LLG111HHC1V";
+const char* const testPatterns_74193[] PROGMEM = {
+  str_74193_1, str_74193_2, str_74193_3, str_74193_4, str_74193_5, str_74193_6, str_74193_7, str_74193_8, str_74193_9,
+  str_74193_10, str_74193_11, str_74193_12, str_74193_13, str_74193_14, str_74193_15, str_74193_16, str_74193_17, str_74193_18,
+  str_74193_19, str_74193_20, str_74193_21, str_74193_22, str_74193_23, str_74193_24, str_74193_25, str_74193_26, str_74193_27,
+  str_74193_28, str_74193_29, str_74193_30, str_74193_31
+};
+//15
+const char str_74195_1[] PROGMEM = "0000000G0CHLLLLV";
+const char str_74195_2[] PROGMEM = "1000000G0CHLLLLV";
+const char str_74195_3[] PROGMEM = "1000000G1CHLLLLV";
+const char str_74195_4[] PROGMEM = "1010000G1CHLLLLV";
+const char str_74195_5[] PROGMEM = "1000000G1CHLLLLV";
+const char str_74195_6[] PROGMEM = "1110000G1CHLLLHV";
+const char str_74195_7[] PROGMEM = "1100000G1CHLLHLV";
+const char* const testPatterns_74195[] PROGMEM = {
+  str_74195_1, str_74195_2, str_74195_3, str_74195_4, str_74195_5, str_74195_6, str_74195_7
+};
+//16
+const char str_7410_1[] PROGMEM = "00000HGH000H0V";
+const char str_7410_2[] PROGMEM = "00100HGH100H1V";
+const char str_7410_3[] PROGMEM = "10010HGH010H0V";
+const char str_7410_4[] PROGMEM = "10110HGH110H1V";
+const char str_7410_5[] PROGMEM = "01001HGH001H0V";
+const char str_7410_6[] PROGMEM = "01101HGH101H1V";
+const char str_7410_7[] PROGMEM = "11011HGH011H0V";
+const char str_7410_8[] PROGMEM = "11111LGL111L1V";
+const char* const testPatterns_7410[] PROGMEM = {str_7410_1, str_7410_2, str_7410_3, str_7410_4, str_7410_5, str_7410_6, str_7410_7, str_7410_8};
+//17
+const char str_7411_1[] PROGMEM = "00000LGL000L0V";
+const char str_7411_2[] PROGMEM = "00001LGL001L1V";
+const char str_7411_3[] PROGMEM = "01010LGL010L0V";
+const char str_7411_4[] PROGMEM = "10100LGL100L0V";
+const char str_7411_5[] PROGMEM = "11110LGL110L0V";
+const char str_7411_6[] PROGMEM = "01011LGL011L1V";
+const char str_7411_7[] PROGMEM = "10101LGL101L1V";
+const char str_7411_8[] PROGMEM = "11111HGH111H1V";
+const char* const testPatterns_7411[] PROGMEM = {str_7411_1, str_7411_2, str_7411_3, str_7411_4, str_7411_5, str_7411_6, str_7411_7, str_7411_8};
+//18
+const char str_74125_1[] PROGMEM = "01H01HGH10H10V";
+const char str_74125_2[] PROGMEM = "00L00LGL00L00V";
+const char str_74125_3[] PROGMEM = "10H10HGH01H01V";
+const char str_74125_4[] PROGMEM = "11H11HGH11H11V";
+const char str_74125_5[] PROGMEM = "10H11HGH01H11V";
+const char str_74125_6[] PROGMEM = "11H10HGH11H01V";
+const char str_74125_7[] PROGMEM = "11H10HGH01H11V";
+const char str_74125_8[] PROGMEM = "10H11HGH11H01V";
+const char* const testPatterns_74125[] PROGMEM = {str_74125_1, str_74125_2, str_74125_3, str_74125_4, str_74125_5, str_74125_6, str_74125_7, str_74125_8};
+//19
+const char str_74138_1[] PROGMEM =  "111111HGHHHHHHHV";
+const char str_74138_2[] PROGMEM =  "000110HGHHHHHHHV";
+const char str_74138_3[] PROGMEM =  "111110HGHHHHHHHV";
+const char str_74138_4[] PROGMEM =  "000000HGHHHHHHHV";
+const char str_74138_5[] PROGMEM =  "000001HGHHHHHHLV";
+const char str_74138_6[] PROGMEM =  "100001HGHHHHHLHV";
+const char str_74138_7[] PROGMEM =  "010001HGHHHHLHHV";
+const char str_74138_8[] PROGMEM =  "110001HGHHHLHHHV";
+const char str_74138_9[] PROGMEM =  "001001HGHHLHHHHV";
+const char str_74138_10[] PROGMEM = "101001HGHLHHHHHV";
+const char str_74138_11[] PROGMEM = "011001HGLHHHHHHV";
+const char str_74138_12[] PROGMEM = "111001LGHHHHHHHV";
+const char* const testPatterns_74138[] PROGMEM = {str_74138_1, str_74138_2, str_74138_3, str_74138_4, str_74138_5, str_74138_6, str_74138_7, str_74138_8, str_74138_9, str_74138_10 , str_74138_11, str_74138_12};
+//20
+const char str_7447_1[] PROGMEM =   "001H100GLLLLLHLV";
+const char str_7447_2[] PROGMEM =   "001H001GHHLLHHHV";
+const char str_7447_3[] PROGMEM =   "101H100GLLHLLLHV";
+const char str_7447_4[] PROGMEM =   "101H001GHLLLLLHV";
+const char str_7447_5[] PROGMEM =   "011H100GHHLLHLLV";
+const char str_7447_6[] PROGMEM =   "011H001GHLLHLLLV";
+const char str_7447_7[] PROGMEM =   "111H100GLLLHHLLV";
+const char str_7447_8[] PROGMEM =   "111H001GHHLLLHHV";
+const char str_7447_9[] PROGMEM =   "001H110GLLLLLLLV";
+const char str_7447_10[] PROGMEM =  "001H011GHHLLLLLV";
+const char* const testPatterns_7447[] PROGMEM = {str_7447_1, str_7447_2, str_7447_3, str_7447_4, str_7447_5, str_7447_6, str_7447_7, str_7447_8, str_7447_9, str_7447_10};
+//21
+const char str_74173_1[] PROGMEM =  "00LLLLCG0000001V";
+const char str_74173_2[] PROGMEM =  "00LLLLCG1111111V";
+const char str_74173_3[] PROGMEM =  "00LHLHCG0010100V";
+const char str_74173_4[] PROGMEM =  "00LHLHCG1001010V";
+const char str_74173_5[] PROGMEM =  "00LHLHCG0101010V";
+const char str_74173_6[] PROGMEM =  "00LHLHCG1101010V";
+const char str_74173_7[] PROGMEM =  "00HLHLCG0001010V";
+const char str_74173_8[] PROGMEM =  "00HLHLCG1010100V";
+const char str_74173_9[] PROGMEM =  "00HLHLCG0110100V";
+const char str_74173_10[] PROGMEM = "00HLHLCG1110100V";
+const char str_74173_11[] PROGMEM = "00LHLHCG0010100V";
+const char str_74173_12[] PROGMEM = "00LLHHCG0011000V";
+const char str_74173_13[] PROGMEM = "00LLLLCG1111111V";
+const char str_74173_14[] PROGMEM = "00HHLLCG0000110V";
+const char str_74173_15[] PROGMEM = "00LLLLCG1111111V";
+const char* const testPatterns_74173[] PROGMEM = {
+  str_74173_1, str_74173_2, str_74173_3, str_74173_4, str_74173_5, 
+  str_74173_6, str_74173_7, str_74173_8, str_74173_9, str_74173_10,
+  str_74173_11, str_74173_12, str_74173_13, str_74173_14, str_74173_15
+};
+//22
+const char str_4070_1[] PROGMEM = "00LL00G00LL00V";
+const char str_4070_2[] PROGMEM = "10HH10G10HH10V";
+const char str_4070_3[] PROGMEM = "01HH01G01HH01V";
+const char str_4070_4[] PROGMEM = "11LL11G11LL11V";
+const char* const testPatterns_4070[] PROGMEM = {str_4070_1, str_4070_2, str_4070_3, str_4070_4};
+//23
+const char str_4071_1[] PROGMEM = "00LH11G11HL00V";
+const char str_4071_2[] PROGMEM = "10HH10G10HH10V";
+const char str_4071_3[] PROGMEM = "01HH01G01HH01V";
+const char str_4071_4[] PROGMEM = "11HL00G00LH11V";
+const char* const testPatterns_4071[] PROGMEM = {str_4071_1, str_4071_2, str_4071_3, str_4071_4};
+//24
+const char str_4017_1[] PROGMEM = "LLHLLLLGLLLH0C1V";
+const char str_4017_2[] PROGMEM = "LHLLLLLGLLLH0C0V";
+const char str_4017_3[] PROGMEM = "LLLHLLLGLLLH0C0V";
+const char str_4017_4[] PROGMEM = "LLLLLLHGLLLH0C0V";
+const char str_4017_5[] PROGMEM = "LLLLLLLGLHLH0C0V";
+const char str_4017_6[] PROGMEM = "HLLLLLLGLLLL0C0V";
+const char str_4017_7[] PROGMEM = "LLLLHLLGLLLL0C0V";
+const char str_4017_8[] PROGMEM = "LLLLLHLGLLLL0C0V";
+const char str_4017_9[] PROGMEM = "LLLLLLLGHLLL0C0V";
+const char str_4017_10[] PROGMEM = "LLLLLLLGLLHL0C0V";
+const char str_4017_11[] PROGMEM = "LLHLLLLGLLLH0C0V";
+const char str_4017_12[] PROGMEM = "LLHLLLLGLLLH1C0V";
+const char* const testPatterns_4017[] PROGMEM = {
+  str_4017_1, str_4017_2, str_4017_3, str_4017_4,
+  str_4017_5, str_4017_6, str_4017_7, str_4017_8,
+  str_4017_9, str_4017_10, str_4017_11, str_4017_12
+};
+//25
+const char str_4511_1[] PROGMEM = "0001000GHHHHHHHV";
+const char str_4511_2[] PROGMEM = "0011001GLLHHLLLV";
+const char str_4511_3[] PROGMEM = "0111001GLHHLHHHV";
+const char str_4511_4[] PROGMEM = "0011000GHHHHHLHV";
+const char str_4511_5[] PROGMEM = "0010000GLLLLLLLV";
+const char* const testPatterns_4511[] PROGMEM = {
+  str_4511_1, str_4511_2, str_4511_3, str_4511_4,
+  str_4511_5, 
+};
+//26
+const char str_4081_1[] PROGMEM = "00LH11G11HL00V";
+const char str_4081_2[] PROGMEM = "10LL10G10LL10V";
+const char str_4081_3[] PROGMEM = "01LL01G01LL01V";
+const char str_4081_4[] PROGMEM = "11HL00G00LH11V";
+const char* const testPatterns_4081[] PROGMEM = {
+  str_4081_1, str_4081_2, str_4081_3, str_4081_4
+};
+//27
+const char str_4077_1[] PROGMEM = "00HH00G00HH00V";
+const char str_4077_2[] PROGMEM = "10LL10G10LL10V";
+const char str_4077_3[] PROGMEM = "01LL01G01LL01V";
+const char str_4077_4[] PROGMEM = "11HH11G11HH11V";
+const char* const testPatterns_4077[] PROGMEM = {
+  str_4077_1, str_4077_2, str_4077_3, str_4077_4
+};
+//28
+const char str_4068_1[] PROGMEM =  "011110G01111LV";
+const char str_4068_2[] PROGMEM =  "010100G01010HV";
+const char str_4068_3[] PROGMEM =  "001010G00101HV";
+const char str_4068_4[] PROGMEM =  "000110G00011HV";
+const char str_4068_5[] PROGMEM =  "011000G01100HV";
+const char str_4068_6[] PROGMEM =  "000000G01111HV";
+const char str_4068_7[] PROGMEM =  "000000G00000HV";
+const char str_4068_8[] PROGMEM =  "011110G01110HV";
+const char str_4068_9[] PROGMEM =  "011010G01111HV";
+const char str_4068_10[] PROGMEM = "001110G00111HV";
+const char* const testPatterns_4068[] PROGMEM = {
+  str_4068_1, str_4068_2, str_4068_3, str_4068_4,
+  str_4068_5, str_4068_6, str_4068_7, str_4068_8,
+  str_4068_9, str_4068_10
+};
+//29
+const char str_4069_1[] PROGMEM = "0H0H0HGH0H0H0V";
+const char str_4069_2[] PROGMEM = "1L1L1LGL1L1L1V";
+const char* const testPatterns_4069[] PROGMEM = {
+  str_4069_1, str_4069_2
+};
+//30
+const char str_4066_1[] PROGMEM = "0HH000G0HH000V";
+const char str_4066_2[] PROGMEM = "1HH100G1HH100V";
+const char str_4066_3[] PROGMEM = "0LL011G0LL011V";
+const char str_4066_4[] PROGMEM = "1HH111G1HH111V";
+const char* const testPatterns_4066[] PROGMEM = {
+  str_4066_1, str_4066_2, str_4066_3, str_4066_4
+};
+//31
+const char str_4094_1[] PROGMEM = "1X0XXXXGXXXXXX1V";
+const char str_4094_2[] PROGMEM = "11CHXXXGXXXXXX1V";
+const char str_4094_3[] PROGMEM = "10CLHXXGXXXXXX1V";
+const char str_4094_4[] PROGMEM = "11CHLHXGXXXXXX1V";
+const char str_4094_5[] PROGMEM = "10CLHLHGXXXXXX1V";
+const char str_4094_6[] PROGMEM = "11CHLHLGXXXXXH1V";
+const char str_4094_7[] PROGMEM = "10CLHLHGXXXXHL1V";
+const char str_4094_8[] PROGMEM = "11CHLHLGXXXHLH1V";
+const char str_4094_9[] PROGMEM = "10CLHLHGXXHLHL1V";
+const char str_4094_10[] PROGMEM ="11CHLHLGLXLHLH1V";
+const char str_4094_11[] PROGMEM ="10CLHLHGHXHLHL1V";
+const char str_4094_12[] PROGMEM ="01CLHLHGLXHLHL1V";
+const char str_4094_13[] PROGMEM ="110HLHLGLXLHLH1V";
+const char str_4094_14[] PROGMEM ="100HHHHGLXHHHH0V";
+const char* const testPatterns_4094[] PROGMEM = {
+  str_4094_1, str_4094_2, str_4094_3, str_4094_4,
+  str_4094_5, str_4094_6, str_4094_7, str_4094_8,
+  str_4094_9, str_4094_10, str_4094_11, str_4094_12,
+  str_4094_13, str_4094_14
+};
+//32
+const char str_74112_1[] PROGMEM =  "C000HLLGH000C11V";
+const char str_74112_2[] PROGMEM =  "C110HLLGH011C11V";
+const char str_74112_3[] PROGMEM =  "C001LHHGL100C00V";
+const char str_74112_4[] PROGMEM =  "C111LHHGL100C00V";
+const char str_74112_5[] PROGMEM =  "C001LHHGL100C11V";
+const char str_74112_6[] PROGMEM =  "C011HLLGH110C11V";
+const char str_74112_7[] PROGMEM =  "C101LHHGL101C11V";
+const char str_74112_8[] PROGMEM =  "C111HLLGH111C11V";
+const char* const testPatterns_74112[] PROGMEM = {
+  str_74112_1, str_74112_2, str_74112_3, str_74112_4,
+  str_74112_5, str_74112_6, str_74112_7, str_74112_8
+};
+//33
+const char str_741_1[] PROGMEM = "~10G~LV~";
+const char str_741_2[] PROGMEM = "~01G~HV~";
+const char* const testPatterns_741[] PROGMEM = {
+  str_741_1, str_741_2
+};
+//34
+const char str_072_1[] PROGMEM = "L10G10HV";
+const char str_072_2[] PROGMEM = "H01G01LV";
+const char* const testPatterns_072[] PROGMEM = {
+  str_072_1, str_072_2
+};
+//35
+const char str_071_1[] PROGMEM = "~10G~HV~";
+const char str_071_2[] PROGMEM = "~01G~HV~";
+const char* const testPatterns_071[] PROGMEM = {
+  str_071_1, str_071_2
+};
 
 // IC model strings stored in PROGMEM
+//1
 const char ic_model_7400[] PROGMEM = "7400";
+//2
+const char ic_model_7402[] PROGMEM = "7402";
+//3
+const char ic_model_7404[] PROGMEM = "7404";
+//4
+const char ic_model_7408[] PROGMEM = "7408";
+//5
+const char ic_model_7432[] PROGMEM = "7432";
+//6
+const char ic_model_7486[] PROGMEM = "7486";
+//7
+const char ic_model_747266[] PROGMEM = "747266";
+//8
+const char ic_model_7427[] PROGMEM = "7427";
+//9
+const char ic_model_74151[] PROGMEM = "74151";
+//10
+const char ic_model_7421[] PROGMEM = "7421";
+//11
+const char ic_model_74192[] PROGMEM = "74192";
+//12
+const char ic_model_7474[] PROGMEM = "7474";
+//13
+const char ic_model_74190[] PROGMEM = "74190";
+//14
+const char ic_model_74193[] PROGMEM = "74193";
+//15
+const char ic_model_74195[] PROGMEM = "74195";
+//16
+const char ic_model_7410[] PROGMEM = "7410";
+//17
+const char ic_model_7411[] PROGMEM = "7411";
+//18
+const char ic_model_74125[] PROGMEM = "74125";
+//19
+const char ic_model_74138[] PROGMEM = "74138";
+//20
+const char ic_model_7447[] PROGMEM = "7447";
+//21
+const char ic_model_74173[] PROGMEM = "74173";
+//22
+const char ic_model_4070[] PROGMEM = "4070";
+//23
+const char ic_model_4071[] PROGMEM = "4071";
+//24
+const char ic_model_4017[] PROGMEM = "4017";
+//25
+const char ic_model_4511[] PROGMEM = "4511";
+//26
+const char ic_model_4081[] PROGMEM = "4081";
+//27
+const char ic_model_4077[] PROGMEM = "4077";
+//28
+const char ic_model_4068[] PROGMEM = "4068";
+//29
+const char ic_model_4069[] PROGMEM = "4069";
+//30
+const char ic_model_4066[] PROGMEM = "4066";
+//31
+const char ic_model_4094[] PROGMEM = "4094";
+//32
+const char ic_model_74112[] PROGMEM = "74112";
+//33
+const char ic_model_741[] PROGMEM = "741";
+//34
+const char ic_model_072[] PROGMEM = "072";
+//35
+const char ic_model_071[] PROGMEM = "071";
 
 // Pin counts and test case numbers stored in PROGMEM
-const byte pinCounts[] PROGMEM = {14};
-const byte numTestCases[] PROGMEM = {4};
+const byte pinCount8[] PROGMEM = {8};
+const byte pinCount14[] PROGMEM = {14};
+const byte pinCount16[] PROGMEM = {16};
+const byte pinCount20[] PROGMEM = {20};
+
+const byte numTestCases2[] PROGMEM = {2};
+const byte numTestCases4[] PROGMEM = {4};
+const byte numTestCases5[] PROGMEM = {5};
+const byte numTestCases7[] PROGMEM = {7};
+const byte numTestCases8[] PROGMEM = {8};
+const byte numTestCases9[] PROGMEM = {9};
+const byte numTestCases10[] PROGMEM = {10};
+const byte numTestCases12[] PROGMEM = {12};
+const byte numTestCases14[] PROGMEM = {14};
+const byte numTestCases15[] PROGMEM = {15};
+const byte numTestCases18[] PROGMEM = {18};
+const byte numTestCases31[] PROGMEM = {31};
 
 // Define an array of IC_TestPatterns, using PROGMEM for the array itself
 const struct IC_TestPattern {
@@ -138,7 +582,45 @@ const struct IC_TestPattern {
   const byte* numTestCases;
   const char* const* testPatterns;
 } testPatterns[] PROGMEM = {
-  {reinterpret_cast<const char*>(ic_model_7400), pinCounts, numTestCases, testPatterns_7400}
+
+  {reinterpret_cast<const char*>(ic_model_7400), pinCount14, numTestCases4, testPatterns_7400}, //1
+  {reinterpret_cast<const char*>(ic_model_7402), pinCount14, numTestCases4, testPatterns_7402}, //2
+  {reinterpret_cast<const char*>(ic_model_7404), pinCount14, numTestCases2, testPatterns_7404}, //3
+  {reinterpret_cast<const char*>(ic_model_7408), pinCount14, numTestCases4, testPatterns_7408}, //4
+  {reinterpret_cast<const char*>(ic_model_7432), pinCount14, numTestCases4, testPatterns_7432}, //5
+  {reinterpret_cast<const char*>(ic_model_7486), pinCount14, numTestCases4, testPatterns_7486}, //6
+  {reinterpret_cast<const char*>(ic_model_747266), pinCount14, numTestCases4, testPatterns_747266}, //7
+  {reinterpret_cast<const char*>(ic_model_7427), pinCount14, numTestCases8, testPatterns_7427}, //8
+  {reinterpret_cast<const char*>(ic_model_74151), pinCount16, numTestCases18, testPatterns_74151}, //9
+  {reinterpret_cast<const char*>(ic_model_7421), pinCount14, numTestCases4, testPatterns_7421}, //10
+
+  {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192}, //11
+  {reinterpret_cast<const char*>(ic_model_7474), pinCount14, numTestCases8, testPatterns_7474}, //12
+  {reinterpret_cast<const char*>(ic_model_74190), pinCount16, numTestCases9, testPatterns_74190}, //13
+  {reinterpret_cast<const char*>(ic_model_74193), pinCount16, numTestCases31, testPatterns_74193}, //14
+  {reinterpret_cast<const char*>(ic_model_74195), pinCount16, numTestCases7, testPatterns_74195}, //15
+  {reinterpret_cast<const char*>(ic_model_7410), pinCount14, numTestCases8, testPatterns_7410}, //16
+  {reinterpret_cast<const char*>(ic_model_7411), pinCount14, numTestCases8, testPatterns_7411}, //17 
+  {reinterpret_cast<const char*>(ic_model_74125), pinCount14, numTestCases8, testPatterns_74125}, //18
+  {reinterpret_cast<const char*>(ic_model_74138), pinCount16, numTestCases12, testPatterns_74138}, //19
+  {reinterpret_cast<const char*>(ic_model_7447), pinCount16, numTestCases10, testPatterns_7447}, //20
+
+  {reinterpret_cast<const char*>(ic_model_74173), pinCount16, numTestCases15, testPatterns_74173}, //21
+  {reinterpret_cast<const char*>(ic_model_4070), pinCount14, numTestCases4, testPatterns_4070}, //22
+  {reinterpret_cast<const char*>(ic_model_4071), pinCount14, numTestCases4, testPatterns_4071}, //23
+  {reinterpret_cast<const char*>(ic_model_4017), pinCount16, numTestCases12, testPatterns_4017}, //24
+  {reinterpret_cast<const char*>(ic_model_4511), pinCount16, numTestCases5, testPatterns_4511}, //25
+  {reinterpret_cast<const char*>(ic_model_4081), pinCount14, numTestCases4, testPatterns_4081}, //26
+  {reinterpret_cast<const char*>(ic_model_4077), pinCount14, numTestCases4, testPatterns_4077}, //27
+  {reinterpret_cast<const char*>(ic_model_4068), pinCount14, numTestCases10, testPatterns_4068}, //28
+  {reinterpret_cast<const char*>(ic_model_4069), pinCount14, numTestCases2, testPatterns_4069}, //29
+  {reinterpret_cast<const char*>(ic_model_4066), pinCount14, numTestCases4, testPatterns_4066}, //30
+
+  {reinterpret_cast<const char*>(ic_model_4094), pinCount16, numTestCases14, testPatterns_4094}, //31
+  {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112}, //32
+  {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
+  {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
+  {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071}  //35
 };
 
 // FUNCTIONS
