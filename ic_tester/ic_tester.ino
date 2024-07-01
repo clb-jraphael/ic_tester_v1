@@ -838,7 +838,6 @@ void get_test_case(byte icModel) {
   reset_pin_config(pinCount);
 }
 
-
 //core logic
 /**
  * Automatically tests IC models based on pin count.
@@ -898,7 +897,6 @@ void autoSearch(byte pins) {
   }
 }
 
-
 //core logic
 /**
  * Resets the pin configuration of the specified IC model to its default state.
@@ -917,6 +915,9 @@ void reset_pin_config(byte pinCount) {
     case 8:
       pins = PINS_8;
       break;
+    case 20:
+      pins = PINS_IC;
+      break;
     default:
       return; // Handle error or other pin counts as needed
   }
@@ -926,7 +927,6 @@ void reset_pin_config(byte pinCount) {
     digitalWrite(pgm_read_byte(pins + i), LOW); // Reset pin state to LOW
   }
 }
-
 
 //core logic
 /**
