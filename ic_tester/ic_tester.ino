@@ -621,7 +621,7 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
   {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071}  //35
-  
+
 };
 
 // FUNCTIONS
@@ -824,6 +824,8 @@ void get_test_case(byte icModel) {
     if (!testCase(pattern_p, pins, pinCount)) {
       overallResult = false;
     }
+    // Reset pin configurations after each test case
+    reset_pin_config(pinCount);
   }
 
   if (overallResult) {
@@ -831,8 +833,11 @@ void get_test_case(byte icModel) {
   } else {
     Serial.println("IC Model " + String(icType_buffer) + " failed.\n");
   }
+
+  // Final reset after all test cases
   reset_pin_config(pinCount);
 }
+
 
 //core logic
 /**
