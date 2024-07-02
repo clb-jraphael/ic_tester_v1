@@ -123,10 +123,10 @@ bool btnCancelPressed = false;
 IC_TestPatterns testPatterns[] = {
   //1
   {"7400", 14, 4, {
-    "00H00HGH00H00V", // A = 0, B = 0, Y = 1
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
+    "00H00HGH00H00V", 
+    "01H01HGH01H01V", 
+    "10H10HGH10H10V", 
+    "11L11LGL11L11V"  
   }},
   //2
   {"7402", 14, 4, {
@@ -137,8 +137,8 @@ IC_TestPatterns testPatterns[] = {
   }},
   //3
   {"7404", 14, 2, {
-    "0H0H0HGH0H0H0V", // A = 0, Y = 1
-    "1L1L1LGL1L1L1V"  // A = 1, Y = 0
+    "0H0H0HGH0H0H0V", 
+    "1L1L1LGL1L1L1V"  
   }},
   //4
   {"7408", 14, 4, {
@@ -149,17 +149,17 @@ IC_TestPatterns testPatterns[] = {
   }},
   //5
   {"7432", 14, 4, {
-    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11H11HGH11H11V"  // A = 1, B = 1, Y = 1
+    "00L00LGL00L00V", 
+    "01H01HGH01H01V", 
+    "10H10HGH10H10V", 
+    "11H11HGH11H11V"  
   }},
   //6
   {"7486", 14, 4, {
-    "00L00LGL00L00V", // A = 0, B = 0, Y = 0
-    "01H01HGH01H01V", // A = 0, B = 1, Y = 1
-    "10H10HGH10H10V", // A = 1, B = 0, Y = 1
-    "11L11LGL11L11V"  // A = 1, B = 1, Y = 0
+    "00L00LGL00L00V", 
+    "01H01HGH01H01V", 
+    "10H10HGH10H10V", 
+    "11L11LGL11L11V"  
   }},
   //7
   {"747266", 14, 4, {
@@ -242,7 +242,7 @@ IC_TestPatterns testPatterns[] = {
     "0LH01LLG001LHC0V"
   }},
   //14
-  {"74193", 16, 9, {
+  {"74193", 16, 31, {
     "1HL11LHG100HH00V",
     "0LH11HLG010HH01V",
     "1HH11HHG110HH01V",
@@ -305,7 +305,7 @@ IC_TestPatterns testPatterns[] = {
     "11110LGL110L0V",
     "01011LGL011L1V",
     "10101LGL101L1V",
-    "11111HGH111H1V",
+    "11111HGH111H1V"
   }},
   //18
   {"74125", 14, 8, {
