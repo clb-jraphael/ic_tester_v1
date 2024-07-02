@@ -364,15 +364,13 @@ IC_TestPatterns testPatterns[] = {
     "00HHLLCG0000110V",
     "00LLLLCG1111111V"
   }},
-  
-  // Add more IC test patterns here as needed
 
   //22
   {"4070", 14, 4, {
-    "00LL00G00LL00V", // A = 0, B = 0, Y = 1
-    "10HH10G10HH10V", // A = 0, B = 1, Y = 0
-    "01HH01G01HH01V", // A = 1, B = 0, Y = 0
-    "11LL11G11LL11V"  // A = 1, B = 1, Y = 1
+    "00LL00G00LL00V", 
+    "10HH10G10HH10V", 
+    "01HH01G01HH01V", 
+    "11LL11G11LL11V"  
   }},
   //23
   {"4071", 14, 4, {
@@ -483,7 +481,7 @@ IC_TestPatterns testPatterns[] = {
   }},
 
   {"071", 8, 2,{
-    "~10G~HV~", // out 1 should be low, probable cause could be incorrect voltage input
+    "~10G~HV~", 
     "~01G~HV~"
 
   }}
