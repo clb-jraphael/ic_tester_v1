@@ -81,14 +81,6 @@ const byte PINS_8[8] {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
 
-// Defined structure to hold IC test patterns
-struct IC_TestPatterns {
-  const char* icType;             // IC type (e.g., "7400", "7402", etc.)
-  byte pinCount;                  // 20, 8, 14, 16-pin, etc.
-  byte numTestCases;              // Number of test cases for this IC
-  const char* testPatterns[36];   // Array to hold test patterns (adjust size as needed)
-};
-
 // GLOBAL VARIABLES
 
 const byte MAX_BUTTONS = 6;
@@ -581,7 +573,9 @@ const struct IC_TestPattern {
   const byte* pinCount;
   const byte* numTestCases;
   const char* const* testPatterns;
-} testPatterns[] PROGMEM = {
+}
+
+testPatterns[] PROGMEM = {
 
   {reinterpret_cast<const char*>(ic_model_7400), pinCount14, numTestCases4, testPatterns_7400}, //1
   {reinterpret_cast<const char*>(ic_model_7402), pinCount14, numTestCases4, testPatterns_7402}, //2
@@ -635,7 +629,7 @@ void init_ic_pins(){
   } 
 }
 
-//core logic
+
 /**
  * Configures the specified pins of an IC according to a test pattern,
  * triggers clock signals if necessary, and verifies the output pins.
@@ -770,7 +764,6 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
   return result;
 }
 
-//core logic
 /**
  * Determines the pin count of the IC model and runs the corresponding 
  * test cases. After running the tests, it resets the pin configuration to its default state.
