@@ -1270,6 +1270,20 @@ void updatePassedModelsDisplay() {
   }
 }
 
+void logic_probe() {
+  lcd.clear();
+  lcd.print(F("Probing..."));
+  delay(2000);
+}
+
+void volt_meter() {
+  lcd.clear();
+  lcd.print(F("Measuring"));
+  lcd.setCursor(0, 1);
+  lcd.print(F("voltage..."));
+  delay(2000);
+}
+
 /**
  * Reads the value from a potentiometer connected to PIN_POT.
  * The value is read 10 times, averaged, and assigned to variable 'a'.
@@ -1477,20 +1491,21 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuProbe > 1) submenuProbe--;
-      else submenu = 2; // Wrap around to last option
+      else submenuProbe = 2; // Wrap around to last option
       probe_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
       if (submenuProbe < 2) submenuProbe++;
-      else submenu = 1; // Wrap around to first option
+      else submenuProbe = 1; // Wrap around to first option
       probe_user_interface();
     }
 
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-      //get_test_case(submenu);
+      if (submenuProbe == 1) logic_probe();
+      else if (submenu == 2) volt_meter();
     }
 
     if (flag_button[5]) { // CANCEL button
