@@ -1265,6 +1265,7 @@ void updatePassedModelsDisplay() {
 
 void logic_probe() {
   lcd.clear();
+  lcd.setCursor(0, 0);
   lcd.print(F("Probing..."));
   delay(2000);
 }
