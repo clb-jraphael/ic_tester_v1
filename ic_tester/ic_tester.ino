@@ -95,7 +95,7 @@ const  byte PINS_BUTTONS[MAX_BUTTONS] = {
 
 byte flag_button[MAX_BUTTONS];
 
-byte menu = 1, submenu = 1, submenuAuto = 1, num = 1, currentModelIndex = 0, passedCount = 0;
+byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, num = 1, currentModelIndex = 0, passedCount = 0;
 String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
@@ -1198,9 +1198,33 @@ void update_menu() {
       lcd.setCursor(0, 1);
       lcd.print(F(">Manual"));
       break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Probe"));
+      break;
     default:
       menu = 1;
       update_menu();
+      break;
+  }
+}
+
+void probe_user_interface() {
+  switch (submenuProbe) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Logic Probe    "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" Volt Meter     "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Logic Probe    "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">Volt Meter     "));
       break;
   }
 }
@@ -1332,17 +1356,17 @@ bool get_button_ok(){
  * It handles navigation through main menu, submenus, and executing actions.
  */
 void buttonScanner() {
-  if (menu == 1 || menu == 2) {
+  if (menu == 1 || menu == 2 || menu == 3) {
     // Main menu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (menu > 1) menu--;
       update_menu();
     }
-  
+
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (menu < 2) menu++;
+      if (menu < 3) menu++;
       update_menu();
     }
 
@@ -1353,8 +1377,10 @@ void buttonScanner() {
         menu = 4; // Switch to submenu mode
       } else if (menu == 2) {
         manual_user_interface();
-        menu = 3;
-        // switch_menu();
+        menu = 7;
+      } else if (menu == 3) {
+        probe_user_interface(); // Enter Probe submenu
+        menu = 6;
       }
     }
 
@@ -1362,7 +1388,7 @@ void buttonScanner() {
       flag_button[5] = false; // Reset flag
       // Implement cancel action if needed
     }
-  } else if (menu == 3) {
+  } else if (menu == 7) {
     // Submenu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
@@ -1370,19 +1396,19 @@ void buttonScanner() {
       else submenu = 35; // Wrap around to last option
       manual_user_interface();
     }
-  
+
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
       if (submenu < 35) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
-  
+
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       get_test_case(submenu);
     }
-  
+
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
       menu = 1; // Go back to main menu
@@ -1396,19 +1422,19 @@ void buttonScanner() {
       else submenuAuto = 4; // Wrap around to last option
       automatic_user_interface();
     }
-  
+
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
       if (submenuAuto < 4) submenuAuto++;
       else submenuAuto = 1; // Wrap around to first option
       automatic_user_interface();
     }
-  
+
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       automatic_options(); // Execute the selected IC test
     }
-  
+
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
       menu = 1; // Go back to main menu
@@ -1421,7 +1447,7 @@ void buttonScanner() {
       if (currentModelIndex > 0) currentModelIndex--;
       updatePassedModelsDisplay();
     }
-  
+
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
       if (currentModelIndex < passedCount - 1) currentModelIndex++;
@@ -1433,11 +1459,37 @@ void buttonScanner() {
       menu = 4; // Go back to automatic submenu
       automatic_user_interface();
     }
-    
+
     if (flag_button[5]) {
       flag_button[5] = false;
       menu = 4;
       automatic_user_interface();
+    }
+  } else if (menu == 6) {
+    // Probe submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuProbe > 1) submenuProbe--;
+      else submenu = 2; // Wrap around to last option
+      probe_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuProbe < 2) submenuProbe++;
+      else submenu = 1; // Wrap around to first option
+      probe_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      //get_test_case(submenu);
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 1; // Go back to main menu
+      update_menu();
     }
   }
 }
