@@ -1286,7 +1286,7 @@ void updatePassedModelsDisplay() {
 /**
  * @brief Checks the voltage level at the probe pin and updates the LCD display.
  *
- * This function reads the analog value from the probe pin, converts it to a voltage level,
+ * Reads the analog value from the probe pin, converts it to a voltage level,
  * and displays whether the voltage is HIGH, LOW, or HIGH-Z based on predefined thresholds.
  */
 void logic_probe() {
@@ -1311,17 +1311,25 @@ void logic_probe() {
   Serial.println(voltage);
 }
 
+/**
+ * @brief Continuously measures and displays the voltage from the probe pin on the LCD.
+ * 
+ * Reads the analog value from the probe pin (PIN_PROBE), converts it to a voltage level,
+ * and displays the voltage on the LCD. The function runs in an infinite loop and keeps updating the
+ * voltage reading. The loop can be exited by pressing the cancel button, which will return the user
+ * to the probe submenu.
+ */
 void volt_meter() {
   while (true) {
-    int analogValue = analogRead(PIN_PROBE); ///< Read the analog value from the probe pin
-    float voltage = (analogValue / 1023.0) * 5.0; ///< Convert the analog value to a voltage level
+    int analogValue = analogRead(PIN_PROBE);
+    float voltage = (analogValue / 1023.0) * 5.0; // Convert to a voltage
 
-    lcd.clear(); ///< Clear the LCD display
-    lcd.setCursor(0, 0); ///< Set cursor to the first row
-    lcd.print(F("Voltage:")); ///< Display "Voltage:" label
-    lcd.setCursor(0, 1); ///< Set cursor to the second row
-    lcd.print(voltage, 2); ///< Display the voltage value with 2 decimal places
-    lcd.print(F(" V")); ///< Display the unit "V"
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print(F("Voltage:"));
+    lcd.setCursor(0, 1);
+    lcd.print(voltage, 2); // Two decimal places
+    lcd.print(F(" V"));
 
     // For debugging purposes
     Serial.print("Analog Value: ");
