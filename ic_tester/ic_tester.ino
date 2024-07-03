@@ -22,6 +22,8 @@ const byte PIN_BTN_OK = 24;
 const byte PIN_BTN_CANCEL = 26;
 
 const byte PIN_PROBE= A2;
+const float HIGH_THRESHOLD = 2.4;
+const float LOW_THRESHOLD = 0.8;
 
 // Px headers
 const byte PIN_PWM_P0 = 5;
@@ -1264,10 +1266,25 @@ void updatePassedModelsDisplay() {
 }
 
 void logic_probe() {
+  int analogValue = analogRead(PIN_PROBE);
+  float voltage = (analogValue / 1023.0) * 5.0; // Convert to voltage
+
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print(F("Probing..."));
-  delay(2000);
+
+  if (voltage >= HIGH_THRESHOLD) {
+    lcd.print(F("Voltage: HIGH"));
+  } else if (voltage <= LOW_THRESHOLD) {
+    lcd.print(F("Voltage: LOW"));
+  } else {
+    lcd.print(F("Voltage: HIGH-Z"));
+  }
+
+  // For debugging purposes
+  Serial.print("Analog Value: ");
+  Serial.print(analogValue);
+  Serial.print(" Voltage: ");
+  Serial.println(voltage);
 }
 
 void volt_meter() {
@@ -1532,6 +1549,8 @@ void setup() {
   pinMode(PIN_PWM_P1, OUTPUT);
   pinMode(PIN_PWM_P2, OUTPUT);
   pinMode(PIN_PWM_P3, OUTPUT);
+
+  pinMode(PIN_PROBE, INPUT);
 
   lcd.begin(16, 2);
  
