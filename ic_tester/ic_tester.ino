@@ -128,7 +128,7 @@ const char str_7408_1[] PROGMEM = "00L00LGL00L00V";
 const char str_7408_2[] PROGMEM = "01L01LGL01L01V";
 const char str_7408_3[] PROGMEM = "10L10LGL10L10V";
 const char str_7408_4[] PROGMEM = "11H11HGH11H11V";
-const char* const testPatterns_7408[] PROGMEM = {str_7408_1, str_7402_2, str_7408_3, str_7408_4};
+const char* const testPatterns_7408[] PROGMEM = {str_7408_1, str_7408_2, str_7408_3, str_7408_4};
 //5
 const char str_7432_1[] PROGMEM =  "00L00LGL00L00V";
 const char str_7432_2[] PROGMEM =  "01H01HGH01H01V"; 
@@ -146,7 +146,7 @@ const char str_747266_1[] PROGMEM = "00HH00G00HH00V";
 const char str_747266_2[] PROGMEM = "10LL10G10LL10V"; 
 const char str_747266_3[] PROGMEM = "01LL01G01LL01V"; 
 const char str_747266_4[] PROGMEM = "11HH11G11HH11V";    
-const char* const testPatterns_747266[] PROGMEM = {str_747266_1, str_7486_2, str_747266_3, str_747266_4};
+const char* const testPatterns_747266[] PROGMEM = {str_747266_1, str_747266_2, str_747266_3, str_747266_4};
 //8
 const char str_7427_1[] PROGMEM = "00000HGH000H0V";  
 const char str_7427_2[] PROGMEM = "00100LGL100L1V"; 
