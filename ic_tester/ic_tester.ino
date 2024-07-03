@@ -1250,24 +1250,6 @@ void probe_user_interface() {
 }
 
 /**
- * Executes the action corresponding to the current menu selection.
- */
-void switch_menu() {
-  switch (menu) {
-    case 1:
-      // automaticUserInterface();
-      // TO DO: Implement automatic through a different function
-      // automatic_testing();
-      automatic_user_interface();
-      break;
-    case 2:
-      manual_user_interface();
-      num++;
-      break;
-  }
-}
-
-/**
  * Updates the LCD to display the passed models.
  */
 void updatePassedModelsDisplay() {
