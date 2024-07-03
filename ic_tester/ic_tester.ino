@@ -631,7 +631,6 @@ void init_ic_pins(){
   } 
 }
 
-
 /**
  * Configures the specified pins of an IC according to a test pattern,
  * triggers clock signals if necessary, and verifies the output pins.
@@ -655,12 +654,19 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
   int clkPins[MAX_CLK_PINS];
   int clkPinCount = 0;
 
-  Serial.println("SignalIn : " + String((const __FlashStringHelper*)test));
-  Serial.print("Response : ");
+  // Read the test string into a buffer
+  char testBuffer[pinCount + 1]; // +1 for null terminator
+  for (int i = 0; i < pinCount; i++) {
+    testBuffer[i] = pgm_read_byte(test + i);
+  }
+  testBuffer[pinCount] = '\0'; // Ensure null-termination
+
+  Serial.print("SignalIn : ");
+  Serial.println(testBuffer);
 
   // Phase 1: Pin Configuration
   for (int i = 0; i < pinCount; i++) {
-    char c = pgm_read_byte(test + i);
+    char c = testBuffer[i];
     switch (c) {
       case 'V':
         pinMode(pins[i], OUTPUT);
@@ -684,11 +690,12 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     }
   }
 
-  delay(5);
+  // Very short delay for stabilization
+  delayMicroseconds(10);
 
   // Phase 2: Special Pin Configurations ('X', '0', '1', 'C')
   for (int i = 0; i < pinCount; i++) {
-    char c = pgm_read_byte(test + i);
+    char c = testBuffer[i];
     switch (c) {
       case 'X':
       case '0':
@@ -712,59 +719,68 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     }
   }
 
+  // Toggle clock pins to simulate clock signal
+  for (int i = 0; i < clkPinCount; i++) {
+    digitalWrite(clkPins[i], HIGH);
+    delayMicroseconds(100); // Adjust as needed for your IC timing requirements
+    digitalWrite(clkPins[i], LOW);
+    delayMicroseconds(100);
+  }
+
+  delay(10);
+
   // Phase 3: Verification of Outputs
+  Serial.print("Response : ");
+  boolean printed = false; // Track if any response is printed
   for (int i = 0; i < pinCount; i++) {
-    char expected = pgm_read_byte(test + i);
+    char expected = testBuffer[i];
     char actual = ' ';
+    bool isOutputPin = false;
+
     switch (expected) {
       case 'H':
-        if (!digitalRead(pins[i])) {
-          result = false;
-          actual = 'L';
-        } else {
-          actual = 'H';
-        }
+        actual = digitalRead(pins[i]) ? 'H' : 'L';
+        isOutputPin = true;
         break;
       case 'L':
-        if (digitalRead(pins[i])) {
-          result = false;
-          actual = 'H';
-        } else {
-          actual = 'L';
-        }
+        actual = digitalRead(pins[i]) ? 'H' : 'L';
+        isOutputPin = true;
         break;
       case 'V':
-        if (!digitalRead(pins[i])) {
-          result = false;
-          actual = 'L';
-        } else {
-          actual = 'V';
-        }
+        actual = digitalRead(pins[i]) ? 'V' : 'L';
+        isOutputPin = false; // Do not print power pin results
         break;
       case 'G':
-        if (digitalRead(pins[i])) {
-          result = false;
-          actual = 'V';
-        } else {
-          actual = 'G';
-        }
+        actual = digitalRead(pins[i]) ? 'V' : 'G';
+        isOutputPin = false; // Do not print ground pin results
         break;
       default:
         actual = ' ';
         break;
     }
-    Serial.print(actual);
-    if (actual != ' ') {
-      Serial.print(" ");
+
+    if (isOutputPin) {
+      if (expected != actual) {
+        Serial.print(actual);
+        printed = true;
+        result = false;
+      } else {
+        Serial.print(' ');
+      }
     }
   }
-  Serial.println(";");
+
+  if (!printed) {
+    Serial.print(";");
+  }
+  
+  Serial.println();
 
   // Reset all pins to input mode
   reset_pin_config(pinCount);
-
   return result;
 }
+
 
 /**
  * Determines the pin count of the IC model and runs the corresponding 
@@ -899,16 +915,17 @@ void autoSearch(byte pins) {
  * @param pinCount The number of pins on the IC model (14 or 16).
  */
 void reset_pin_config(byte pinCount) {
-  const byte* pins;
+  const byte* pins = nullptr;
+
   switch (pinCount) {
+    case 8:
+      pins = PINS_8;
+      break;
     case 14:
       pins = PINS_14;
       break;
     case 16:
       pins = PINS_16;
-      break;
-    case 8:
-      pins = PINS_8;
       break;
     case 20:
       pins = PINS_IC;
@@ -922,6 +939,7 @@ void reset_pin_config(byte pinCount) {
     digitalWrite(pgm_read_byte(pins + i), LOW); // Reset pin state to LOW
   }
 }
+
 
 //core logic
 /**
