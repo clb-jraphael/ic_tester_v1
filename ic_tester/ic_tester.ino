@@ -1283,6 +1283,12 @@ void updatePassedModelsDisplay() {
   }
 }
 
+/**
+ * @brief Checks the voltage level at the probe pin and updates the LCD display.
+ *
+ * This function reads the analog value from the probe pin, converts it to a voltage level,
+ * and displays whether the voltage is HIGH, LOW, or HIGH-Z based on predefined thresholds.
+ */
 void logic_probe() {
   int analogValue = analogRead(PIN_PROBE);
   float voltage = (analogValue / 1023.0) * 5.0; // Convert to voltage
@@ -1306,11 +1312,25 @@ void logic_probe() {
 }
 
 void volt_meter() {
-  lcd.clear();
-  lcd.print(F("Measuring"));
-  lcd.setCursor(0, 1);
-  lcd.print(F("voltage..."));
-  delay(2000);
+  while (true) {
+    int analogValue = analogRead(PIN_PROBE); ///< Read the analog value from the probe pin
+    float voltage = (analogValue / 1023.0) * 5.0; ///< Convert the analog value to a voltage level
+
+    lcd.clear(); ///< Clear the LCD display
+    lcd.setCursor(0, 0); ///< Set cursor to the first row
+    lcd.print(F("Voltage:")); ///< Display "Voltage:" label
+    lcd.setCursor(0, 1); ///< Set cursor to the second row
+    lcd.print(voltage, 2); ///< Display the voltage value with 2 decimal places
+    lcd.print(F(" V")); ///< Display the unit "V"
+
+    // For debugging purposes
+    Serial.print("Analog Value: ");
+    Serial.print(analogValue);
+    Serial.print(" Voltage: ");
+    Serial.println(voltage);
+
+    delay(500);
+  }
 }
 
 /**
@@ -1534,7 +1554,7 @@ void buttonScanner() {
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
       if (submenuProbe == 1) logic_probe();
-      else if (submenu == 2) volt_meter();
+      else if (submenuProbe == 2) volt_meter();
     }
 
     if (flag_button[5]) { // CANCEL button
