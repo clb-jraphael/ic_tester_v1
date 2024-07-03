@@ -1330,7 +1330,15 @@ void volt_meter() {
     Serial.println(voltage);
 
     delay(500);
+
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      break;
+    }
   }
+
+  menu = 6;
+  submenuProbe = 1;
+  probe_user_interface();
 }
 
 /**
