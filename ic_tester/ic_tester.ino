@@ -1266,12 +1266,34 @@ void updatePassedModelsDisplay() {
 }
 
 /**
+ * Turns off any light emitting from the LED.
+ */
+void turnOffBacklight() {
+  analogWrite(PIN_RGBLED_R, 0);
+  analogWrite(PIN_RGBLED_G, 0);
+  analogWrite(PIN_RGBLED_B, 0);
+}
+
+/**
+ * Sets the color of the backlight.
+ */
+void setBacklightColor(uint8_t red, uint8_t green, uint8_t blue) {
+  analogWrite(PIN_RGBLED_R, red);
+  analogWrite(PIN_RGBLED_G, green);
+  analogWrite(PIN_RGBLED_B, blue);
+}
+
+
+/**
  * @brief Checks the voltage level at the probe pin and updates the LCD display.
  *
  * Reads the analog value from the probe pin, converts it to a voltage level,
  * and displays whether the voltage is HIGH, LOW, or HIGH-Z based on predefined thresholds.
  */
 void logic_probe() {
+  const uint8_t RED[] = {255, 0, 0}; // LOW
+  const uint8_t GREEN[] = {0, 255, 0}; // HIGH
+  const uint8_t CYAN[] = {0, 255, 255}; // HIGH-Z
   int analogValue = analogRead(PIN_PROBE);
   float voltage = (analogValue / 1023.0) * 5.0; // Convert to voltage
 
@@ -1280,10 +1302,13 @@ void logic_probe() {
 
   if (voltage >= HIGH_THRESHOLD) {
     lcd.print(F("Voltage: HIGH"));
+    setBacklightColor(GREEN[0], GREEN[1], GREEN[2]);
   } else if (voltage <= LOW_THRESHOLD) {
     lcd.print(F("Voltage: LOW"));
+    setBacklightColor(RED[0], RED[1], RED[2]);
   } else {
     lcd.print(F("Voltage: HIGH-Z"));
+    setBacklightColor(CYAN[0], CYAN[1], CYAN[2]);
   }
 
   // For debugging purposes
@@ -1291,6 +1316,9 @@ void logic_probe() {
   Serial.print(analogValue);
   Serial.print(" Voltage: ");
   Serial.println(voltage);
+  delay(2000);
+  turnOffBacklight();
+  probe_user_interface();
 }
 
 /**
