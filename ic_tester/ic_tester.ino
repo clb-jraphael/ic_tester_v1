@@ -620,6 +620,28 @@ testPatterns[] PROGMEM = {
 
 };
 
+byte upIndicator[] = {
+  B00000,
+  B00000,
+  B00100,
+  B01110,
+  B11011,
+  B10001,
+  B00000,
+  B00000
+};
+
+byte downIndicator[] = {
+  B00000,
+  B00000,
+  B10001,
+  B11011,
+  B01110,
+  B00100,
+  B00000,
+  B00000
+};
+
 // FUNCTIONS
 
 /**
@@ -981,6 +1003,18 @@ void automatic_user_interface() {
       automatic_user_interface();
       break;
   }
+
+  // Display up arrow if not on the first submenu
+  if (submenuAuto > 2) {
+    lcd.setCursor(15, 0);
+    lcd.write(byte(0));
+  }
+
+  // Display down arrow if not on the last submenu
+  if (submenuAuto < 3) {
+    lcd.setCursor(15, 1);
+    lcd.write(byte(1));
+  }
 }
 
 //core logic
@@ -1170,6 +1204,18 @@ void manual_user_interface() {
       manual_user_interface();
       break;
   }
+
+  // Display up arrow if not on the first submenu
+  if (submenu > 2) {
+    lcd.setCursor(15, 0);
+    lcd.write(byte(0));
+  }
+
+  // Display down arrow if not on the last submenu
+  if (submenu < 35) {
+    lcd.setCursor(15, 1);
+    lcd.write(byte(1));
+  }
 }
 
 //core logic
@@ -1227,6 +1273,18 @@ void update_menu() {
       menu = 1;
       update_menu();
       break;
+  }
+
+  // Display up arrow if not on the first submenu
+  if (menu > 2) {
+    lcd.setCursor(15, 0);
+    lcd.write(byte(0));
+  }
+
+  // Display down arrow if not on the last submenu
+  if (menu < 3) {
+    lcd.setCursor(15, 1);
+    lcd.write(byte(1));
   }
 }
 
@@ -1605,9 +1663,12 @@ void setup() {
   pinMode(PIN_BTN_OK, INPUT_PULLUP);
   pinMode(PIN_BTN_CANCEL, INPUT_PULLUP);
   pinMode(PIN_RGBLED_R, OUTPUT);
-  // pinMode(PIN_RGBLED_G, OUTPUT); 
+  pinMode(PIN_RGBLED_G, OUTPUT); 
   pinMode(PIN_RGBLED_B, OUTPUT);
   pinMode(PIN_LED1, OUTPUT);
+
+  lcd.createChar(0, upIndicator);
+  lcd.createChar(1, downIndicator);
 
   pinMode(PIN_PWM_P0, OUTPUT);
   pinMode(PIN_PWM_P1, OUTPUT);
