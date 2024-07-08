@@ -182,7 +182,9 @@ const char str_7421_1[] PROGMEM = "11X11HGH11X11V";
 const char str_7421_2[] PROGMEM = "01X01LGL01X01V"; 
 const char str_7421_3[] PROGMEM = "10X10LGL10X10V"; 
 const char str_7421_4[] PROGMEM = "00X00LGL00X00V";    
-const char* const testPatterns_7421[] PROGMEM = {str_7421_1, str_7421_2, str_7421_3, str_7421_4};
+const char* const testPatterns_7421[] PROGMEM = {
+  str_7421_1, str_7421_2, str_7421_3, str_7421_4
+};
 //11
 const char str_74192_1[] PROGMEM = "0LL11LLG1011110V"; 
 const char str_74192_2[] PROGMEM = "0LL11LLG1011100V";
@@ -191,7 +193,9 @@ const char str_74192_4[] PROGMEM = "0LL11LHG1011100V";
 const char str_74192_5[] PROGMEM = "0LL10LHG1011100V";
 const char str_74192_6[] PROGMEM = "0LH11LHG1011100V";
 const char str_74192_7[] PROGMEM = "0LH10LHG1010100V";
-const char* const testPatterns_74192[] PROGMEM = {str_74192_1, str_74192_2, str_74192_3, str_74192_4, str_74192_5, str_74192_6, str_74192_7};
+const char* const testPatterns_74192[] PROGMEM = {
+  str_74192_1, str_74192_2, str_74192_3, str_74192_4, str_74192_5, str_74192_6, str_74192_7
+};
 //12
 const char str_7474_1[] PROGMEM = "01C1LHGHL1000V";
 const char str_7474_2[] PROGMEM = "10C0HLGHL1000V";
@@ -214,37 +218,37 @@ const char str_74190_8[] PROGMEM = "0HL01LLG001LHC0V";
 const char str_74190_9[] PROGMEM = "0LH01LLG001LHC0V";
 const char* const testPatterns_74190[] PROGMEM = {str_74190_1, str_74190_2, str_74190_3, str_74190_4, str_74190_5, str_74190_6, str_74190_7, str_74190_8, str_74190_9};
 //14
-const char str_74193_1[] PROGMEM =    "1HL11LHG100HH00V";
-const char str_74193_2[] PROGMEM =    "0LH11HLG010HH01V";
-const char str_74193_3[] PROGMEM =    "1HH11HHG110HH01V";
-const char str_74193_4[] PROGMEM =    "1HLC1HHG111HH01V";
-const char str_74193_5[] PROGMEM =    "1LHC1HHG111HH01V";
-const char str_74193_6[] PROGMEM =    "1LLC1HHG111HH01V";
-const char str_74193_7[] PROGMEM =    "1HHC1LHG111HH01V";
-const char str_74193_8[] PROGMEM =    "1HLC1LHG111HH01V";
-const char str_74193_9[] PROGMEM =    "1LHC1LHG111HH01V";
-const char str_74193_10[] PROGMEM =   "1LLC1LHG111HH01V";
-const char str_74193_11[] PROGMEM =   "1HHC1HLG111HH01V";
-const char str_74193_12[] PROGMEM =   "1HLC1HLG111HH01V";
-const char str_74193_13[] PROGMEM =   "1LHC1HLG111HH01V";
-const char str_74193_14[] PROGMEM =   "1LLC1HLG111HH01V";
-const char str_74193_15[] PROGMEM =   "1HHC1LLG111HH01V";
-const char str_74193_16[] PROGMEM =   "1HLC1LLG111HH01V";
-const char str_74193_17[] PROGMEM =   "1LHC1LLG111HH01V";
-const char str_74193_18[] PROGMEM =   "1LL11LLG111HH01V";
-const char str_74193_19[] PROGMEM =   "1LL01LLG111HL01V";
-const char str_74193_20[] PROGMEM =   "1HH11HHG111HH01V";
-const char str_74193_21[] PROGMEM =   "1HH10HHG111LH01V";
-const char str_74193_22[] PROGMEM =   "1LL11LLG111HH01V";
-const char str_74193_23[] PROGMEM =   "1LH1CLLG111HH01V";
-const char str_74193_24[] PROGMEM =   "1HL1CLLG111HH01V";
-const char str_74193_25[] PROGMEM =   "1HH1CLLG111HH01V";
-const char str_74193_26[] PROGMEM =   "1LL1CHLG111HH01V";
-const char str_74193_27[] PROGMEM =   "1LH1CHLG111HH01V";
-const char str_74193_28[] PROGMEM =   "1HL1CHLG111HH01V";
-const char str_74193_29[] PROGMEM =   "1HH1CHLG111HH01V";
-const char str_74193_30[] PROGMEM =   "1LL1CLHG111HH01V";
-const char str_74193_31[] PROGMEM =   "1LL11LLG111HHC1V";
+const char str_74193_1[] PROGMEM =  "1HL11LHG100HH00V";
+const char str_74193_2[] PROGMEM =  "0LH11HLG010HH01V";
+const char str_74193_3[] PROGMEM =  "1HH11HHG110HH01V";
+const char str_74193_4[] PROGMEM =  "1HLC1HHG111HH01V";
+const char str_74193_5[] PROGMEM =  "1LHC1HHG111HH01V";
+const char str_74193_6[] PROGMEM =  "1LLC1HHG111HH01V";
+const char str_74193_7[] PROGMEM =  "1HHC1LHG111HH01V";
+const char str_74193_8[] PROGMEM =  "1HLC1LHG111HH01V";
+const char str_74193_9[] PROGMEM =  "1LHC1LHG111HH01V";
+const char str_74193_10[] PROGMEM = "1LLC1LHG111HH01V";
+const char str_74193_11[] PROGMEM = "1HHC1HLG111HH01V";
+const char str_74193_12[] PROGMEM = "1HLC1HLG111HH01V";
+const char str_74193_13[] PROGMEM = "1LHC1HLG111HH01V";
+const char str_74193_14[] PROGMEM = "1LLC1HLG111HH01V";
+const char str_74193_15[] PROGMEM = "1HHC1LLG111HH01V";
+const char str_74193_16[] PROGMEM = "1HLC1LLG111HH01V";
+const char str_74193_17[] PROGMEM = "1LHC1LLG111HH01V";
+const char str_74193_18[] PROGMEM = "1LL11LLG111HH01V";
+const char str_74193_19[] PROGMEM = "1LL01LLG111HL01V";
+const char str_74193_20[] PROGMEM = "1HH11HHG111HH01V";
+const char str_74193_21[] PROGMEM = "1HH10HHG111LH01V";
+const char str_74193_22[] PROGMEM = "1LL11LLG111HH01V";
+const char str_74193_23[] PROGMEM = "1LH1CLLG111HH01V";
+const char str_74193_24[] PROGMEM = "1HL1CLLG111HH01V";
+const char str_74193_25[] PROGMEM = "1HH1CLLG111HH01V";
+const char str_74193_26[] PROGMEM = "1LL1CHLG111HH01V";
+const char str_74193_27[] PROGMEM = "1LH1CHLG111HH01V";
+const char str_74193_28[] PROGMEM = "1HL1CHLG111HH01V";
+const char str_74193_29[] PROGMEM = "1HH1CHLG111HH01V";
+const char str_74193_30[] PROGMEM = "1LL1CLHG111HH01V";
+const char str_74193_31[] PROGMEM = "1LL11LLG111HHC1V";
 const char* const testPatterns_74193[] PROGMEM = {
   str_74193_1, str_74193_2, str_74193_3, str_74193_4, str_74193_5, str_74193_6, str_74193_7, str_74193_8, str_74193_9,
   str_74193_10, str_74193_11, str_74193_12, str_74193_13, str_74193_14, str_74193_15, str_74193_16, str_74193_17, str_74193_18,
@@ -478,7 +482,28 @@ const char* const testPatterns_071[] PROGMEM = {
   str_071_1, str_071_2
 };
 
+//1
+//OE = 0, C = 1
+//transparent
+//oe,q1,d1,d2,q2,q3,d3,d4,q4,gnd,ck,q5,d5,d6,q6,q7,d7,d8,q8,V
+//0H10LH10LG1H01LH10LV
+
+//2
+//OE = 0, C = 0
+//latch
+//0H01LH01LG0H10LH10LV 
 // IC model strings stored in PROGMEM
+
+//const char str_74373_1[] PROGMEM = "1ZXXZZXXZGXZXXZZXXZV";
+const char str_74373_2[] PROGMEM = "0H10LH10LG1H01LH10LV";
+//const char str_74373_3[] PROGMEM = "0LXXHLXXHG0LXXHLXXHV";
+const char str_74373_4[] PROGMEM = "0H01LH01LG0H10LH10LV";
+
+
+const char* const testPatterns_74373[] PROGMEM = {
+  str_74373_2, str_74373_4
+};
+
 //1
 const char ic_model_7400[] PROGMEM = "7400";
 //2
@@ -549,6 +574,8 @@ const char ic_model_741[] PROGMEM = "741";
 const char ic_model_072[] PROGMEM = "072";
 //35
 const char ic_model_071[] PROGMEM = "071";
+//36
+const char ic_model_74373[] PROGMEM = "74373";
 
 // Pin counts and test case numbers stored in PROGMEM
 const byte pinCount8[] PROGMEM = {8};
@@ -557,6 +584,7 @@ const byte pinCount16[] PROGMEM = {16};
 const byte pinCount20[] PROGMEM = {20};
 
 const byte numTestCases2[] PROGMEM = {2};
+const byte numTestCases3[] PROGMEM = {3};
 const byte numTestCases4[] PROGMEM = {4};
 const byte numTestCases5[] PROGMEM = {5};
 const byte numTestCases7[] PROGMEM = {7};
@@ -590,10 +618,10 @@ testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_74151), pinCount16, numTestCases18, testPatterns_74151}, //9
   {reinterpret_cast<const char*>(ic_model_7421), pinCount14, numTestCases4, testPatterns_7421}, //10
 
-  {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192}, //11
+  {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192}, //11 BUGGED
   {reinterpret_cast<const char*>(ic_model_7474), pinCount14, numTestCases8, testPatterns_7474}, //12
   {reinterpret_cast<const char*>(ic_model_74190), pinCount16, numTestCases9, testPatterns_74190}, //13
-  {reinterpret_cast<const char*>(ic_model_74193), pinCount16, numTestCases31, testPatterns_74193}, //14
+  {reinterpret_cast<const char*>(ic_model_74193), pinCount16, numTestCases31, testPatterns_74193}, //14 BUGGED
   {reinterpret_cast<const char*>(ic_model_74195), pinCount16, numTestCases7, testPatterns_74195}, //15
   {reinterpret_cast<const char*>(ic_model_7410), pinCount14, numTestCases8, testPatterns_7410}, //16
   {reinterpret_cast<const char*>(ic_model_7411), pinCount14, numTestCases8, testPatterns_7411}, //17 
@@ -616,7 +644,8 @@ testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112}, //32
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
-  {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071}  //35
+  {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071},  //35
+  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373} //36
 
 };
 
@@ -644,173 +673,207 @@ byte downIndicator[] = {
 
 // FUNCTIONS
 
-/**
- * Initializes IC pins by setting each pin in the PINS_IC array to INPUT mode.
- */
 void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
   } 
 }
 
-/**
- * Configures the specified pins of an IC according to a test pattern,
- * triggers clock signals if necessary, and verifies the output pins.
- * 
- * @param test A string representing the test pattern for the IC:
- *        'V' - Set pin to HIGH (Vcc)
- *        'G' - Set pin to LOW (Ground)
- *        'L' - Set pin as input with pull-up, expect LOW
- *        'H' - Set pin as input with pull-up, expect HIGH
- *        '0' - Set pin to LOW (output)
- *        '1' - Set pin to HIGH (output)
- *        'C' - Clock pin
- *        'X' - Ignore pin
- * @param pins An array of pin numbers corresponding to the test pattern.
- * @param pinCount The number of pins to be tested.
- * @return True if the outputs match the expected values, false otherwise.
- */
+/*
+  TO-DO: 
+    1. Check this function for logic errors causing failed tests on IC 74192 and 74193
+    2. Reduce Delay Granularity: Start with smaller increments to find the optimal delay.
+    3. Incremental Testing: Gradually increase the delay and observe the changes in the output.
+
+  Checklist:
+    >Structure of data: correct, no issues
+    >Pin configurations: correct, no issues
+    >Handling of clock pins: correct implementation on pulsing however, timing might be off.
+
+  NOTES:
+    >PROGMEM reading/extraction timing might be causing the error
+    >Test with Initial Delay: Use the provided code and observe the output.
+    >Adjust clockDelay: If the results are not as expected, increment clockDelay in small steps (e.g., 10-20 microseconds) until the outputs align correctly.
+    >Monitor Responses: Continue to monitor the responses for each SignalIn and adjust the delay until you achieve consistent and correct outputs.   
+*/
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
-  boolean result = true;
-  const int MAX_CLK_PINS = 2;
-  int clkPins[MAX_CLK_PINS];
-  int clkPinCount = 0;
 
-  // Read the test string into a buffer
-  char testBuffer[pinCount + 1]; // +1 for null terminator
-  for (int i = 0; i < pinCount; i++) {
-    testBuffer[i] = pgm_read_byte(test + i);
-  }
-  testBuffer[pinCount] = '\0'; // Ensure null-termination
+    const int delayStep       = 75; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
+    const int clockDelay      = 125; // Starting with 100 microseconds
+    const int interCycleDelay = 50;  // Fixed delay between clock cycles
+    
+    boolean result = true;
+    const int MAX_CLK_PINS = 4;
+    int clkPins[MAX_CLK_PINS];
+    int clkPinCount = 0;
 
-  Serial.print("SignalIn : ");
-  Serial.println(testBuffer);
-
-  // Phase 1: Pin Configuration
-  for (int i = 0; i < pinCount; i++) {
-    char c = testBuffer[i];
-    switch (c) {
-      case 'V':
-        pinMode(pins[i], OUTPUT);
-        digitalWrite(pins[i], HIGH);
-        break;
-      case 'G':
-        pinMode(pins[i], OUTPUT);
-        digitalWrite(pins[i], LOW);
-        break;
-      case 'L':
-        digitalWrite(pins[i], LOW);
-        pinMode(pins[i], INPUT_PULLUP);
-        break;
-      case 'H':
-        digitalWrite(pins[i], HIGH);
-        pinMode(pins[i], INPUT_PULLUP);
-        break;
-      case '~':
-        pinMode(pins[i], INPUT);
-        break;
+    char testBuffer[pinCount + 1];
+    for (int i = 0; i < pinCount; i++) {
+        testBuffer[i] = pgm_read_byte(test + i);
     }
-  }
+    testBuffer[pinCount] = '\0';
 
-  // Very short delay for stabilization
-  delayMicroseconds(10);
+    Serial.print("SignalIn : ");
+    Serial.println(testBuffer);
 
-  // Phase 2: Special Pin Configurations ('X', '0', '1', 'C')
-  for (int i = 0; i < pinCount; i++) {
-    char c = testBuffer[i];
-    switch (c) {
-      case 'X':
-      case '0':
-        digitalWrite(pins[i], LOW);
-        pinMode(pins[i], OUTPUT);
-        break;
-      case '1':
-        digitalWrite(pins[i], HIGH);
-        pinMode(pins[i], OUTPUT);
-        break;
-      case 'C':
-        if (clkPinCount < MAX_CLK_PINS) {
-          clkPins[clkPinCount++] = pins[i];
-          pinMode(pins[i], OUTPUT);
-          digitalWrite(pins[i], LOW);
-        } else {
-          Serial.println("Error: Too many clock pins defined.");
-          return false;
+    for (int i = 0; i < pinCount; i++) {
+        char c = testBuffer[i];
+        switch (c) {
+            case 'V':
+                pinMode(pins[i], OUTPUT);
+                digitalWrite(pins[i], HIGH);
+                delayMicroseconds(delayStep); 
+                break;
+            case 'G':
+                pinMode(pins[i], OUTPUT);
+                digitalWrite(pins[i], LOW);
+                delayMicroseconds(delayStep); 
+                break;
+            case 'L':
+                digitalWrite(pins[i], LOW);
+                pinMode(pins[i], INPUT_PULLUP);
+                delayMicroseconds(delayStep); 
+                break;
+            case 'H':
+                digitalWrite(pins[i], HIGH);
+                pinMode(pins[i], INPUT_PULLUP);
+                delayMicroseconds(delayStep); 
+                break;
+            case '~':
+                pinMode(pins[i], INPUT);
+                delayMicroseconds(delayStep); 
+                break;
+            case 'Z':
+                pinMode(pins[i], INPUT);
+                delayMicroseconds(delayStep); 
+                break;
         }
-        break;
-    }
-  }
-
-  // Toggle clock pins to simulate clock signal
-  for (int i = 0; i < clkPinCount; i++) {
-    digitalWrite(clkPins[i], HIGH);
-    delayMicroseconds(100); // Adjust as needed for your IC timing requirements
-    digitalWrite(clkPins[i], LOW);
-    delayMicroseconds(100);
-  }
-
-  delay(10);
-
-  // Phase 3: Verification of Outputs
-  Serial.print("Response : ");
-  boolean printed = false; // Track if any response is printed
-  for (int i = 0; i < pinCount; i++) {
-    char expected = testBuffer[i];
-    char actual = ' ';
-    bool isOutputPin = false;
-
-    switch (expected) {
-      case 'H':
-        actual = digitalRead(pins[i]) ? 'H' : 'L';
-        isOutputPin = true;
-        break;
-      case 'L':
-        actual = digitalRead(pins[i]) ? 'H' : 'L';
-        isOutputPin = true;
-        break;
-      case 'V':
-        actual = digitalRead(pins[i]) ? 'V' : 'L';
-        isOutputPin = false; // Do not print power pin results
-        break;
-      case 'G':
-        actual = digitalRead(pins[i]) ? 'V' : 'G';
-        isOutputPin = false; // Do not print ground pin results
-        break;
-      default:
-        actual = ' ';
-        break;
     }
 
-    if (isOutputPin) {
-      if (expected != actual) {
-        Serial.print(actual);
-        printed = true;
-        result = false;
-      } else {
-        Serial.print(' ');
-      }
+    delayMicroseconds(20); // stabilzation delay
+    // NOTE: This delay value might already be correct since most ICs can get away with it - Joaquin
+
+    for (int i = 0; i < pinCount; i++) {
+        char c = testBuffer[i];
+        switch (c) {
+            case 'X':
+            case '0':
+                digitalWrite(pins[i], LOW);
+                pinMode(pins[i], OUTPUT);
+                delayMicroseconds(delayStep); 
+                break;
+            case '1':
+                digitalWrite(pins[i], HIGH);
+                pinMode(pins[i], OUTPUT);
+                delayMicroseconds(delayStep); 
+                break;
+            case 'C':
+                if (clkPinCount < MAX_CLK_PINS) {
+                    clkPins[clkPinCount++] = pins[i];
+                    pinMode(pins[i], OUTPUT);
+                    digitalWrite(pins[i], LOW);
+                    delayMicroseconds(delayStep); 
+                } else {
+                    Serial.println("Error: Too many clock pins defined.");
+                    return false;
+                }
+                break;
+        }
     }
-  }
 
-  if (!printed) {
-    Serial.print(";");
-  }
-  
-  Serial.println();
+    for (int cycle = 0; cycle < 2; cycle++) {
+        for (int i = 0; i < clkPinCount; i++) {
+            digitalWrite(clkPins[i], HIGH);
+            delayMicroseconds(clockDelay);
+            digitalWrite(clkPins[i], LOW);
+            delayMicroseconds(clockDelay);
+        }
+        delayMicroseconds(interCycleDelay);
+    }
 
-  // Reset all pins to input mode
-  reset_pin_config(pinCount);
-  return result;
+    delayMicroseconds(10); // Increase this delay if necessary
+    // NOTE: This delay value might already be correct since most ICs can get away with it - Joaquin
+
+    Serial.print("Response : ");
+    boolean printed = false;
+    for (int i = 0; i < pinCount; i++) {
+        char expected = testBuffer[i];
+        char actual = ' ';
+        bool isOutputPin = false;
+        
+        switch (expected) {
+            case 'H':
+                delayMicroseconds(delayStep); 
+                actual = digitalRead(pins[i]) ? 'H' : 'L';
+                isOutputPin = true;
+                break;
+            case 'L':
+                delayMicroseconds(delayStep); 
+                actual = digitalRead(pins[i]) ? 'H' : 'L';
+                isOutputPin = true;
+                break;
+            case 'Z':
+                delayMicroseconds(delayStep); 
+                if (digitalRead(pins[i]) == HIGH || digitalRead(pins[i]) == LOW) {
+                    actual = digitalRead(pins[i]) ? 'H' : 'L';
+                } else {
+                    actual = 'Z';
+                }
+                isOutputPin = true;
+                break;
+            case 'V':
+                delayMicroseconds(delayStep); 
+                actual = digitalRead(pins[i]) ? 'V' : 'L';
+                isOutputPin = false;
+                break;
+            case 'G':
+                delayMicroseconds(delayStep); 
+                actual = digitalRead(pins[i]) ? 'V' : 'G';
+                isOutputPin = false;
+                break;
+            default:
+                actual = ' ';
+                break;
+        }
+
+        if (isOutputPin) {
+            if (expected != actual) {
+                Serial.print(actual);
+                printed = true;
+                result = false;
+            } else {
+                Serial.print(' ');
+            }
+        }
+    }
+
+    if (!printed) {
+        Serial.print(";");
+    }
+
+    Serial.println();
+    reset_pin_config(pinCount);
+    return result;
 }
 
+void test74193(){
 
-/**
- * Determines the pin count of the IC model and runs the corresponding 
- * test cases. After running the tests, it resets the pin configuration to its default state.
- * 
- * @param icModel The index of the IC model to be tested. This index corresponds to 
- * the position of the IC model in the testPatterns array.
- */
+}
+
+void test74192(){
+  
+}
+
+/*
+  TO-DO: Review this funciton.
+  
+  Checklist:
+    >Review this function if it is being called properly or as intended: seems to be correct.
+    >Check if this function is using testCase properly and as intended: not sure.
+
+  NOTES:
+    >The values passed into these methods may be incorrect or may not be enough
+*/
 void get_test_case(byte icModel) {
   // Read PROGMEM pointers for the specified icModel
   PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].icType));
@@ -871,12 +934,6 @@ void get_test_case(byte icModel) {
   reset_pin_config(pinCount);
 }
 
-//core logic
-/**
- * Automatically tests IC models based on pin count.
- * 
- * @param pins The number of pins to test (14 or 16).
- */
 void autoSearch(byte pins) {
   passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
@@ -930,12 +987,6 @@ void autoSearch(byte pins) {
   }
 }
 
-//core logic
-/**
- * Resets the pin configuration of the specified IC model to its default state.
- * 
- * @param pinCount The number of pins on the IC model (14 or 16).
- */
 void reset_pin_config(byte pinCount) {
   const byte* pins = nullptr;
 
@@ -962,11 +1013,6 @@ void reset_pin_config(byte pinCount) {
   }
 }
 
-
-//core logic
-/**
- * Displays the automatic user interface options on the LCD.
- */
 void automatic_user_interface() {
   lcd.clear();
   switch (submenuAuto) {
@@ -1017,10 +1063,10 @@ void automatic_user_interface() {
   }
 }
 
-//core logic
-/**
- * Displays the manual user interface options on the LCD.
- */
+/*
+  TO-DO: None at the moment, implementation seems correct, returns submenu value which is the IC Model to be tested.
+  IC Model value will be the parameter for get_test_case.
+*/
 void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
@@ -1197,7 +1243,12 @@ void manual_user_interface() {
     case 35:
       lcd.print(F(">IC 071         "));
       lcd.setCursor(0, 1);
-      lcd.print(F("                "));
+      lcd.print(F(" IC 74373       "));
+      break;
+    case 36:
+      lcd.print(F(" IC 071         "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">IC 74373       "));
       break;
     default:
       submenu = 1;
@@ -1212,16 +1263,12 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 35) {
+  if (submenu < 36) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
 }
 
-//core logic
-/**
- * Displays automatic testing options on the LCD.
- */
 void automatic_options() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -1245,9 +1292,6 @@ void automatic_options() {
   }
 }
 
-/**
- * Updates the menu display on the LCD based on the current menu state.
- */
 void update_menu() {
   switch (menu) {
     case 1:
@@ -1307,9 +1351,6 @@ void probe_user_interface() {
   }
 }
 
-/**
- * Updates the LCD to display the passed models.
- */
 void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
@@ -1323,31 +1364,18 @@ void updatePassedModelsDisplay() {
   }
 }
 
-/**
- * Turns off any light emitting from the LED.
- */
 void turnOffBacklight() {
   analogWrite(PIN_RGBLED_R, 0);
   analogWrite(PIN_RGBLED_G, 0);
   analogWrite(PIN_RGBLED_B, 0);
 }
 
-/**
- * Sets the color of the backlight.
- */
 void setBacklightColor(uint8_t red, uint8_t green, uint8_t blue) {
   analogWrite(PIN_RGBLED_R, red);
   analogWrite(PIN_RGBLED_G, green);
   analogWrite(PIN_RGBLED_B, blue);
 }
 
-
-/**
- * @brief Checks the voltage level at the probe pin and updates the LCD display.
- *
- * Reads the analog value from the probe pin, converts it to a voltage level,
- * and displays whether the voltage is HIGH, LOW, or HIGH-Z based on predefined thresholds.
- */
 void logic_probe() {
   const uint8_t RED[] = {255, 0, 0}; // LOW
   const uint8_t GREEN[] = {0, 255, 0}; // HIGH
@@ -1379,14 +1407,6 @@ void logic_probe() {
   probe_user_interface();
 }
 
-/**
- * @brief Continuously measures and displays the voltage from the probe pin on the LCD.
- * 
- * Reads the analog value from the probe pin (PIN_PROBE), converts it to a voltage level,
- * and displays the voltage on the LCD. The function runs in an infinite loop and keeps updating the
- * voltage reading. The loop can be exited by pressing the cancel button, which will return the user
- * to the probe submenu.
- */
 void volt_meter() {
   while (true) {
     int analogValue = analogRead(PIN_PROBE);
@@ -1417,11 +1437,6 @@ void volt_meter() {
   probe_user_interface();
 }
 
-/**
- * Reads the value from a potentiometer connected to PIN_POT.
- * The value is read 10 times, averaged, and assigned to variable 'a'.
- * This function runs every 50 milliseconds.
- */
 void potreader(){
   static unsigned long t;
   if(millis() - t < 50) return;
@@ -1438,10 +1453,6 @@ void potreader(){
   //a is the final value. this is between 0 and 1023
 }
 
-/**
- * Toggles the heartbeat LED (connected to PIN_LED1) every second.
- * The LED blinks to indicate the system is running.
- */
 void heartbeatLED() {
   unsigned long currentMillis = millis();
   static unsigned long lastMillis = 0;
@@ -1456,10 +1467,6 @@ void heartbeatLED() {
   }
 }
 
-/**
- * Handles button debouncing for multiple buttons connected to PINS_BUTTONS array.
- * If a button press is detected and debounced, it sets the corresponding flag_button to true.
- */
 void buttonDebounce(){
   static unsigned t; //for loop tracking
   static unsigned last_unpress[MAX_BUTTONS];
@@ -1491,11 +1498,6 @@ void buttonDebounce(){
   }
 }
 
-/**
- * Checks if any button has been pressed.
- *
- * @return true if any button is pressed, false otherwise.
- */
 bool get_button_ok(){
   for (byte i = 0; i < MAX_BUTTONS; i++) {
     if (flag_button[i]) {
@@ -1505,10 +1507,15 @@ bool get_button_ok(){
   return false;  // Return false if no button is pressed
 }
 
-/**
- * Scans buttons and performs actions based on the current menu context.
- * It handles navigation through main menu, submenus, and executing actions.
- */
+/*
+  TO-DO: Review this function if it is calling get_test_case properly
+  
+  Checklist:
+    >None
+
+  NOTES:
+    >None
+*/
 void buttonScanner() {
   if (menu == 1 || menu == 2 || menu == 3) {
     // Main menu navigation
@@ -1547,13 +1554,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 35; // Wrap around to last option
+      else submenu = 36; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 35) submenu++;
+      if (submenu < 36) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
@@ -1649,9 +1656,6 @@ void buttonScanner() {
   }
 }
 
-/**
- * Arduino setup function, called once at startup.
- */
 void setup() {
   Serial.begin(9600);
   init_ic_pins();
@@ -1689,9 +1693,6 @@ void setup() {
 
 }
 
-/**
- * Arduino main loop function, continuously called after setup.
- */
 void loop() {
   buttonDebounce();
   buttonScanner();
