@@ -1370,14 +1370,14 @@ void pulse_user_interface() {
       lcd.setCursor(0, 0);
       lcd.print(F(">Frequency (Hz) "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" Period (μs)    "));
+      lcd.print(F(" Period (micros)    "));
       break;
     case 2:
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(F(" Frequency (Hz) "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">Period (μs)    "));
+      lcd.print(F(">Period (micros)"));
       break;
   }
 }
@@ -1510,9 +1510,9 @@ void generatePulseSquareWavePeriod(byte pin) {
 
     Serial.print("Period: ");
     Serial.print(period);
-    Serial.println(" ms");
+    Serial.println(" microsecond");
     lcd.clear();
-    lcd.print("ms: ");
+    lcd.print("microsecond: ");
     lcd.setCursor(0, 2);
     lcd.print(period);
 
