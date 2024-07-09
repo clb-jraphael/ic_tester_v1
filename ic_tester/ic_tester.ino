@@ -1480,6 +1480,10 @@ void generatePulseSquareWave(byte pin) {
     Serial.print("Frequency: ");
     Serial.print(frequency);
     Serial.println(" Hz");
+    lcd.clear();
+    lcd.print("Hz: ");
+    lcd.setCursor(0, 2);
+    lcd.print(frequency);
 
     // Generate the square wave
     for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
@@ -1507,6 +1511,10 @@ void generatePulseSquareWavePeriod(byte pin) {
     Serial.print("Period: ");
     Serial.print(period);
     Serial.println(" ms");
+    lcd.clear();
+    lcd.print("ms: ");
+    lcd.setCursor(0, 2);
+    lcd.print(period);
 
     // Generate the square wave
     for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
