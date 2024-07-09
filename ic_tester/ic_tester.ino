@@ -97,7 +97,7 @@ const  byte PINS_BUTTONS[MAX_BUTTONS] = {
 
 byte flag_button[MAX_BUTTONS];
 
-byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, num = 1, currentModelIndex = 0, passedCount = 0;
+byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, submenuPulse, num = 1, currentModelIndex = 0, passedCount = 0;
 String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
@@ -670,6 +670,9 @@ byte downIndicator[] = {
   B00000,
   B00000
 };
+
+unsigned int potValue = 0;
+boolean isRunning = false;
 
 // FUNCTIONS
 
@@ -1312,6 +1315,15 @@ void update_menu() {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print(F(">Probe"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" Pulse Generator"));
+      break;
+    case 4:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Probe"));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">Pulse Generator"));
       break;
     default:
       menu = 1;
@@ -1347,6 +1359,25 @@ void probe_user_interface() {
       lcd.print(F(" Logic Probe    "));
       lcd.setCursor(0, 1);
       lcd.print(F(">Volt Meter     "));
+      break;
+  }
+}
+
+void pulse_user_interface() {
+  switch (submenuPulse) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Frequency (Hz) "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" Period (μs)    "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Frequency (Hz) "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">Period (μs)    "));
       break;
   }
 }
@@ -1437,7 +1468,63 @@ void volt_meter() {
   probe_user_interface();
 }
 
-void potreader(){
+// Function to generate a square wave with a frequency adjusted by the potentiometer
+void generatePulseSquareWave(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+    float frequency = map(potValue, 0, 1023, 1, 100); // Map pot value to frequency range (1Hz to 100Hz)
+
+    unsigned long period = 1000000UL / frequency; // Period in microseconds
+    unsigned long halfPeriod = period / 2; // Half period for HIGH and LOW states
+
+    Serial.print("Frequency: ");
+    Serial.print(frequency);
+    Serial.println(" Hz");
+
+    // Generate the square wave
+    for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
+      digitalWrite(pin, HIGH);
+      delayMicroseconds(halfPeriod);
+      digitalWrite(pin, LOW);
+      delayMicroseconds(halfPeriod);
+    }
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      digitalWrite(pin, LOW);
+      break;
+    }
+  }
+}
+
+// Function to generate a square wave with a period adjusted by the potentiometer
+void generatePulseSquareWavePeriod(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+    unsigned long period = map(potValue, 0, 1023, 1, 1000); // Map pot value to period range (1ms to 1000ms)
+    unsigned long halfPeriod = period * 1000UL / 2; // Half period in microseconds
+
+    Serial.print("Period: ");
+    Serial.print(period);
+    Serial.println(" ms");
+
+    // Generate the square wave
+    for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
+      digitalWrite(pin, HIGH);
+      delayMicroseconds(halfPeriod);
+      digitalWrite(pin, LOW);
+      delayMicroseconds(halfPeriod);
+    }
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      digitalWrite(pin, LOW);
+      break;
+    }
+  }
+}
+
+unsigned int potreader(){
   static unsigned long t;
   if(millis() - t < 50) return;
   t = millis();
@@ -1451,6 +1538,7 @@ void potreader(){
   a/=10;
 
   //a is the final value. this is between 0 and 1023
+  return a;
 }
 
 void heartbeatLED() {
@@ -1517,7 +1605,7 @@ bool get_button_ok(){
     >None
 */
 void buttonScanner() {
-  if (menu == 1 || menu == 2 || menu == 3) {
+  if (menu == 1 || menu == 2 || menu == 3 || menu == 4) {
     // Main menu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
@@ -1527,7 +1615,7 @@ void buttonScanner() {
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (menu < 3) menu++;
+      if (menu < 4) menu++;
       update_menu();
     }
 
@@ -1535,13 +1623,16 @@ void buttonScanner() {
       flag_button[4] = false; // Reset flag
       if (menu == 1) {
         automatic_user_interface(); // Enter submenu
-        menu = 4; // Switch to submenu mode
+        menu = 10; // Switch to submenu mode
       } else if (menu == 2) {
         manual_user_interface();
-        menu = 7;
+        menu = 11;
       } else if (menu == 3) {
         probe_user_interface(); // Enter Probe submenu
-        menu = 6;
+        menu = 12;
+      } else if (menu == 4) {
+        pulse_user_interface(); // Enter Pulse Generator submenu
+        menu = 13;
       }
     }
 
@@ -1549,8 +1640,8 @@ void buttonScanner() {
       flag_button[5] = false; // Reset flag
       // Implement cancel action if needed
     }
-  } else if (menu == 7) {
-    // Submenu navigation
+  } else if (menu == 11) {
+    // Manual submenu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
@@ -1575,8 +1666,8 @@ void buttonScanner() {
       menu = 1; // Go back to main menu
       update_menu();
     }
-  } else if (menu == 4) {
-    // Submenu navigation
+  } else if (menu == 10) {
+    // Automatic submenu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuAuto > 1) submenuAuto--;
@@ -1626,7 +1717,7 @@ void buttonScanner() {
       menu = 4;
       automatic_user_interface();
     }
-  } else if (menu == 6) {
+  } else if (menu == 12) {
     // Probe submenu navigation
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
@@ -1646,6 +1737,33 @@ void buttonScanner() {
       flag_button[4] = false; // Reset flag
       if (submenuProbe == 1) logic_probe();
       else if (submenuProbe == 2) volt_meter();
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 1; // Go back to main menu
+      update_menu();
+    }
+  } else if (menu == 13) {
+    // Pulse submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuPulse > 1) submenuPulse--;
+      else submenuPulse = 2; // Wrap around to last option
+      pulse_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuPulse < 2) submenuPulse++;
+      else submenuPulse = 1; // Wrap around to first option
+      pulse_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (submenuPulse == 1) generatePulseSquareWave(PIN_PWM_P0);
+      else if (submenuPulse == 2) generatePulseSquareWavePeriod(PIN_PWM_P1);
     }
 
     if (flag_button[5]) { // CANCEL button
@@ -1697,4 +1815,5 @@ void loop() {
   buttonDebounce();
   buttonScanner();
   //heartbeatLED();
+  potreader();
 }
