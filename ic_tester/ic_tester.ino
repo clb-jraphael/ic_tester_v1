@@ -1977,7 +1977,7 @@ void buttonScanner() {
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
       menu = 13; // Go back to submenu
-      pulse_user_interface();
+      dutycycle_user_interface();
     }
   } else if (menu == 23) {
     // Select Px submenu navigation (SQUARE WAVE)
