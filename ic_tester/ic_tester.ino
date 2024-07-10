@@ -1895,8 +1895,8 @@ void buttonScanner() {
         probe_user_interface(); // Enter Probe submenu
         menu = 12;
       } else if (menu == 4) {
-        pulse_user_interface(); // Enter Pulse Generator submenu
-        menu = 13;
+        px_user_interface(); // Enter Pulse Generator submenu
+        menu = 21;
       }
     }
 
@@ -2058,13 +2058,32 @@ void buttonScanner() {
 
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-      if (submenuSWave == 1) {
-        menu = 21;
-        px_user_interface();
-      }
-      else if (submenuSWave == 2) {
-        menu = 21;
-        px_user_interface();
+
+      // Square wave frequency and period P0-P3
+      if (submenuPx == 1) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P0);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P0);
+        }
+      } else if (submenuPx == 2) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P1);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P1);
+        }
+      } else if (submenuPx == 3) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P2);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P2);
+        }
+      } else if (submenuPx == 4) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P3);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P3);
+        }
       }
     }
 
@@ -2091,32 +2110,18 @@ void buttonScanner() {
 
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-
-      // Square wave frequency and period P0-P3
       if (submenuPx == 1) {
-        if (submenuSWave == 1) {
-          generatePWMPulsePercentage(PIN_PWM_P0);
-        } else if (submenuSWave == 2) {
-          generatePulseSquareWavePeriod(PIN_PWM_P0);
-        }
+        menu = 13;
+        pulse_user_interface();
       } else if (submenuPx == 2) {
-        if (submenuSWave == 1) {
-          generatePWMPulsePercentage(PIN_PWM_P1);
-        } else if (submenuSWave == 2) {
-          generatePulseSquareWavePeriod(PIN_PWM_P1);
-        }
+        menu = 13;
+        pulse_user_interface();
       } else if (submenuPx == 3) {
-        if (submenuSWave == 1) {
-          generatePWMPulsePercentage(PIN_PWM_P2);
-        } else if (submenuSWave == 2) {
-          generatePulseSquareWavePeriod(PIN_PWM_P2);
-        }
+        menu = 13;
+        pulse_user_interface();
       } else if (submenuPx == 4) {
-        if (submenuSWave == 1) {
-          generatePWMPulsePercentage(PIN_PWM_P3);
-        } else if (submenuSWave == 2) {
-          generatePulseSquareWavePeriod(PIN_PWM_P3);
-        }
+        menu = 13;
+        pulse_user_interface();
       }
     }
 
@@ -2139,39 +2144,6 @@ void buttonScanner() {
       if (submenuDCycle < 2) submenuDCycle++;
       else submenuDCycle = 1; // Wrap around to first option
       dutycycle_user_interface();
-    }
-
-    if (flag_button[4]) { // OK button
-      flag_button[4] = false; // Reset flag
-      if (submenuDCycle == 1) {
-        menu = 23;
-        px_user_interface();
-      }
-      else if (submenuDCycle == 2) {
-        menu = 23;
-        px_user_interface();
-      }
-    }
-
-    if (flag_button[5]) { // CANCEL button
-      flag_button[5] = false; // Reset flag
-      menu = 13; // Go back to submenu
-      dutycycle_user_interface();
-    }
-  } else if (menu == 23) {
-    // Select Px submenu navigation (SQUARE WAVE)
-    if (flag_button[0]) { // UP button
-      flag_button[0] = false; // Reset flag
-      if (submenuPx > 1) submenuPx--;
-      else submenuPx = 4; // Wrap around to last option
-      px_user_interface();
-    }
-
-    if (flag_button[1]) { // DOWN button
-      flag_button[1] = false; // Reset flag
-      if (submenuPx < 4) submenuPx++;
-      else submenuPx = 1; // Wrap around to first option
-      px_user_interface();
     }
 
     if (flag_button[4]) { // OK button
@@ -2202,6 +2174,44 @@ void buttonScanner() {
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P3);
         }
+      }
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 13; // Go back to submenu
+      dutycycle_user_interface();
+    }
+  } else if (menu == 23) {
+    // Select Px submenu navigation (SQUARE WAVE)
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuPx > 1) submenuPx--;
+      else submenuPx = 4; // Wrap around to last option
+      px_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuPx < 4) submenuPx++;
+      else submenuPx = 1; // Wrap around to first option
+      px_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (submenuPx == 1) {
+        menu = 13;
+        px_user_interface();
+      } else if (submenuPx == 2) {
+        menu = 13;
+        px_user_interface();
+      } else if (submenuPx == 3) {
+        menu = 13;
+        px_user_interface();
+      } else if (submenuPx == 4) {
+        menu = 13;
+        px_user_interface();
       }
     }
 
