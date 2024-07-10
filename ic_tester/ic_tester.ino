@@ -100,7 +100,7 @@ const  byte PINS_BUTTONS[MAX_BUTTONS] = {
 
 byte flag_button[MAX_BUTTONS];
 
-byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, submenuPulse = 1, submenuSWave = 1, submenuPx = 1, num = 1, currentModelIndex = 0, passedCount = 0;
+byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, submenuPulse = 1, submenuSWave = 1, submenuPx = 1, submenuDCycle = 1, num = 1, currentModelIndex = 0, passedCount = 0;
 String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
@@ -1386,6 +1386,25 @@ void swave_user_interface() {
   }
 }
 
+void dutycycle_user_interface() {
+  switch (submenuDCycle) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Percentage     "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" 8-bit          "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Percentage     "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">8-bit          "));
+      break;
+  }
+}
+
 void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
@@ -1533,6 +1552,60 @@ void generatePulseSquareWavePeriod(byte pin) {
       digitalWrite(pin, LOW);
       break;
     }
+  }
+}
+
+// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (0-100%)
+void generatePWMPulsePercentage(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+    float dutyCycle = map(potValue, 0, 1023, 0, 100); // Map pot value to duty cycle range (0% to 100%)
+    
+    analogWrite(pin, dutyCycle * 2.55); // Convert dutyCycle percentage to 0-255 range
+
+    Serial.print("Duty Cycle: ");
+    Serial.print(dutyCycle);
+    Serial.println(" %");
+    lcd.clear();
+    lcd.print("Duty Cycle: ");
+    lcd.setCursor(0, 1);
+    lcd.print(dutyCycle);
+    lcd.print(" %");
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      analogWrite(pin, 0);
+      break;
+    }
+    
+    delay(50); // Adjust delay as needed
+  }
+}
+
+// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (8-bit: 0-255)
+void generatePWMPulse8Bit(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+    int dutyCycle = map(potValue, 0, 1023, 0, 255); // Map pot value to duty cycle range (0 to 255)
+    
+    analogWrite(pin, dutyCycle);
+
+    Serial.print("Duty Cycle: ");
+    Serial.print(dutyCycle);
+    Serial.println(" (8-bit)");
+    lcd.clear();
+    lcd.print("Duty Cycle: ");
+    lcd.setCursor(0, 1);
+    lcd.print(dutyCycle);
+    lcd.print(" (8-bit)");
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      analogWrite(pin, 0);
+      break;
+    }
+    
+    delay(50); // Adjust delay as needed
   }
 }
 
@@ -1777,7 +1850,10 @@ void buttonScanner() {
       if (submenuPulse == 1) {
         swave_user_interface();
         menu = 20;
-      } else if (submenuPulse == 2) lcd.print("hello");
+      } else if (submenuPulse == 2) {
+        dutycycle_user_interface();
+        menu = 22;
+      }
     }
 
     if (flag_button[5]) { // CANCEL button
@@ -1810,7 +1886,7 @@ void buttonScanner() {
       else if (submenuSWave == 2) {
         menu = 21;
         px_user_interface();
-      };
+      }
     }
 
     if (flag_button[5]) { // CANCEL button
@@ -1819,7 +1895,7 @@ void buttonScanner() {
       pulse_user_interface();
     }
   } else if (menu == 21) {
-    // Select Px submenu navigation
+    // Select Px submenu navigation (SQUARE WAVE)
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuPx > 1) submenuPx--;
@@ -1840,25 +1916,25 @@ void buttonScanner() {
       // Square wave frequency and period P0-P3
       if (submenuPx == 1) {
         if (submenuSWave == 1) {
-          generatePulseSquareWave(PIN_PWM_P0);
+          generatePWMPulsePercentage(PIN_PWM_P0);
         } else if (submenuSWave == 2) {
           generatePulseSquareWavePeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 2) {
         if (submenuSWave == 1) {
-          generatePulseSquareWave(PIN_PWM_P1);
+          generatePWMPulsePercentage(PIN_PWM_P1);
         } else if (submenuSWave == 2) {
           generatePulseSquareWavePeriod(PIN_PWM_P1);
         }
       } else if (submenuPx == 3) {
         if (submenuSWave == 1) {
-          generatePulseSquareWave(PIN_PWM_P2);
+          generatePWMPulsePercentage(PIN_PWM_P2);
         } else if (submenuSWave == 2) {
           generatePulseSquareWavePeriod(PIN_PWM_P2);
         }
       } else if (submenuPx == 4) {
         if (submenuSWave == 1) {
-          generatePulseSquareWave(PIN_PWM_P3);
+          generatePWMPulsePercentage(PIN_PWM_P3);
         } else if (submenuSWave == 2) {
           generatePulseSquareWavePeriod(PIN_PWM_P3);
         }
@@ -1869,6 +1945,91 @@ void buttonScanner() {
       flag_button[5] = false; // Reset flag
       menu = 20; // Go back to submenu
       swave_user_interface();
+    }
+  } else if (menu == 22) {
+    // PWM Duty Cycle submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuDCycle > 1) submenuDCycle--;
+      else submenuDCycle = 2; // Wrap around to last option
+      dutycycle_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuDCycle < 2) submenuDCycle++;
+      else submenuDCycle = 1; // Wrap around to first option
+      dutycycle_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (submenuDCycle == 1) {
+        menu = 23;
+        px_user_interface();
+      }
+      else if (submenuDCycle == 2) {
+        menu = 23;
+        px_user_interface();
+      }
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 13; // Go back to submenu
+      pulse_user_interface();
+    }
+  } else if (menu == 23) {
+    // Select Px submenu navigation (SQUARE WAVE)
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuPx > 1) submenuPx--;
+      else submenuPx = 4; // Wrap around to last option
+      px_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuPx < 4) submenuPx++;
+      else submenuPx = 1; // Wrap around to first option
+      px_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+
+      // PWM Duty Cycle wave frequency and period P0-P3
+      if (submenuPx == 1) {
+        if (submenuDCycle == 1) {
+          generatePWMPulsePercentage(PIN_PWM_P0);
+        } else if (submenuDCycle == 2) {
+          generatePWMPulse8Bit(PIN_PWM_P0);
+        }
+      } else if (submenuPx == 2) {
+        if (submenuDCycle == 1) {
+          generatePWMPulsePercentage(PIN_PWM_P1);
+        } else if (submenuDCycle == 2) {
+          generatePWMPulse8Bit(PIN_PWM_P1);
+        }
+      } else if (submenuPx == 3) {
+        if (submenuDCycle == 1) {
+          generatePWMPulsePercentage(PIN_PWM_P2);
+        } else if (submenuDCycle == 2) {
+          generatePWMPulse8Bit(PIN_PWM_P2);
+        }
+      } else if (submenuPx == 4) {
+        if (submenuDCycle == 1) {
+          generatePWMPulsePercentage(PIN_PWM_P3);
+        } else if (submenuDCycle == 2) {
+          generatePWMPulse8Bit(PIN_PWM_P3);
+        }
+      }
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 22; // Go back to submenu
+      dutycycle_user_interface();
     }
   }
 }
