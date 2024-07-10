@@ -71,6 +71,7 @@ const byte PINS_IC[20] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8, PIN_IC_PIN9, PIN_IC_PIN10, 
   PIN_IC_PIN11, PIN_IC_PIN12, PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
+
 const byte PINS_14[14] = {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7,
   PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
@@ -82,6 +83,8 @@ const byte PINS_16[16] = {
 const byte PINS_8[8] {
   PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20
 };
+
+const byte PINS_20[20]{PIN_IC_PIN1, PIN_IC_PIN2, PIN_IC_PIN3, PIN_IC_PIN4, PIN_IC_PIN5, PIN_IC_PIN6, PIN_IC_PIN7, PIN_IC_PIN8, PIN_IC_PIN9, PIN_IC_PIN10, PIN_IC_PIN11, PIN_IC_PIN12, PIN_IC_PIN13, PIN_IC_PIN14, PIN_IC_PIN15, PIN_IC_PIN16, PIN_IC_PIN17, PIN_IC_PIN18, PIN_IC_PIN19, PIN_IC_PIN20};
 
 // GLOBAL VARIABLES
 
@@ -185,17 +188,19 @@ const char str_7421_4[] PROGMEM = "00X00LGL00X00V";
 const char* const testPatterns_7421[] PROGMEM = {
   str_7421_1, str_7421_2, str_7421_3, str_7421_4
 };
+
 //11
-const char str_74192_1[] PROGMEM = "0LL11LLG1011110V"; 
-const char str_74192_2[] PROGMEM = "0LL11LLG1011100V";
-const char str_74192_3[] PROGMEM = "0LL11LHG1001100V";
-const char str_74192_4[] PROGMEM = "0LL11LHG1011100V";
-const char str_74192_5[] PROGMEM = "0LL10LHG1011100V";
-const char str_74192_6[] PROGMEM = "0LH11LHG1011100V";
-const char str_74192_7[] PROGMEM = "0LH10LHG1010100V";
+const char str_74192_1[] PROGMEM = "0LL11LLG1011110V"; // Initial reset
+const char str_74192_2[] PROGMEM = "0LL11LLG1011100V"; // Load value
+const char str_74192_3[] PROGMEM = "0LL11LHG1001100V"; // Count up (clock pulse)
+const char str_74192_4[] PROGMEM = "0LL11LHG1011100V"; // Count up (clock pulse)
+const char str_74192_5[] PROGMEM = "0LL10LHG1011100V"; // Count down (clock pulse)
+const char str_74192_6[] PROGMEM = "0LH11LHG1011100V"; // Count down (clock pulse)
+const char str_74192_7[] PROGMEM = "0LH10LHG1010100V"; // Count down (clock pulse)
 const char* const testPatterns_74192[] PROGMEM = {
   str_74192_1, str_74192_2, str_74192_3, str_74192_4, str_74192_5, str_74192_6, str_74192_7
 };
+
 //12
 const char str_7474_1[] PROGMEM = "01C1LHGHL1000V";
 const char str_7474_2[] PROGMEM = "10C0HLGHL1000V";
@@ -475,33 +480,12 @@ const char str_072_2[] PROGMEM = "H01G01LV";
 const char* const testPatterns_072[] PROGMEM = {
   str_072_1, str_072_2
 };
+
 //35
-const char str_071_1[] PROGMEM = "~10G~HV~";
-const char str_071_2[] PROGMEM = "~01G~HV~";
-const char* const testPatterns_071[] PROGMEM = {
-  str_071_1, str_071_2
-};
-
-//1
-//OE = 0, C = 1
-//transparent
-//oe,q1,d1,d2,q2,q3,d3,d4,q4,gnd,ck,q5,d5,d6,q6,q7,d7,d8,q8,V
-//0H10LH10LG1H01LH10LV
-
-//2
-//OE = 0, C = 0
-//latch
-//0H01LH01LG0H10LH10LV 
-// IC model strings stored in PROGMEM
-
-//const char str_74373_1[] PROGMEM = "1ZXXZZXXZGXZXXZZXXZV";
-const char str_74373_2[] PROGMEM = "0H10LH10LG1H01LH10LV";
-//const char str_74373_3[] PROGMEM = "0LXXHLXXHG0LXXHLXXHV";
-const char str_74373_4[] PROGMEM = "0H01LH01LG0H10LH10LV";
-
-
+const char str_74373_1[] PROGMEM ="0H11HH11HG1H11HH11HV";
+const char str_74373_2[] PROGMEM ="0L00LL00LG1L00LL00LV";
 const char* const testPatterns_74373[] PROGMEM = {
-  str_74373_2, str_74373_4
+  str_74373_1, str_74373_2
 };
 
 //1
@@ -573,8 +557,6 @@ const char ic_model_741[] PROGMEM = "741";
 //34
 const char ic_model_072[] PROGMEM = "072";
 //35
-const char ic_model_071[] PROGMEM = "071";
-//36
 const char ic_model_74373[] PROGMEM = "74373";
 
 // Pin counts and test case numbers stored in PROGMEM
@@ -587,6 +569,7 @@ const byte numTestCases2[] PROGMEM = {2};
 const byte numTestCases3[] PROGMEM = {3};
 const byte numTestCases4[] PROGMEM = {4};
 const byte numTestCases5[] PROGMEM = {5};
+const byte numTestCases6[] PROGMEM = {6};
 const byte numTestCases7[] PROGMEM = {7};
 const byte numTestCases8[] PROGMEM = {8};
 const byte numTestCases9[] PROGMEM = {9};
@@ -603,10 +586,7 @@ const struct IC_TestPattern {
   const byte* pinCount;
   const byte* numTestCases;
   const char* const* testPatterns;
-}
-
-testPatterns[] PROGMEM = {
-
+} testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_7400), pinCount14, numTestCases4, testPatterns_7400}, //1
   {reinterpret_cast<const char*>(ic_model_7402), pinCount14, numTestCases4, testPatterns_7402}, //2
   {reinterpret_cast<const char*>(ic_model_7404), pinCount14, numTestCases2, testPatterns_7404}, //3
@@ -617,7 +597,6 @@ testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_7427), pinCount14, numTestCases8, testPatterns_7427}, //8
   {reinterpret_cast<const char*>(ic_model_74151), pinCount16, numTestCases18, testPatterns_74151}, //9
   {reinterpret_cast<const char*>(ic_model_7421), pinCount14, numTestCases4, testPatterns_7421}, //10
-
   {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192}, //11 BUGGED
   {reinterpret_cast<const char*>(ic_model_7474), pinCount14, numTestCases8, testPatterns_7474}, //12
   {reinterpret_cast<const char*>(ic_model_74190), pinCount16, numTestCases9, testPatterns_74190}, //13
@@ -628,7 +607,6 @@ testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_74125), pinCount14, numTestCases8, testPatterns_74125}, //18
   {reinterpret_cast<const char*>(ic_model_74138), pinCount16, numTestCases12, testPatterns_74138}, //19
   {reinterpret_cast<const char*>(ic_model_7447), pinCount16, numTestCases10, testPatterns_7447}, //20
-
   {reinterpret_cast<const char*>(ic_model_74173), pinCount16, numTestCases15, testPatterns_74173}, //21
   {reinterpret_cast<const char*>(ic_model_4070), pinCount14, numTestCases4, testPatterns_4070}, //22
   {reinterpret_cast<const char*>(ic_model_4071), pinCount14, numTestCases4, testPatterns_4071}, //23
@@ -639,14 +617,11 @@ testPatterns[] PROGMEM = {
   {reinterpret_cast<const char*>(ic_model_4068), pinCount14, numTestCases10, testPatterns_4068}, //28
   {reinterpret_cast<const char*>(ic_model_4069), pinCount14, numTestCases2, testPatterns_4069}, //29
   {reinterpret_cast<const char*>(ic_model_4066), pinCount14, numTestCases4, testPatterns_4066}, //30
-
   {reinterpret_cast<const char*>(ic_model_4094), pinCount16, numTestCases14, testPatterns_4094}, //31
   {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112}, //32
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
-  {reinterpret_cast<const char*>(ic_model_071), pinCount8, numTestCases2, testPatterns_071},  //35
-  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373} //36
-
+  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373} //35
 };
 
 byte upIndicator[] = {
@@ -701,14 +676,12 @@ void init_ic_pins(){
 */
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
 
-    const int delayStep       = 75; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
-    const int clockDelay      = 125; // Starting with 100 microseconds
-    const int interCycleDelay = 50;  // Fixed delay between clock cycles
+    const int delayStep       = 100; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
+    const int clockDelay      = 200; // Starting with 100 microseconds
+    const int interCycleDelay = 100;  // Fixed delay between clock cycles
     
     boolean result = true;
-    const int MAX_CLK_PINS = 4;
-    int clkPins[MAX_CLK_PINS];
-    int clkPinCount = 0;
+    int clkPin = -1;
 
     char testBuffer[pinCount + 1];
     for (int i = 0; i < pinCount; i++) {
@@ -753,7 +726,7 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
         }
     }
 
-    delayMicroseconds(20); // stabilzation delay
+    delayMicroseconds(100); // stabilzation delay
     // NOTE: This delay value might already be correct since most ICs can get away with it - Joaquin
 
     for (int i = 0; i < pinCount; i++) {
@@ -771,30 +744,21 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
                 delayMicroseconds(delayStep); 
                 break;
             case 'C':
-                if (clkPinCount < MAX_CLK_PINS) {
-                    clkPins[clkPinCount++] = pins[i];
-                    pinMode(pins[i], OUTPUT);
-                    digitalWrite(pins[i], LOW);
-                    delayMicroseconds(delayStep); 
-                } else {
-                    Serial.println("Error: Too many clock pins defined.");
-                    return false;
-                }
+                clkPin = pins[i]; pinMode(pins[i], OUTPUT); digitalWrite(pins[i], LOW); 
                 break;
         }
     }
 
-    for (int cycle = 0; cycle < 2; cycle++) {
-        for (int i = 0; i < clkPinCount; i++) {
-            digitalWrite(clkPins[i], HIGH);
-            delayMicroseconds(clockDelay);
-            digitalWrite(clkPins[i], LOW);
-            delayMicroseconds(clockDelay);
-        }
-        delayMicroseconds(interCycleDelay);
+    if (clkPin != -1){
+      pinMode(clkPin, OUTPUT);
+      digitalWrite(clkPin, LOW);
+      delayMicroseconds(clockDelay);
+      digitalWrite(clkPin, HIGH);
+      delayMicroseconds(clockDelay);
+      digitalWrite(clkPin, LOW);
     }
 
-    delayMicroseconds(10); // Increase this delay if necessary
+    delayMicroseconds(20); // Increase this delay if necessary
     // NOTE: This delay value might already be correct since most ICs can get away with it - Joaquin
 
     Serial.print("Response : ");
@@ -859,14 +823,6 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     return result;
 }
 
-void test74193(){
-
-}
-
-void test74192(){
-  
-}
-
 /*
   TO-DO: Review this funciton.
   
@@ -904,7 +860,7 @@ void get_test_case(byte icModel) {
       pins = PINS_16;
       break;
     case 20:
-      pins = PINS_IC; // Assuming PINS_IC is used for 20 pin ICs
+      pins = PINS_20; // Assuming PINS_IC is used for 20 pin ICs
       break;
     default:
       Serial.println(F("Unsupported pin count"));
@@ -923,6 +879,7 @@ void get_test_case(byte icModel) {
     if (!testCase(pattern_p, pins, pinCount)) {
       overallResult = false;
     }
+    delayMicroseconds(100);
     // Reset pin configurations after each test case
     reset_pin_config(pinCount);
   }
@@ -1004,7 +961,7 @@ void reset_pin_config(byte pinCount) {
       pins = PINS_16;
       break;
     case 20:
-      pins = PINS_IC;
+      pins = PINS_20;
       break;
     default:
       return; // Handle error or other pin counts as needed
@@ -1074,184 +1031,179 @@ void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
     case 1:
-      lcd.print(F(">IC 7400        "));
+      lcd.print((">IC 7400        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7402        "));
+      lcd.print((" IC 7402        "));
       break;
     case 2:
-      lcd.print(F(" IC 7400        "));
+      lcd.print((" IC 7400        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7402        "));
+      lcd.print((">IC 7402        "));
       break;
     case 3:
-      lcd.print(F(">IC 7404        "));
+      lcd.print((">IC 7404        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7408        "));
+      lcd.print((" IC 7408        "));
       break;
     case 4:
-      lcd.print(F(" IC 7404        "));
+      lcd.print((" IC 7404        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7408        "));
+      lcd.print((">IC 7408        "));
       break;
     case 5:
-      lcd.print(F(">IC 7432        "));
+      lcd.print((">IC 7432        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7486        "));
+      lcd.print((" IC 7486        "));
       break;
     case 6:
-      lcd.print(F(" IC 7432        "));
+      lcd.print((" IC 7432        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7486        "));
+      lcd.print((">IC 7486        "));
       break;
     case 7:
-      lcd.print(F(">IC 747266      "));
+      lcd.print((">IC 747266      "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7427        "));
+      lcd.print((" IC 7427        "));
       break;
     case 8:
-      lcd.print(F(" IC 747266      "));
+      lcd.print((" IC 747266      "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7427        "));
+      lcd.print((">IC 7427        "));
       break;
     case 9:
-      lcd.print(F(">IC 74151       "));
+      lcd.print((">IC 74151       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7421        "));
+      lcd.print((" IC 7421        "));
       break;
     case 10:
-      lcd.print(F(" IC 74151       "));
+      lcd.print((" IC 74151       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7421        "));
+      lcd.print((">IC 7421        "));
       break;
     case 11:
-      lcd.print(F(">IC 74192       "));
+      lcd.print((">IC 74192       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7474        "));
+      lcd.print((" IC 7474        "));
       break;
     case 12:
-      lcd.print(F(" IC 74192       "));
+      lcd.print((" IC 74192       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7474        "));
+      lcd.print((">IC 7474        "));
       break;
     case 13:
-      lcd.print(F(">IC 74190       "));
+      lcd.print((">IC 74190       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74193       "));
+      lcd.print((" IC 74193       "));
       break;
     case 14:
-      lcd.print(F(" IC 74190       "));
+      lcd.print((" IC 74190       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74193       "));
+      lcd.print((">IC 74193       "));
       break;
     case 15:
-      lcd.print(F(">IC 74195       "));
+      lcd.print((">IC 74195       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7410        "));
+      lcd.print((" IC 7410        "));
       break;
     case 16:
-      lcd.print(F(" IC 74195       "));
+      lcd.print((" IC 74195       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7410        "));
+      lcd.print((">IC 7410        "));
       break;
     case 17:
-      lcd.print(F(">IC 7411        "));
+      lcd.print((">IC 7411        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74125       "));
+      lcd.print((" IC 74125       "));
       break;
     case 18:
-      lcd.print(F(" IC 7411        "));
+      lcd.print((" IC 7411        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74125       "));
+      lcd.print((">IC 74125       "));
       break;
     case 19:
-      lcd.print(F(">IC 74138       "));
+      lcd.print((">IC 74138       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 7447        "));
+      lcd.print((" IC 7447        "));
       break;
     case 20:
-      lcd.print(F(" IC 74138       "));
+      lcd.print((" IC 74138       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 7447        "));
+      lcd.print((">IC 7447        "));
       break;
     case 21:
-      lcd.print(F(">IC 74173       "));
+      lcd.print((">IC 74173       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4070        "));
+      lcd.print((" IC 4070        "));
       break;
     case 22:
-      lcd.print(F(" IC 74173       "));
+      lcd.print((" IC 74173       "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4070        "));
+      lcd.print((">IC 4070        "));
       break;
     case 23:
-      lcd.print(F(">IC 4071        "));
+      lcd.print((">IC 4071        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4017        "));
+      lcd.print((" IC 4017        "));
       break;
     case 24:
-      lcd.print(F(" IC 4071        "));
+      lcd.print((" IC 4071        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4017        "));
+      lcd.print((">IC 4017        "));
       break;
     case 25:
-      lcd.print(F(">IC 4511        "));
+      lcd.print((">IC 4511        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4081        "));
+      lcd.print((" IC 4081        "));
       break;
     case 26:
-      lcd.print(F(" IC 4511        "));
+      lcd.print((" IC 4511        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4081        "));
+      lcd.print((">IC 4081        "));
       break;
     case 27:
-      lcd.print(F(">IC 4077        "));
+      lcd.print((">IC 4077        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4068        "));
+      lcd.print((" IC 4068        "));
       break;
     case 28:
-      lcd.print(F(" IC 4077        "));
+      lcd.print((" IC 4077        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4068        "));
+      lcd.print((">IC 4068        "));
       break;
     case 29:
-      lcd.print(F(">IC 4069        "));
+      lcd.print((">IC 4069        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 4066        "));
+      lcd.print((" IC 4066        "));
       break;
     case 30:
-      lcd.print(F(" IC 4069        "));
+      lcd.print((" IC 4069        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 4066        "));
+      lcd.print((">IC 4066        "));
       break;
     case 31:
-      lcd.print(F(">IC 4094        "));
+      lcd.print((">IC 4094        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74112       "));
+      lcd.print((" IC 74112       "));
       break;
     case 32:
-      lcd.print(F(" IC 4094        "));
+      lcd.print((" IC 4094        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74112       "));
+      lcd.print((">IC 74112       "));
       break;
     case 33:
-      lcd.print(F(">IC 741         "));
+      lcd.print((">IC 741         "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 072         "));
+      lcd.print((" IC 072         "));
       break;
     case 34:
-      lcd.print(F(" IC 741         "));
+      lcd.print((" IC 741         "));
       lcd.setCursor(0, 1);
-      lcd.print(F(">IC 072         "));
+      lcd.print((">IC 072         "));
       break;
     case 35:
-      lcd.print(F(">IC 071         "));
+      lcd.print((">IC 74373        "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" IC 74373       "));
-      break;
-    case 36:
-      lcd.print(F(" IC 071         "));
-      lcd.setCursor(0, 1);
-      lcd.print(F(">IC 74373       "));
+      lcd.print(("                 "));
       break;
     default:
       submenu = 1;
@@ -1266,7 +1218,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 36) {
+  if (submenu < 35) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -1705,13 +1657,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 36; // Wrap around to last option
+      else submenu = 35; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 36) submenu++;
+      if (submenu < 35) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
