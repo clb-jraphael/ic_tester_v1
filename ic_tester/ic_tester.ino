@@ -488,6 +488,56 @@ const char* const testPatterns_74373[] PROGMEM = {
   str_74373_1, str_74373_2
 };
 
+//36
+// Data 1C, Strobe 1G, Select Input B, OUT1y3210, G
+// OUT2Y0123, Select Input A, Strobe 2G, Data 2C, VCC
+const char str_74155_1[] PROGMEM = "X1XHHHHGHHHHX1XV";
+const char str_74155_2[] PROGMEM = "100HHHLGLHHH000V";
+const char str_74155_3[] PROGMEM = "100HHLHGHLHH100V";
+const char str_74155_4[] PROGMEM = "101HLHHGHHLH000V";
+const char str_74155_5[] PROGMEM = "101LHHHGHHHL100V";
+const char str_74155_6[] PROGMEM = "0XXHHHHGHHHHXX1V";
+//need to add 3-line-to-8-line Decoder if needed
+const char* const testPatterns_74155[] PROGMEM = {
+  str_74155_1, str_74155_2, str_74155_3,
+  str_74155_4, str_74155_5, str_74155_6
+};
+
+//37
+//A4, E3, A3, B3, V, E2, B2, A2
+//E1, A1, B1, G, C0, C4, E4, B4
+//C0 - Carry Input
+//A1 - A4 - Operand A Inputs
+//B1 - B4 - Operand B Inputs
+//E1-E4 - Sum Outputs
+//C4 - Carry Ouput
+const char str_7483_1[] PROGMEM = "1L00VH01H01G0HL1"; //active high
+const char str_7483_2[] PROGMEM = "0H11VL10L10G1LH0"; //active low
+const char* const testPatterns_7483[] PROGMEM = {
+  str_7483_1, str_7483_2
+};
+
+//38
+//cp1, mr1, mr2, nc, v, ms1, ms2
+//q2, q1, g, q3, q0, nc, cp0
+const char str_7490_1[] PROGMEM = "C11XV0XLLGLLXC";
+const char str_7490_2[] PROGMEM = "C11XVX0LLGLLXC";
+const char str_7490_3[] PROGMEM = "CXXXV11LLGHHXC";
+//need to add count test patterns? not sure how
+const char* const testPatterns_7490[] PROGMEM = {
+  str_7490_1, str_7490_2, str_7490_3
+};
+
+//39 - BUGGED
+//question: test 1 flip-flop pair or both? ask for clk down symbol meaning
+//1clk, 1clr, 1k, v, 2clk, 2clr, 2j, 2qBar, 2q, 2k, G, 1q, 1qBar, 1J
+const char str_7473_1[] PROGMEM ="C1LVC11LH0GHL1";
+const char* const testPatterns_7473[] PROGMEM = {
+  str_7473_1
+};
+
+
+
 //1
 const char ic_model_7400[] PROGMEM = "7400";
 //2
@@ -558,13 +608,21 @@ const char ic_model_741[] PROGMEM = "741";
 const char ic_model_072[] PROGMEM = "072";
 //35
 const char ic_model_74373[] PROGMEM = "74373";
-
+//36
+const char ic_model_74155[] PROGMEM = "74155";
+//37
+const char ic_model_7483[] PROGMEM = "7483";
+//38
+const char ic_model_7490[] PROGMEM = "7490";
+//39
+const char ic_model_7473[] PROGMEM = "7473";
 // Pin counts and test case numbers stored in PROGMEM
 const byte pinCount8[] PROGMEM = {8};
 const byte pinCount14[] PROGMEM = {14};
 const byte pinCount16[] PROGMEM = {16};
 const byte pinCount20[] PROGMEM = {20};
 
+const byte numTestCases1[] PROGMEM = {1};
 const byte numTestCases2[] PROGMEM = {2};
 const byte numTestCases3[] PROGMEM = {3};
 const byte numTestCases4[] PROGMEM = {4};
@@ -621,7 +679,11 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112}, //32
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
-  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373} //35
+  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373}, //35
+  {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155}, //36
+  {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483}, //37
+  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases3, testPatterns_7490}, //38
+  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473} //39
 };
 
 byte upIndicator[] = {
@@ -1203,6 +1265,26 @@ void manual_user_interface() {
     case 35:
       lcd.print((">IC 74373        "));
       lcd.setCursor(0, 1);
+      lcd.print((" IC 74155        "));
+      break;
+    case 36:
+      lcd.print((" IC 74373        "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 74155        "));
+      break;
+    case 37:
+      lcd.print((">IC 7483         "));
+      lcd.setCursor(0, 1);
+      lcd.print((" IC 7490         "));
+      break;
+    case 38:
+      lcd.print((" IC 7483         "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 7490         "));
+      break;
+    case 39:
+      lcd.print((">IC 7473         "));
+      lcd.setCursor(0, 1);
       lcd.print(("                 "));
       break;
     default:
@@ -1218,7 +1300,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 35) {
+  if (submenu < 39) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -1605,13 +1687,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 35; // Wrap around to last option
+      else submenu = 39; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 35) submenu++;
+      if (submenu < 39) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
