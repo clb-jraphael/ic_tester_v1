@@ -97,7 +97,7 @@ const  byte PINS_BUTTONS[MAX_BUTTONS] = {
 
 byte flag_button[MAX_BUTTONS];
 
-byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, submenuPulse, num = 1, currentModelIndex = 0, passedCount = 0;
+byte menu = 1, submenu = 1, submenuAuto = 1, submenuProbe = 1, submenuPulse = 1, submenuSWave = 1, submenuPx = 1, num = 1, currentModelIndex = 0, passedCount = 0;
 String passedModels[5];
 unsigned long lastMillis = 0; // Variable to store last time LED was updated
 
@@ -1368,9 +1368,61 @@ void pulse_user_interface() {
     case 1:
       lcd.clear();
       lcd.setCursor(0, 0);
+      lcd.print(F(">Square Wave    "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" PWM            "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" Square Wave    "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">PWM            "));
+      break;
+  }
+}
+
+void px_user_interface() {
+  switch (submenuPx) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">P0             "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" P1             "));
+      break;
+    case 2:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" P0             "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">P1             "));
+      break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">P2             "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(" P3             "));
+      break;
+    case 4:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(" P2             "));
+      lcd.setCursor(0, 1);
+      lcd.print(F(">P3             "));
+      break;
+  }
+}
+
+void swave_user_interface() {
+  switch (submenuSWave) {
+    case 1:
+      lcd.clear();
+      lcd.setCursor(0, 0);
       lcd.print(F(">Frequency (Hz) "));
       lcd.setCursor(0, 1);
-      lcd.print(F(" Period (micros)    "));
+      lcd.print(F(" Period (micros)"));
       break;
     case 2:
       lcd.clear();
@@ -1770,14 +1822,101 @@ void buttonScanner() {
 
     if (flag_button[4]) { // OK button
       flag_button[4] = false; // Reset flag
-      if (submenuPulse == 1) generatePulseSquareWave(PIN_PWM_P0);
-      else if (submenuPulse == 2) generatePulseSquareWavePeriod(PIN_PWM_P1);
+      if (submenuPulse == 1) {
+        swave_user_interface();
+        menu = 20;
+      } else if (submenuPulse == 2) lcd.print("hello");
     }
 
     if (flag_button[5]) { // CANCEL button
       flag_button[5] = false; // Reset flag
       menu = 1; // Go back to main menu
       update_menu();
+    }
+  } else if (menu == 20) {
+    // Square Wave submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuSWave > 1) submenuSWave--;
+      else submenuSWave = 2; // Wrap around to last option
+      swave_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuSWave < 2) submenuSWave++;
+      else submenuSWave = 1; // Wrap around to first option
+      swave_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+      if (submenuSWave == 1) {
+        menu = 21;
+        px_user_interface();
+      }
+      else if (submenuSWave == 2) {
+        menu = 21;
+        px_user_interface();
+      };
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 13; // Go back to submenu
+      pulse_user_interface();
+    }
+  } else if (menu == 21) {
+    // Select Px submenu navigation
+    if (flag_button[0]) { // UP button
+      flag_button[0] = false; // Reset flag
+      if (submenuPx > 1) submenuPx--;
+      else submenuPx = 4; // Wrap around to last option
+      px_user_interface();
+    }
+
+    if (flag_button[1]) { // DOWN button
+      flag_button[1] = false; // Reset flag
+      if (submenuPx < 4) submenuPx++;
+      else submenuPx = 1; // Wrap around to first option
+      px_user_interface();
+    }
+
+    if (flag_button[4]) { // OK button
+      flag_button[4] = false; // Reset flag
+
+      // Square wave frequency and period P0-P3
+      if (submenuPx == 1) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P0);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P0);
+        }
+      } else if (submenuPx == 2) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P1);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P1);
+        }
+      } else if (submenuPx == 3) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P2);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P2);
+        }
+      } else if (submenuPx == 4) {
+        if (submenuSWave == 1) {
+          generatePulseSquareWave(PIN_PWM_P3);
+        } else if (submenuSWave == 2) {
+          generatePulseSquareWavePeriod(PIN_PWM_P3);
+        }
+      }
+    }
+
+    if (flag_button[5]) { // CANCEL button
+      flag_button[5] = false; // Reset flag
+      menu = 20; // Go back to submenu
+      swave_user_interface();
     }
   }
 }
