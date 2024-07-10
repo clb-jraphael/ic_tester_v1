@@ -649,6 +649,27 @@ byte downIndicator[] = {
 unsigned int potValue = 0;
 boolean isRunning = false;
 
+// To store the settings for pulse generator
+float frequencyP0 = 0;
+unsigned long periodP0 = 0;
+int dutyCycleP0 = 0;
+byte modeP0 = 0; // 0: Off, 1: Square Wave (Frequency), 2: Square Wave (Period), 3: PWM Percentage, 4: PWM 8-bit
+
+float frequencyP1 = 0;
+unsigned long periodP1 = 0;
+int dutyCycleP1 = 0;
+byte modeP1 = 0;
+
+float frequencyP2 = 0;
+unsigned long periodP2 = 0;
+int dutyCycleP2 = 0;
+byte modeP2 = 0;
+
+float frequencyP3 = 0;
+unsigned long periodP3 = 0;
+int dutyCycleP3 = 0;
+byte modeP3 = 0;
+
 // FUNCTIONS
 
 void init_ic_pins(){
@@ -1497,6 +1518,20 @@ void generatePulseSquareWave(byte pin) {
     unsigned int potValue = potreader();
     float frequency = map(potValue, 0, 1023, 1, 100); // Map pot value to frequency range (1Hz to 100Hz)
 
+    if (pin == PIN_PWM_P0) {
+    frequencyP0 = frequency;
+    modeP0 = 1;
+    } else if (pin == PIN_PWM_P1) {
+      frequencyP1 = frequency;
+      modeP1 = 1;
+    } else if (pin == PIN_PWM_P2) {
+      frequencyP2 = frequency;
+      modeP2 = 1;
+    } else if (pin == PIN_PWM_P3) {
+      frequencyP3 = frequency;
+      modeP3 = 1;
+    }
+
     unsigned long period = 1000000UL / frequency; // Period in microseconds
     unsigned long halfPeriod = period / 2; // Half period for HIGH and LOW states
 
@@ -1531,6 +1566,20 @@ void generatePulseSquareWavePeriod(byte pin) {
     unsigned long period = map(potValue, 0, 1023, 1, 1000); // Map pot value to period range (1ms to 1000ms)
     unsigned long halfPeriod = period * 1000UL / 2; // Half period in microseconds
 
+    if (pin == PIN_PWM_P0) {
+      periodP0 = period;
+      modeP0 = 2;
+    } else if (pin == PIN_PWM_P1) {
+      periodP1 = period;
+      modeP1 = 2;
+    } else if (pin == PIN_PWM_P2) {
+      periodP2 = period;
+      modeP2 = 2;
+    } else if (pin == PIN_PWM_P3) {
+      periodP3 = period;
+      modeP3 = 2;
+    }
+
     Serial.print("Period: ");
     Serial.print(period);
     Serial.println(" microsecond");
@@ -1560,6 +1609,20 @@ void generatePWMPulsePercentage(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
     float dutyCycle = map(potValue, 0, 1023, 0, 100); // Map pot value to duty cycle range (0% to 100%)
+
+    if (pin == PIN_PWM_P0) {
+      dutyCycleP0 = dutyCycle;
+      modeP0 = 3;
+    } else if (pin == PIN_PWM_P1) {
+      dutyCycleP1 = dutyCycle;
+      modeP1 = 3;
+    } else if (pin == PIN_PWM_P2) {
+      dutyCycleP2 = dutyCycle;
+      modeP2 = 3;
+    } else if (pin == PIN_PWM_P3) {
+      dutyCycleP3 = dutyCycle;
+      modeP3 = 3;
+    }
     
     analogWrite(pin, dutyCycle * 2.55); // Convert dutyCycle percentage to 0-255 range
 
@@ -1587,6 +1650,20 @@ void generatePWMPulse8Bit(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
     int dutyCycle = map(potValue, 0, 1023, 0, 255); // Map pot value to duty cycle range (0 to 255)
+
+    if (pin == PIN_PWM_P0) {
+      dutyCycleP0 = dutyCycle;
+      modeP0 = 4;
+    } else if (pin == PIN_PWM_P1) {
+      dutyCycleP1 = dutyCycle;
+      modeP1 = 4;
+    } else if (pin == PIN_PWM_P2) {
+      dutyCycleP2 = dutyCycle;
+      modeP2 = 4;
+    } else if (pin == PIN_PWM_P3) {
+      dutyCycleP3 = dutyCycle;
+      modeP3 = 4;
+    }
     
     analogWrite(pin, dutyCycle);
 
@@ -1606,6 +1683,26 @@ void generatePWMPulse8Bit(byte pin) {
     }
     
     delay(50); // Adjust delay as needed
+  }
+}
+
+void generateSignal(byte pin, float frequency, unsigned long period, int dutyCycle, byte mode) {
+  if (mode == 1) {
+    unsigned long halfPeriod = 1000000UL / (2 * frequency);
+    digitalWrite(pin, HIGH);
+    delayMicroseconds(halfPeriod);
+    digitalWrite(pin, LOW);
+    delayMicroseconds(halfPeriod);
+  } else if (mode == 2) {
+    unsigned long halfPeriod = period * 1000UL / 2;
+    digitalWrite(pin, HIGH);
+    delayMicroseconds(halfPeriod);
+    digitalWrite(pin, LOW);
+    delayMicroseconds(halfPeriod);
+  } else if (mode == 3) {
+    analogWrite(pin, dutyCycle * 2.55); // Convert dutyCycle percentage to 0-255 range
+  } else if (mode == 4) {
+    analogWrite(pin, dutyCycle);
   }
 }
 
@@ -2076,4 +2173,9 @@ void loop() {
   buttonScanner();
   //heartbeatLED();
   potreader();
+
+  generateSignal(PIN_PWM_P0, frequencyP0, periodP0, dutyCycleP0, modeP0);
+  generateSignal(PIN_PWM_P1, frequencyP1, periodP1, dutyCycleP1, modeP1);
+  generateSignal(PIN_PWM_P2, frequencyP2, periodP2, dutyCycleP2, modeP2);
+  generateSignal(PIN_PWM_P3, frequencyP3, periodP3, dutyCycleP3, modeP3);
 }
