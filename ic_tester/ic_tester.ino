@@ -2276,4 +2276,45 @@ void loop() {
   generateSignal(PIN_PWM_P1, frequencyP1, periodP1, dutyCycleP1, modeP1);
   generateSignal(PIN_PWM_P2, frequencyP2, periodP2, dutyCycleP2, modeP2);
   generateSignal(PIN_PWM_P3, frequencyP3, periodP3, dutyCycleP3, modeP3);
+
+  if (Serial.available()) {
+    char val = Serial.read();
+
+    // For automatic search
+    if (val == '1') {
+      autoSearch(14);
+    }
+    if (val == '2') {
+      autoSearch(16);
+    }
+    if (val == '3') {
+      autoSearch(8);
+    }
+    if (val == '4') {
+      autoSearch(20);
+    }
+
+    // For manual testing
+    if (val == 'a') { // 7400
+      get_test_case(0);
+    }
+    if (val == 'b') { // 7402
+      get_test_case(1);
+    }
+    if (val == 'c') { // 7404
+      get_test_case(2);
+    }
+    if (val == 'd') { // 7408
+      get_test_case(3);
+    }
+    if (val == 'e') { // 7432
+      get_test_case(4);
+    }
+    if (val == 'f') { // 7486
+      get_test_case(5);
+    }
+    if (val == 'g') { // 747266
+      get_test_case(6);
+    }
+  }
 }
