@@ -8,6 +8,14 @@ Textarea leftTextarea, rightTextarea;
 Textfield inputField;
 Button sendButton, startButton;
 
+String[] comm = {"COM1 Serial Port", "COM2 Serial Port", "COM3 Serial Port", "COM4 Serial Port", "COM5 Serial Port", "COM6 Serial Port", "COM7 Serial Port", "COM8 Serial Port"};
+String[] auto = {"14-PIN", "16-PIN", "8-PIN", "20-PIN"};
+String[] manual = {"7400", "7402", "7404", "7408", "7432", "7486", "747266"};
+
+RadioButton autoManualSelector;
+
+DropdownList commDropdown, autoDropdown, manualDropdown;
+
 void setup() {
   size(1280, 720);
   cp5 = new ControlP5(this);
@@ -65,26 +73,30 @@ void setup() {
                   .setSize(100, 30)
                   .onClick(new CallbackListener() {
                     public void controlEvent(CallbackEvent event) {
-                      if (port != null && port.active()) {
-                        port.write(inputField.getText());
-                        inputField.clear();
-                      } else {
-                        rightTextarea.append("\nError: Serial port not connected.");
-                        rightTextarea.scroll(1);
-                      }
+                      executeTask();
                     }
                   });
   
   // Menu bar
-  addMenu("Communications", 0, new String[]{"COM1 Serial Port", "COM2 Serial Port", "COM3 Serial Port", "COM4 Serial Port", "COM5 Serial Port", "COM6 Serial Port", "COM7 Serial Port", "COM8 Serial Port"});
-  addMenu("Automatic", 1, new String[]{"14-PIN", "16-PIN", "8-PIN", "20-PIN"});
-  addMenu("Manual", 2, new String[]{"*", "7400", "7402", "7404", "7408", "7432", "7486", "747266"});
+  commDropdown = addMenu("Communications", 0, comm);
+  autoDropdown = addMenu("Automatic", 1, auto);
+  manualDropdown = addMenu("Manual", 2, manual);
   
   // Initialize the port with a default value (optional)
   initializePort("COM3");
+
+  // Radio buttons for mode selection
+  autoManualSelector = cp5.addRadioButton("autoManualSelector")
+                           .setPosition(655, 10)
+                           .setSize(20, 20)
+                           .setItemsPerRow(2)
+                           .setSpacingColumn(100) // Adjust spacing between buttons
+                           .addItem("Automatic Mode", 0)
+                           .addItem("Manual Mode", 1)
+                           .activate(0); // Default selection
 }
 
-void addMenu(String name, int index, String[] items) {
+DropdownList addMenu(String name, int index, String[] items) {
   int x = 10 + (index * 200); // Adjust spacing as needed
   DropdownList menu = cp5.addDropdownList(name)
                           .setPosition(x, 10)
@@ -100,6 +112,7 @@ void addMenu(String name, int index, String[] items) {
   }
   
   styleDropdown(menu);
+  return menu;
 }
 
 void styleDropdown(DropdownList ddl) {
@@ -111,16 +124,14 @@ void styleDropdown(DropdownList ddl) {
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isController()) {
     String name = theEvent.getController().getName();
-    if (name.equals("Communications") || name.equals("Automatic") || name.equals("Manual")) {
+    if (name.equals("Communications")) {
       cp5.get(name).bringToFront();
       
-      if (name.equals("Communications")) {
-        int index = (int) theEvent.getValue();
-        String comPort = "COM" + (index + 1);
-        println("Selected Port: " + comPort);
-        
-        initializePort(comPort);
-      }
+      int index = (int) theEvent.getValue();
+      String comPort = "COM" + (index + 1);
+      println("Selected Port: " + comPort);
+      
+      initializePort(comPort);
     }
   }
 }
@@ -150,6 +161,83 @@ void serialEvent(Serial port) {
   }
 }
 
+void executeTask() {
+  if (port != null && port.active()) {
+    int mode = (int) autoManualSelector.getValue();
+    println("Mode: " + mode);
+
+    if (mode == 0) { // Automatic Mode
+      String selectedAuto = autoDropdown.getItem((int)autoDropdown.getValue()).get("name").toString();
+      println("Selected Automatic: " + selectedAuto);
+      switch (selectedAuto) {
+        case "14-PIN":
+          port.write("1");
+          rightTextarea.append("\nSent: 1 for " + selectedAuto);
+          break;
+        case "16-PIN":
+          port.write("2");
+          rightTextarea.append("\nSent: 2 for " + selectedAuto);
+          break;
+        case "8-PIN":
+          port.write("3");
+          rightTextarea.append("\nSent: 3 for " + selectedAuto);
+          break;
+        case "20-PIN":
+          port.write("4");
+          rightTextarea.append("\nSent: 4 for " + selectedAuto);
+          break;
+        default:
+          rightTextarea.append("\nNo action defined for selected Automatic option.");
+          rightTextarea.scroll(1);
+          break;
+      }
+    } else if (mode == 1) { // Manual Mode
+      String selectedManual = manualDropdown.getItem((int)manualDropdown.getValue()).get("name").toString();
+      println("Selected Manual: " + selectedManual);
+      switch (selectedManual) {
+        case "7400":
+          port.write("a");
+          rightTextarea.append("\nSent: a for " + selectedManual);
+          break;
+        case "7402":
+          port.write("b");
+          rightTextarea.append("\nSent: b for " + selectedManual);
+          break;
+        case "7404":
+          port.write("c");
+          rightTextarea.append("\nSent: c for " + selectedManual);
+          break;
+        case "7408":
+          port.write("d");
+          rightTextarea.append("\nSent: d for " + selectedManual);
+          break;
+        case "7432":
+          port.write("e");
+          rightTextarea.append("\nSent: e for " + selectedManual);
+          break;
+        case "7486":
+          port.write("f");
+          rightTextarea.append("\nSent: f for " + selectedManual);
+          break;
+        case "747266":
+          port.write("g");
+          rightTextarea.append("\nSent: g for " + selectedManual);
+          break;
+        default:
+          rightTextarea.append("\nNo action defined for selected Manual option.");
+          rightTextarea.scroll(1);
+          break;
+      }
+    } else {
+      rightTextarea.append("\nError: No mode selected.");
+      rightTextarea.scroll(1);
+    }
+  } else {
+    rightTextarea.append("\nError: Serial port not connected.");
+    rightTextarea.scroll(1);
+  }
+}
+
 void draw() {
-  background(240);
+  background(14, 156, 75);
 }
