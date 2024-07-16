@@ -489,52 +489,70 @@ const char* const testPatterns_74373[] PROGMEM = {
 };
 
 //36
-// Data 1C, Strobe 1G, Select Input B, OUT1y3210, G
-// OUT2Y0123, Select Input A, Strobe 2G, Data 2C, VCC
 const char str_74155_1[] PROGMEM = "X1XHHHHGHHHHX1XV";
 const char str_74155_2[] PROGMEM = "100HHHLGLHHH000V";
 const char str_74155_3[] PROGMEM = "100HHLHGHLHH100V";
 const char str_74155_4[] PROGMEM = "101HLHHGHHLH000V";
 const char str_74155_5[] PROGMEM = "101LHHHGHHHL100V";
 const char str_74155_6[] PROGMEM = "0XXHHHHGHHHHXX1V";
-//need to add 3-line-to-8-line Decoder if needed
 const char* const testPatterns_74155[] PROGMEM = {
   str_74155_1, str_74155_2, str_74155_3,
   str_74155_4, str_74155_5, str_74155_6
 };
 
 //37
-//A4, E3, A3, B3, V, E2, B2, A2
-//E1, A1, B1, G, C0, C4, E4, B4
-//C0 - Carry Input
-//A1 - A4 - Operand A Inputs
-//B1 - B4 - Operand B Inputs
-//E1-E4 - Sum Outputs
-//C4 - Carry Ouput
 const char str_7483_1[] PROGMEM = "1L00VH01H01G0HL1"; //active high
 const char str_7483_2[] PROGMEM = "0H11VL10L10G1LH0"; //active low
 const char* const testPatterns_7483[] PROGMEM = {
   str_7483_1, str_7483_2
 };
 
-//38
+//38 - UNFINISHED
 //cp1, mr1, mr2, nc, v, ms1, ms2
 //q2, q1, g, q3, q0, nc, cp0
-const char str_7490_1[] PROGMEM = "C11XV0XLLGLLXC";
-const char str_7490_2[] PROGMEM = "C11XVX0LLGLLXC";
-const char str_7490_3[] PROGMEM = "CXXXV11LLGHHXC";
-//need to add count test patterns? not sure how
+const char str_7490_1[] PROGMEM = "F11XV0XLLGLLXF"; //initial reset state
+const char str_7490_2[] PROGMEM = "F11XVX0LLGLLXF"; //confirm reset state
+const char str_7490_3[] PROGMEM = "FXXXV11LLGHHXF"; //start counting
+const char str_7490_4[] PROGMEM = "FXXXVXXLLGLLXF"; //count 0 - failed
+//TO-DO: count sequence
+//clock should be enabled 
+//set inputs to low when counting
 const char* const testPatterns_7490[] PROGMEM = {
-  str_7490_1, str_7490_2, str_7490_3
+  str_7490_1, str_7490_2, str_7490_3, str_7490_4
 };
 
-//39 - BUGGED
-//question: test 1 flip-flop pair or both? ask for clk down symbol meaning
+//39 - unfinished
 //1clk, 1clr, 1k, v, 2clk, 2clr, 2j, 2qBar, 2q, 2k, G, 1q, 1qBar, 1J
-const char str_7473_1[] PROGMEM ="C1LVC11LH0GHL1";
+const char str_7473_1[] PROGMEM = "F10VF11LH0GHL1"; //prior setup
+const char str_7473_2[] PROGMEM = "";
 const char* const testPatterns_7473[] PROGMEM = {
   str_7473_1
 };
+
+//40 - LOAD 1 FAILING (07.12.24) -JOAQUIN
+//1clk, 1PRE(bar), 1clr(bar), in1J, V, 2clk, 2pre(bar), 2clr(bar), in2j, 2q(bar), out2Q, in2k, G, 1Q(bar), out1Q, in1k
+const char str_7476_1[] PROGMEM = "F01XVF01XLHXGLHX"; //set
+const char str_7476_2[] PROGMEM = "F10XVF10XHLXGHLX"; //reset
+const char str_7476_3[] PROGMEM = "F111VF111XX1GXX1"; //prior setup - toggle
+const char str_7476_4[] PROGMEM = "F111VF111HL1GHL1"; //toggle
+const char str_7476_5[] PROGMEM = "F110VF110XX1GXX1"; //prior setup - load 0
+const char str_7476_6[] PROGMEM = "F110VF110HL1GHL1"; //load 0
+const char str_7476_7[] PROGMEM = "F10XVF10XHLXGHLX"; //reset
+const char str_7476_8[] PROGMEM = "F111VF111XX0GXX0"; //prior setup - load 1
+const char str_7476_9[] PROGMEM = "F111VF111LH0GLH0"; //load 1
+const char* const testPatterns_7476[] PROGMEM = {
+  str_7476_1, str_7476_2, str_7476_3, str_7476_4, str_7476_5, str_7476_6
+};
+
+//41 - sn74hc93n
+//cp1, mr1, mr2, nc, v, nc, nc, q2, q1, g, q3, q0, nc, cp0
+const char str_7493_1[] PROGMEM = "F11XVXXLLGLLXF"; // mode select
+const char str_7493_2[] PROGMEM = "FXXXVXXLLGLLXF"; // count 0
+const char* const testPatterns_7493[] PROGMEM = {
+  str_7493_1, str_7493_2  
+};
+
+//42 - sn74ls48n
 
 
 
@@ -616,6 +634,12 @@ const char ic_model_7483[] PROGMEM = "7483";
 const char ic_model_7490[] PROGMEM = "7490";
 //39
 const char ic_model_7473[] PROGMEM = "7473";
+//40
+const char ic_model_7476[] PROGMEM ="7476";
+//41
+const char ic_model_7493[] PROGMEM ="7493";
+
+
 // Pin counts and test case numbers stored in PROGMEM
 const byte pinCount8[] PROGMEM = {8};
 const byte pinCount14[] PROGMEM = {14};
@@ -682,8 +706,10 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373}, //35
   {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155}, //36
   {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483}, //37
-  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases3, testPatterns_7490}, //38
-  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473} //39
+  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases4, testPatterns_7490}, //38
+  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473}, //39
+  {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476}, //40
+  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases2, testPatterns_7493} //41
 };
 
 byte upIndicator[] = {
@@ -737,13 +763,13 @@ void init_ic_pins(){
     >Monitor Responses: Continue to monitor the responses for each SignalIn and adjust the delay until you achieve consistent and correct outputs.   
 */
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
+    const int delayStep = 100; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
+    const int clockDelay = 200; // Starting with 100 microseconds
+    const int interCycleDelay = 100; // Fixed delay between clock cycles
 
-    const int delayStep       = 100; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
-    const int clockDelay      = 200; // Starting with 100 microseconds
-    const int interCycleDelay = 100;  // Fixed delay between clock cycles
-    
     boolean result = true;
     int clkPin = -1;
+    bool downwardClock = false;
 
     char testBuffer[pinCount + 1];
     for (int i = 0; i < pinCount; i++) {
@@ -760,64 +786,81 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
             case 'V':
                 pinMode(pins[i], OUTPUT);
                 digitalWrite(pins[i], HIGH);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case 'G':
                 pinMode(pins[i], OUTPUT);
                 digitalWrite(pins[i], LOW);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case 'L':
                 digitalWrite(pins[i], LOW);
                 pinMode(pins[i], INPUT_PULLUP);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case 'H':
                 digitalWrite(pins[i], HIGH);
                 pinMode(pins[i], INPUT_PULLUP);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case '~':
-                pinMode(pins[i], INPUT);
-                delayMicroseconds(delayStep); 
-                break;
             case 'Z':
                 pinMode(pins[i], INPUT);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
+            
         }
     }
 
-    delayMicroseconds(100); // stabilzation delay
+    delayMicroseconds(100); // stabilization delay
     // NOTE: This delay value might already be correct since most ICs can get away with it - Joaquin
 
     for (int i = 0; i < pinCount; i++) {
         char c = testBuffer[i];
         switch (c) {
             case 'X':
+              digitalWrite(pins[i], LOW);
+              pinMode(pins[i], OUTPUT);
+              delayMicroseconds(delayStep);
             case '0':
                 digitalWrite(pins[i], LOW);
                 pinMode(pins[i], OUTPUT);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case '1':
                 digitalWrite(pins[i], HIGH);
                 pinMode(pins[i], OUTPUT);
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 break;
             case 'C':
-                clkPin = pins[i]; pinMode(pins[i], OUTPUT); digitalWrite(pins[i], LOW); 
+                clkPin = pins[i];
+                pinMode(pins[i], OUTPUT);
+                digitalWrite(pins[i], LOW);
+                break;
+            case 'F':
+                clkPin = pins[i];
+                pinMode(pins[i], OUTPUT);
+                digitalWrite(pins[i], HIGH);
+                downwardClock = true;
                 break;
         }
     }
 
-    if (clkPin != -1){
-      pinMode(clkPin, OUTPUT);
-      digitalWrite(clkPin, LOW);
-      delayMicroseconds(clockDelay);
-      digitalWrite(clkPin, HIGH);
-      delayMicroseconds(clockDelay);
-      digitalWrite(clkPin, LOW);
+    if (clkPin != -1) {
+        pinMode(clkPin, OUTPUT);
+        if (downwardClock) {
+            digitalWrite(clkPin, HIGH);
+            delayMicroseconds(clockDelay);
+            digitalWrite(clkPin, LOW);
+            delayMicroseconds(clockDelay);
+            digitalWrite(clkPin, HIGH);
+        } else {
+            digitalWrite(clkPin, LOW);
+            delayMicroseconds(clockDelay);
+            digitalWrite(clkPin, HIGH);
+            delayMicroseconds(clockDelay);
+            digitalWrite(clkPin, LOW);
+        }
     }
 
     delayMicroseconds(20); // Increase this delay if necessary
@@ -829,20 +872,20 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
         char expected = testBuffer[i];
         char actual = ' ';
         bool isOutputPin = false;
-        
+
         switch (expected) {
             case 'H':
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 actual = digitalRead(pins[i]) ? 'H' : 'L';
                 isOutputPin = true;
                 break;
             case 'L':
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 actual = digitalRead(pins[i]) ? 'H' : 'L';
                 isOutputPin = true;
                 break;
             case 'Z':
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 if (digitalRead(pins[i]) == HIGH || digitalRead(pins[i]) == LOW) {
                     actual = digitalRead(pins[i]) ? 'H' : 'L';
                 } else {
@@ -851,12 +894,12 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
                 isOutputPin = true;
                 break;
             case 'V':
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 actual = digitalRead(pins[i]) ? 'V' : 'L';
                 isOutputPin = false;
                 break;
             case 'G':
-                delayMicroseconds(delayStep); 
+                delayMicroseconds(delayStep);
                 actual = digitalRead(pins[i]) ? 'V' : 'G';
                 isOutputPin = false;
                 break;
@@ -884,6 +927,7 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     reset_pin_config(pinCount);
     return result;
 }
+
 
 /*
   TO-DO: Review this funciton.
@@ -1285,6 +1329,16 @@ void manual_user_interface() {
     case 39:
       lcd.print((">IC 7473         "));
       lcd.setCursor(0, 1);
+      lcd.print((" IC 7476         "));
+      break;
+    case 40:
+      lcd.print((" IC 7473         "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 7476         "));
+      break;
+    case 41:
+      lcd.print((">IC 7493         "));
+      lcd.setCursor(0, 1);
       lcd.print(("                 "));
       break;
     default:
@@ -1300,7 +1354,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 39) {
+  if (submenu < 41) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -1812,13 +1866,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 39; // Wrap around to last option
+      else submenu =41; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 39) submenu++;
+      if (submenu < 41) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
