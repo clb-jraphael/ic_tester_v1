@@ -481,7 +481,7 @@ const char* const testPatterns_072[] PROGMEM = {
   str_072_1, str_072_2
 };
 
-//35
+//35 - 20 pin
 const char str_74373_1[] PROGMEM ="0H11HH11HG1H11HH11HV";
 const char str_74373_2[] PROGMEM ="0L00LL00LG1L00LL00LV";
 const char* const testPatterns_74373[] PROGMEM = {
@@ -507,7 +507,7 @@ const char* const testPatterns_7483[] PROGMEM = {
   str_7483_1, str_7483_2
 };
 
-//38 - UNFINISHED
+//38 - TIMING ISSUE (07.16.24) - JOAQUIN
 //cp1, mr1, mr2, nc, v, ms1, ms2
 //q2, q1, g, q3, q0, nc, cp0
 const char str_7490_1[] PROGMEM = "F11XV0XLLGLLXF"; //initial reset state
@@ -523,7 +523,7 @@ const char* const testPatterns_7490[] PROGMEM = {
 
 //39 - unfinished
 //1clk, 1clr, 1k, v, 2clk, 2clr, 2j, 2qBar, 2q, 2k, G, 1q, 1qBar, 1J
-const char str_7473_1[] PROGMEM = "F10VF11LH0GHL1"; //prior setup
+const char str_7473_1[] PROGMEM = "X0XVX0XLHXGHLX"; //reset
 const char str_7473_2[] PROGMEM = "";
 const char* const testPatterns_7473[] PROGMEM = {
   str_7473_1
@@ -544,7 +544,7 @@ const char* const testPatterns_7476[] PROGMEM = {
   str_7476_1, str_7476_2, str_7476_3, str_7476_4, str_7476_5, str_7476_6
 };
 
-//41 - sn74hc93n
+//41 - TIMING ISSUE (07.16.24) - JOAQUIN
 //cp1, mr1, mr2, nc, v, nc, nc, q2, q1, g, q3, q0, nc, cp0
 const char str_7493_1[] PROGMEM = "F11XVXXLLGLLXF"; // mode select
 const char str_7493_2[] PROGMEM = "FXXXVXXLLGLLXF"; // count 0
@@ -552,9 +552,30 @@ const char* const testPatterns_7493[] PROGMEM = {
   str_7493_1, str_7493_2  
 };
 
-//42 - sn74ls48n
+//42 - sn74ls48n 7448
+//B, C, LTbar, BI/RBObar, RBIbar, D, A, G
+//e, d, c, b, a, g, f, v
+const char str_7448_1[] PROGMEM = "0011100GHHHHHLHV"; //0
+const char str_7448_2[] PROGMEM = "0011X0HGLLHHLLLV"; //1
+const char str_7448_3[] PROGMEM = "XXX0XXXGLLLLLLLV"; //BI Bar - FAILING
+const char* const testPatterns_7448[] PROGMEM = {
+  str_7448_1, str_7448_2
+};
 
+//43 - lm358p
+//out1, inverting input, non input, G, non inverting in2, inverting in 2, out2, V
+const char str_358_1[] PROGMEM = "L10G01LV"; 
+const char str_358_2[] PROGMEM = "H01G10GV"; 
+const char* const testPatterns_358[] PROGMEM = {
+  str_358_1, str_358_2
+};
 
+//cd4026be 4026
+//cd4047bd 4047
+//cd4033be 4033
+//cd4078be 4078
+//cd4013be 4013
+//cd4060be 4060
 
 //1
 const char ic_model_7400[] PROGMEM = "7400";
@@ -638,6 +659,10 @@ const char ic_model_7473[] PROGMEM = "7473";
 const char ic_model_7476[] PROGMEM ="7476";
 //41
 const char ic_model_7493[] PROGMEM ="7493";
+//42
+const char ic_model_7448[] PROGMEM = "7448";
+//43
+const char ic_model_358[] PROGMEM = "358";
 
 
 // Pin counts and test case numbers stored in PROGMEM
@@ -709,7 +734,9 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases4, testPatterns_7490}, //38
   {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473}, //39
   {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476}, //40
-  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases2, testPatterns_7493} //41
+  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases2, testPatterns_7493}, //41
+  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448}, //42
+  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358}
 };
 
 byte upIndicator[] = {
@@ -1339,6 +1366,16 @@ void manual_user_interface() {
     case 41:
       lcd.print((">IC 7493         "));
       lcd.setCursor(0, 1);
+      lcd.print((" IC 7448         "));
+      break;
+    case 42:
+      lcd.print((" IC 7493         "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 7448         "));
+      break;
+    case 43:
+      lcd.print((">IC 358          "));
+      lcd.setCursor(0, 1);
       lcd.print(("                 "));
       break;
     default:
@@ -1354,7 +1391,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 41) {
+  if (submenu < 43) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -1866,13 +1903,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu =41; // Wrap around to last option
+      else submenu =43; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 41) submenu++;
+      if (submenu < 43) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
