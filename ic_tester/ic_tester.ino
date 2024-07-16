@@ -405,16 +405,16 @@ const char* const testPatterns_4077[] PROGMEM = {
   str_4077_1, str_4077_2, str_4077_3, str_4077_4
 };
 //28
-const char str_4068_1[] PROGMEM =  "011110G01111LV";
-const char str_4068_2[] PROGMEM =  "010100G01010HV";
-const char str_4068_3[] PROGMEM =  "001010G00101HV";
-const char str_4068_4[] PROGMEM =  "000110G00011HV";
-const char str_4068_5[] PROGMEM =  "011000G01100HV";
-const char str_4068_6[] PROGMEM =  "000000G01111HV";
-const char str_4068_7[] PROGMEM =  "000000G00000HV";
-const char str_4068_8[] PROGMEM =  "011110G01110HV";
-const char str_4068_9[] PROGMEM =  "011010G01111HV";
-const char str_4068_10[] PROGMEM = "001110G00111HV";
+const char str_4068_1[] PROGMEM = "011110G01111LV";
+const char str_4068_2[] PROGMEM = "010100G01010HV";
+const char str_4068_3[] PROGMEM = "001010G00101HV";
+const char str_4068_4[] PROGMEM = "000110G00011HV";
+const char str_4068_5[] PROGMEM = "011000G01100HV";
+const char str_4068_6[] PROGMEM = "000000G01111HV";
+const char str_4068_7[] PROGMEM = "000000G00000HV";
+const char str_4068_8[] PROGMEM = "011110G01110HV";
+const char str_4068_9[] PROGMEM = "011010G01111HV";
+const char str_4068_10[] PROGMEM ="001110G00111HV";
 const char* const testPatterns_4068[] PROGMEM = {
   str_4068_1, str_4068_2, str_4068_3, str_4068_4,
   str_4068_5, str_4068_6, str_4068_7, str_4068_8,
@@ -577,115 +577,30 @@ const char* const testPatterns_358[] PROGMEM = {
 //cd4013be 4013
 //cd4060be 4060
 
-//1
-const char ic_model_7400[] PROGMEM = "7400";
-//2
-const char ic_model_7402[] PROGMEM = "7402";
-//3
-const char ic_model_7404[] PROGMEM = "7404";
-//4
-const char ic_model_7408[] PROGMEM = "7408";
-//5
-const char ic_model_7432[] PROGMEM = "7432";
-//6
-const char ic_model_7486[] PROGMEM = "7486";
-//7
-const char ic_model_747266[] PROGMEM = "747266";
-//8
-const char ic_model_7427[] PROGMEM = "7427";
-//9
-const char ic_model_74151[] PROGMEM = "74151";
-//10
-const char ic_model_7421[] PROGMEM = "7421";
-//11
-const char ic_model_74192[] PROGMEM = "74192";
-//12
-const char ic_model_7474[] PROGMEM = "7474";
-//13
-const char ic_model_74190[] PROGMEM = "74190";
-//14
-const char ic_model_74193[] PROGMEM = "74193";
-//15
-const char ic_model_74195[] PROGMEM = "74195";
-//16
-const char ic_model_7410[] PROGMEM = "7410";
-//17
-const char ic_model_7411[] PROGMEM = "7411";
-//18
-const char ic_model_74125[] PROGMEM = "74125";
-//19
-const char ic_model_74138[] PROGMEM = "74138";
-//20
-const char ic_model_7447[] PROGMEM = "7447";
-//21
-const char ic_model_74173[] PROGMEM = "74173";
-//22
-const char ic_model_4070[] PROGMEM = "4070";
-//23
-const char ic_model_4071[] PROGMEM = "4071";
-//24
-const char ic_model_4017[] PROGMEM = "4017";
-//25
-const char ic_model_4511[] PROGMEM = "4511";
-//26
-const char ic_model_4081[] PROGMEM = "4081";
-//27
-const char ic_model_4077[] PROGMEM = "4077";
-//28
-const char ic_model_4068[] PROGMEM = "4068";
-//29
-const char ic_model_4069[] PROGMEM = "4069";
-//30
-const char ic_model_4066[] PROGMEM = "4066";
-//31
-const char ic_model_4094[] PROGMEM = "4094";
-//32
-const char ic_model_74112[] PROGMEM = "74112";
-//33
-const char ic_model_741[] PROGMEM = "741";
-//34
-const char ic_model_072[] PROGMEM = "072";
-//35
-const char ic_model_74373[] PROGMEM = "74373";
-//36
-const char ic_model_74155[] PROGMEM = "74155";
-//37
-const char ic_model_7483[] PROGMEM = "7483";
-//38
-const char ic_model_7490[] PROGMEM = "7490";
-//39
-const char ic_model_7473[] PROGMEM = "7473";
-//40
-const char ic_model_7476[] PROGMEM ="7476";
-//41
-const char ic_model_7493[] PROGMEM ="7493";
-//42
-const char ic_model_7448[] PROGMEM = "7448";
-//43
+const char ic_model_7400[] PROGMEM = "7400";      const char ic_model_7402[] PROGMEM = "7402";    const char ic_model_7404[] PROGMEM = "7404";
+const char ic_model_7408[] PROGMEM = "7408";      const char ic_model_7432[] PROGMEM = "7432";    const char ic_model_7486[] PROGMEM = "7486";
+const char ic_model_747266[] PROGMEM = "747266";  const char ic_model_7427[] PROGMEM = "7427";    const char ic_model_74151[] PROGMEM = "74151";
+const char ic_model_7421[] PROGMEM = "7421";      const char ic_model_74192[] PROGMEM = "74192";  const char ic_model_7474[] PROGMEM = "7474";
+const char ic_model_74190[] PROGMEM = "74190";    const char ic_model_74193[] PROGMEM = "74193";  const char ic_model_74195[] PROGMEM = "74195";
+const char ic_model_7410[] PROGMEM = "7410";      const char ic_model_7411[] PROGMEM = "7411";    const char ic_model_74125[] PROGMEM = "74125";
+const char ic_model_74138[] PROGMEM = "74138";    const char ic_model_7447[] PROGMEM = "7447";    const char ic_model_74173[] PROGMEM = "74173";
+const char ic_model_4070[] PROGMEM = "4070";      const char ic_model_4071[] PROGMEM = "4071";    const char ic_model_4017[] PROGMEM = "4017";
+const char ic_model_4511[] PROGMEM = "4511";      const char ic_model_4081[] PROGMEM = "4081";    const char ic_model_4077[] PROGMEM = "4077";
+const char ic_model_4068[] PROGMEM = "4068";      const char ic_model_4069[] PROGMEM = "4069";    const char ic_model_4066[] PROGMEM = "4066";
+const char ic_model_4094[] PROGMEM = "4094";      const char ic_model_74112[] PROGMEM = "74112";  const char ic_model_741[] PROGMEM = "741";
+const char ic_model_072[] PROGMEM = "072";        const char ic_model_74373[] PROGMEM = "74373";  const char ic_model_74155[] PROGMEM = "74155";
+const char ic_model_7483[] PROGMEM = "7483";      const char ic_model_7490[] PROGMEM = "7490";    const char ic_model_7473[] PROGMEM = "7473";
+const char ic_model_7476[] PROGMEM ="7476";       const char ic_model_7493[] PROGMEM ="7493";     const char ic_model_7448[] PROGMEM = "7448";
 const char ic_model_358[] PROGMEM = "358";
 
-
 // Pin counts and test case numbers stored in PROGMEM
-const byte pinCount8[] PROGMEM = {8};
-const byte pinCount14[] PROGMEM = {14};
-const byte pinCount16[] PROGMEM = {16};
-const byte pinCount20[] PROGMEM = {20};
+const byte pinCount8[] PROGMEM = {8}; const byte pinCount14[] PROGMEM = {14}; const byte pinCount16[] PROGMEM = {16}; const byte pinCount20[] PROGMEM = {20};
 
-const byte numTestCases1[] PROGMEM = {1};
-const byte numTestCases2[] PROGMEM = {2};
-const byte numTestCases3[] PROGMEM = {3};
-const byte numTestCases4[] PROGMEM = {4};
-const byte numTestCases5[] PROGMEM = {5};
-const byte numTestCases6[] PROGMEM = {6};
-const byte numTestCases7[] PROGMEM = {7};
-const byte numTestCases8[] PROGMEM = {8};
-const byte numTestCases9[] PROGMEM = {9};
-const byte numTestCases10[] PROGMEM = {10};
-const byte numTestCases12[] PROGMEM = {12};
-const byte numTestCases14[] PROGMEM = {14};
-const byte numTestCases15[] PROGMEM = {15};
-const byte numTestCases18[] PROGMEM = {18};
-const byte numTestCases31[] PROGMEM = {31};
+const byte numTestCases1[] PROGMEM = {1};   const byte numTestCases2[] PROGMEM = {2};   const byte numTestCases3[] PROGMEM = {3};
+const byte numTestCases4[] PROGMEM = {4};   const byte numTestCases5[] PROGMEM = {5};   const byte numTestCases6[] PROGMEM = {6};
+const byte numTestCases7[] PROGMEM = {7};   const byte numTestCases8[] PROGMEM = {8};   const byte numTestCases9[] PROGMEM = {9};
+const byte numTestCases10[] PROGMEM = {10}; const byte numTestCases12[] PROGMEM = {12}; const byte numTestCases14[] PROGMEM = {14};
+const byte numTestCases15[] PROGMEM = {15}; const byte numTestCases18[] PROGMEM = {18}; const byte numTestCases31[] PROGMEM = {31};
 
 // Define an array of IC_TestPatterns, using PROGMEM for the array itself
 const struct IC_TestPattern {
@@ -736,7 +651,7 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476}, //40
   {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases2, testPatterns_7493}, //41
   {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448}, //42
-  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358}
+  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358} //43
 };
 
 byte upIndicator[] = {
