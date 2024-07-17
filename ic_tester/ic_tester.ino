@@ -2296,25 +2296,32 @@ void loop() {
 
     // For manual testing
     if (val == 'a') { // 7400
-      get_test_case(0);
-    }
-    if (val == 'b') { // 7402
+      Serial.println("Manual test: 7400");
       get_test_case(1);
     }
-    if (val == 'c') { // 7404
+    if (val == 'b') { // 7402
+      Serial.println("Manual test: 7402");
       get_test_case(2);
     }
-    if (val == 'd') { // 7408
+    if (val == 'c') { // 7404
+      Serial.println("Manual test: 7404");
       get_test_case(3);
     }
-    if (val == 'e') { // 7432
+    if (val == 'd') { // 7408
+      Serial.println("Manual test: 7408");
       get_test_case(4);
     }
-    if (val == 'f') { // 7486
+    if (val == 'e') { // 7432
+      Serial.println("Manual test: 7432");
       get_test_case(5);
     }
-    if (val == 'g') { // 747266
+    if (val == 'f') { // 7486
+      Serial.println("Manual test: 7486");
       get_test_case(6);
+    }
+    if (val == 'g') { // 747266
+      Serial.println("Manual test: 747266");
+      get_test_case(7);
     }
   }
 }
