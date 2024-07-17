@@ -15,6 +15,9 @@ RadioButton autoManualSelector;
 
 DropdownList commDropdown, autoDropdown, manualDropdown;
 
+boolean newResultReady = false; // Flag to check if a new summary result is ready
+String resultSummary = ""; // Variable to hold the summary result
+
 void setup() {
   size(1280, 720);
   cp5 = new ControlP5(this);
@@ -28,7 +31,7 @@ void setup() {
                     .setColor(color(0))
                     .setColorBackground(color(255))
                     .setColorForeground(color(0))
-                    .setText("Lorem ipsum dolor sit amet");
+                    .setText("");
 
   // Right Text Area - Serial Monitor
   rightTextarea = cp5.addTextarea("serialMonitor")
@@ -171,6 +174,12 @@ void serialEvent(Serial port) {
     inData = inData.trim(); // Remove any leading/trailing whitespace
     rightTextarea.append("\n" + inData); // Append the data to the right text area
     rightTextarea.scroll(1); // Scroll down to the latest text
+    
+    // Check for summary results and update the left textarea
+    if (inData.contains("passed all tests") || inData.contains("failed")) {
+      newResultReady = true;
+      resultSummary = inData;
+    }
   }
 }
 
@@ -253,4 +262,11 @@ void executeTask() {
 
 void draw() {
   background(14, 156, 75);
+
+  // Check if a new result summary is ready
+  if (newResultReady) {
+    leftTextarea.append("\n" + resultSummary);
+    leftTextarea.scroll(1);
+    newResultReady = false;
+  }
 }
