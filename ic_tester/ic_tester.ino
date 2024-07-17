@@ -1511,6 +1511,11 @@ void dutycycle_user_interface() {
       lcd.setCursor(0, 1);
       lcd.print(F(">8-bit          "));
       break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Period     "));
+      break;
   }
 }
 
@@ -1771,6 +1776,67 @@ void generatePWMPulse8Bit(byte pin) {
     }
     
     delay(50); // Adjust delay as needed
+  }
+}
+
+// Function to generate a PWM signal with a specific period and the already set duty cycle
+void generatePWMWithPeriod(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+
+    // Map pot value to period range (1ms to 1000ms)
+    unsigned long period = map(potValue, 0, 1023, 1, 1000); // Period in milliseconds
+
+    float dutyCycle = 0;
+    if (pin == PIN_PWM_P0) {
+      dutyCycle = dutyCycleP0;
+      periodP0 = period;
+      modeP0 = 5; // New mode for custom PWM with period
+    } else if (pin == PIN_PWM_P1) {
+      dutyCycle = dutyCycleP1;
+      periodP1 = period;
+      modeP1 = 5;
+    } else if (pin == PIN_PWM_P2) {
+      dutyCycle = dutyCycleP2;
+      periodP2 = period;
+      modeP2 = 5;
+    } else if (pin == PIN_PWM_P3) {
+      dutyCycle = dutyCycleP3;
+      periodP3 = period;
+      modeP3 = 5;
+    }
+
+    // Calculate on-time and off-time in microseconds
+    unsigned long onTime = (period * 1000UL * dutyCycle) / 100; // On-time in microseconds
+    unsigned long offTime = (period * 1000UL) - onTime; // Off-time in microseconds
+
+    Serial.print("Period: ");
+    Serial.print(period);
+    Serial.print(" ms, Duty Cycle: ");
+    Serial.print(dutyCycle);
+    Serial.println(" %");
+    lcd.clear();
+    lcd.print("Period: ");
+    lcd.print(period);
+    lcd.print(" ms");
+    lcd.setCursor(0, 1);
+    lcd.print("Duty Cycle: ");
+    lcd.print(dutyCycle);
+    lcd.print(" %");
+
+    // Generate the PWM signal
+    for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
+      digitalWrite(pin, HIGH);
+      delayMicroseconds(onTime);
+      digitalWrite(pin, LOW);
+      delayMicroseconds(offTime);
+    }
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      digitalWrite(pin, LOW);
+      break;
+    }
   }
 }
 
@@ -2141,13 +2207,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuDCycle > 1) submenuDCycle--;
-      else submenuDCycle = 2; // Wrap around to last option
+      else submenuDCycle = 3; // Wrap around to last option
       dutycycle_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenuDCycle < 2) submenuDCycle++;
+      if (submenuDCycle < 3) submenuDCycle++;
       else submenuDCycle = 1; // Wrap around to first option
       dutycycle_user_interface();
     }
@@ -2161,24 +2227,32 @@ void buttonScanner() {
           generatePWMPulsePercentage(PIN_PWM_P0);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P0);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 2) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P1);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P1);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 3) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P2);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P2);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 4) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P3);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P3);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       }
     }
