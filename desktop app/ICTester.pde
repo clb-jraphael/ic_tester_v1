@@ -8,7 +8,6 @@ Textarea leftTextarea, rightTextarea;
 Textfield inputField;
 Button sendButton, startButton;
 
-String[] comm = {"COM1 Serial Port", "COM2 Serial Port", "COM3 Serial Port", "COM4 Serial Port", "COM5 Serial Port", "COM6 Serial Port", "COM7 Serial Port", "COM8 Serial Port"};
 String[] auto = {"14-PIN", "16-PIN", "8-PIN", "20-PIN"};
 String[] manual = {"7400", "7402", "7404", "7408", "7432", "7486", "747266"};
 
@@ -65,7 +64,7 @@ void setup() {
                       }
                     }
                   });
-             
+
   // Start Button
   startButton = cp5.addButton("startButton")
                   .setLabel("Start Task")
@@ -76,14 +75,19 @@ void setup() {
                       executeTask();
                     }
                   });
-  
+
   // Menu bar
-  commDropdown = addMenu("Communications", 0, comm);
+  commDropdown = addMenu("Communications", 0, new String[0]); // Empty list initially
   autoDropdown = addMenu("Automatic", 1, auto);
   manualDropdown = addMenu("Manual", 2, manual);
-  
+
+  // Populate commDropdown with available serial ports
+  updateCommDropdown();
+
   // Initialize the port with a default value (optional)
-  initializePort("COM3");
+  if (commDropdown.getItems().size() > 0) {
+    initializePort(commDropdown.getItem(0).get("name").toString());
+  }
 
   // Radio buttons for mode selection
   autoManualSelector = cp5.addRadioButton("autoManualSelector")
@@ -121,6 +125,15 @@ void styleDropdown(DropdownList ddl) {
      .setColorForeground(color(100));
 }
 
+void updateCommDropdown() {
+  String[] availablePorts = Serial.list();
+  commDropdown.clear(); // Clear existing items
+  for (int i = 0; i < availablePorts.length; i++) {
+    commDropdown.addItem(availablePorts[i], i);
+  }
+  commDropdown.bringToFront(); // Ensure it appears above other elements
+}
+
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isController()) {
     String name = theEvent.getController().getName();
@@ -128,7 +141,7 @@ void controlEvent(ControlEvent theEvent) {
       cp5.get(name).bringToFront();
       
       int index = (int) theEvent.getValue();
-      String comPort = "COM" + (index + 1);
+      String comPort = commDropdown.getItem(index).get("name").toString();
       println("Selected Port: " + comPort);
       
       initializePort(comPort);
