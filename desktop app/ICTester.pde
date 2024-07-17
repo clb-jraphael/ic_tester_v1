@@ -21,6 +21,9 @@ DropdownList commDropdown, autoDropdown, manualDropdown;
 boolean newResultReady = false; // Flag to check if a new summary result is ready
 String resultSummary = ""; // Variable to hold the summary result
 
+/**
+* Sets up the GUI components, loads the logo, sets up text areas, input fields, buttons, and dropdown lists.
+*/
 void setup() {
   size(1280, 720);
   cp5 = new ControlP5(this);
@@ -110,6 +113,14 @@ void setup() {
                            .activate(0); // Default selection
 }
 
+/**
+* Adds a dropdown list menu with the given name, index, and items.
+* 
+* @param name  The name of the dropdown list
+* @param index The index of the dropdown list
+* @param items The items to be added to the dropdown list
+* @return The created DropdownList object
+*/
 DropdownList addMenu(String name, int index, String[] items) {
   int x = 10 + (index * 200); // Adjust spacing as needed
   DropdownList menu = cp5.addDropdownList(name)
@@ -129,6 +140,11 @@ DropdownList addMenu(String name, int index, String[] items) {
   return menu;
 }
 
+/**
+* Styles a dropdown list with specified colors.
+* 
+* @param ddl The DropdownList to be styled
+*/
 void styleDropdown(DropdownList ddl) {
   ddl.setColorBackground(color(200))
      .setColorLabel(color(0))
@@ -136,6 +152,9 @@ void styleDropdown(DropdownList ddl) {
      .setColorForeground(color(100));
 }
 
+/**
+* Updates the communication dropdown list with available serial ports.
+*/
 void updateCommDropdown() {
   String[] availablePorts = Serial.list();
   commDropdown.clear(); // Clear existing items
@@ -145,6 +164,11 @@ void updateCommDropdown() {
   commDropdown.bringToFront(); // Ensure it appears above other elements
 }
 
+/**
+* Handles control events for the dropdown lists and other controls.
+* 
+* @param theEvent The control event to be handled
+*/
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isController()) {
     String name = theEvent.getController().getName();
@@ -160,6 +184,11 @@ void controlEvent(ControlEvent theEvent) {
   }
 }
 
+/**
+* Initializes the serial port with the given port name.
+* 
+* @param portName The name of the serial port to initialize
+*/
 void initializePort(String portName) {
   try {
     if (port != null) {
@@ -176,6 +205,11 @@ void initializePort(String portName) {
   }
 }
 
+/**
+* Handles serial events and processes incoming data from the serial port.
+* 
+* @param port The serial port from which data is received
+*/
 void serialEvent(Serial port) {
   String inData = port.readStringUntil('\n'); // Read the data from the serial port
   if (inData != null) {
@@ -205,6 +239,10 @@ void serialEvent(Serial port) {
   }
 }
 
+/**
+* Executes the task based on the selected mode (automatic or manual) and sends corresponding
+* signal to the IC tester.
+*/
 void executeTask() {
   if (port != null && port.active()) {
     int mode = (int) autoManualSelector.getValue();

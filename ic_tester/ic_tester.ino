@@ -1789,21 +1789,45 @@ void generatePWMWithPeriod(byte pin) {
 
     float dutyCycle = 0;
     if (pin == PIN_PWM_P0) {
-      dutyCycle = dutyCycleP0;
-      periodP0 = period;
-      modeP0 = 5; // New mode for custom PWM with period
+      if (dutyCycleP0 == 0) {
+        dutyCycle = 50;
+        periodP0 = period;
+        modeP0 = 5; // New mode for custom PWM with period
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP0 = period;
+        modeP0 = 5; // New mode for custom PWM with period
+      }
     } else if (pin == PIN_PWM_P1) {
-      dutyCycle = dutyCycleP1;
-      periodP1 = period;
-      modeP1 = 5;
+      if (dutyCycleP1 == 0) {
+        dutyCycle = 50;
+        periodP1 = period;
+        modeP1 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP1 = period;
+        modeP1 = 5;
+      }
     } else if (pin == PIN_PWM_P2) {
-      dutyCycle = dutyCycleP2;
-      periodP2 = period;
-      modeP2 = 5;
+      if (dutyCycleP2 == 0) {
+        dutyCycle = 50;
+        periodP2 = period;
+        modeP2 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP2 = period;
+        modeP2 = 5;
+      }
     } else if (pin == PIN_PWM_P3) {
-      dutyCycle = dutyCycleP3;
-      periodP3 = period;
-      modeP3 = 5;
+      if (dutyCycleP3 == 0) {
+        dutyCycle = 50;
+        periodP3 = period;
+        modeP3 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP3 = period;
+        modeP3 = 5;
+      }
     }
 
     // Calculate on-time and off-time in microseconds
