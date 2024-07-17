@@ -8,8 +8,11 @@ Textarea leftTextarea, rightTextarea;
 Textfield inputField;
 Button sendButton, startButton;
 
+boolean isReceivingAutoResults = false; // Flag to indicate if automatic results are being received
+String autoResultBuffer = ""; // Buffer to hold the multi-line automatic test results
 String[] auto = {"14-PIN", "16-PIN", "8-PIN", "20-PIN"};
 String[] manual = {"7400", "7402", "7404", "7408", "7432", "7486", "747266"};
+PImage logo;
 
 RadioButton autoManualSelector;
 
@@ -21,6 +24,10 @@ String resultSummary = ""; // Variable to hold the summary result
 void setup() {
   size(1280, 720);
   cp5 = new ControlP5(this);
+  
+  logo = loadImage("layad_logo.png");
+  surface.setIcon(logo); // Set the icon for the application window
+  surface.setTitle("LC IC Tester");
 
   // Left Text Area
   leftTextarea = cp5.addTextarea("resultsTextArea")
@@ -124,6 +131,7 @@ DropdownList addMenu(String name, int index, String[] items) {
 
 void styleDropdown(DropdownList ddl) {
   ddl.setColorBackground(color(200))
+     .setColorLabel(color(0))
      .setColorActive(color(255, 128))
      .setColorForeground(color(100));
 }
@@ -174,11 +182,25 @@ void serialEvent(Serial port) {
     inData = inData.trim(); // Remove any leading/trailing whitespace
     rightTextarea.append("\n" + inData); // Append the data to the right text area
     rightTextarea.scroll(1); // Scroll down to the latest text
-    
-    // Check for summary results and update the left textarea
+
+    // Check for summary results for manual and update the left textarea
     if (inData.contains("passed all tests") || inData.contains("failed")) {
       newResultReady = true;
       resultSummary = inData;
+    }
+
+    // Check for summary results for automatic and start buffering the results
+    if (inData.contains("Passed Models:") || inData.contains("No models passed")) {
+      isReceivingAutoResults = true;
+      autoResultBuffer = inData + "\n"; // Start buffering the results
+    } else if (isReceivingAutoResults) {
+      if (inData.isEmpty()) {
+        isReceivingAutoResults = false; // Stop buffering when an empty line is encountered
+        newResultReady = true;
+        resultSummary = autoResultBuffer; // Set the result summary to the buffered results
+      } else {
+        autoResultBuffer += inData + "\n"; // Continue buffering the results
+      }
     }
   }
 }
@@ -253,7 +275,7 @@ void executeTask() {
     } else {
       rightTextarea.append("\nError: No mode selected.");
       rightTextarea.scroll(1);
-    }
+    } 
   } else {
     rightTextarea.append("\nError: Serial port not connected.");
     rightTextarea.scroll(1);
