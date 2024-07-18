@@ -1523,12 +1523,19 @@ void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
     lcd.setCursor(0, 0);
-    lcd.print("Passed Models:");
+    lcd.print(F("Passed Models:"));
     lcd.setCursor(0, 1);
     lcd.print(passedModels[currentModelIndex]);
+
+    byte size_db = sizeof(passedModels) / sizeof(passedModels[0]);
+    Serial.println(F("Passed Models:"));
+    for (byte i = 0; i < size_db; i++) {
+      Serial.println(passedModels[i]);
+    }
   } else {
     lcd.setCursor(0, 0);
-    lcd.print("No models passed");
+    lcd.print(F("No models passed"));
+    Serial.println(F("No models passed"));
   }
 }
 
@@ -2379,47 +2386,159 @@ void loop() {
     char val = Serial.read();
 
     // For automatic search
-    if (val == '1') {
+    if (val == '0') {
       autoSearch(14);
     }
-    if (val == '2') {
+    if (val == '1') {
       autoSearch(16);
     }
-    if (val == '3') {
+    if (val == '2') {
       autoSearch(8);
     }
-    if (val == '4') {
+    if (val == '3') {
       autoSearch(20);
     }
 
     // For manual testing
-    if (val == 'a') { // 7400
+    if (val == '4') { // 7400
       Serial.println("Manual test: 7400");
       get_test_case(1);
     }
-    if (val == 'b') { // 7402
+    if (val == '5') { // 7402
       Serial.println("Manual test: 7402");
       get_test_case(2);
     }
-    if (val == 'c') { // 7404
+    if (val == '6') { // 7404
       Serial.println("Manual test: 7404");
       get_test_case(3);
     }
-    if (val == 'd') { // 7408
+    if (val == '7') { // 7408
       Serial.println("Manual test: 7408");
       get_test_case(4);
     }
-    if (val == 'e') { // 7432
+    if (val == '8') { // 7432
       Serial.println("Manual test: 7432");
       get_test_case(5);
     }
-    if (val == 'f') { // 7486
+    if (val == '9') { // 7486
       Serial.println("Manual test: 7486");
       get_test_case(6);
     }
-    if (val == 'g') { // 747266
+    if (val == 'a') { // 747266
       Serial.println("Manual test: 747266");
       get_test_case(7);
+    }
+    if (val == 'b') { // 7427
+      Serial.println("Manual test: 7427");
+      get_test_case(8);
+    }
+    if (val == 'c') { // 74151
+      Serial.println("Manual test: 74151");
+      get_test_case(9);
+    }
+    if (val == 'd') { // 7421
+      Serial.println("Manual test: 7421");
+      get_test_case(10);
+    }
+    if (val == 'e') { // 74192
+      Serial.println("Manual test: 74192");
+      get_test_case(11);
+    }
+    if (val == 'f') { // 7474
+      Serial.println("Manual test: 7474");
+      get_test_case(12);
+    }
+    if (val == 'g') { // 74190
+      Serial.println("Manual test: 74190");
+      get_test_case(13);
+    }
+    if (val == 'h') { // 74193
+      Serial.println("Manual test: 74193");
+      get_test_case(14);
+    }
+    if (val == 'i') { // 74195
+      Serial.println("Manual test: 74195");
+      get_test_case(15);
+    }
+    if (val == 'j') { // 7410
+      Serial.println("Manual test: 7410");
+      get_test_case(16);
+    }
+    if (val == 'k') { // 7411
+      Serial.println("Manual test: 7411");
+      get_test_case(17);
+    }
+    if (val == 'l') { // 74125
+      Serial.println("Manual test: 74125");
+      get_test_case(18);
+    }
+    if (val == 'm') { // 74138
+      Serial.println("Manual test: 74138");
+      get_test_case(19);
+    }
+    if (val == 'n') { // 7447
+      Serial.println("Manual test: 7447");
+      get_test_case(20);
+    }
+    if (val == 'o') { // 74173
+      Serial.println("Manual test: 74173");
+      get_test_case(21);
+    }
+    if (val == 'p') { // 4070
+      Serial.println("Manual test: 4070");
+      get_test_case(22);
+    }
+    if (val == 'q') { // 4071
+      Serial.println("Manual test: 4071");
+      get_test_case(23);
+    }
+    if (val == 'r') { // 4017
+      Serial.println("Manual test: 4017");
+      get_test_case(24);
+    }
+    if (val == 's') { // 4511
+      Serial.println("Manual test: 4511");
+      get_test_case(25);
+    }
+    if (val == 't') { // 4081
+      Serial.println("Manual test: 4081");
+      get_test_case(26);
+    }
+    if (val == 'u') { // 4077
+      Serial.println("Manual test: 4077");
+      get_test_case(27);
+    }
+    if (val == 'v') { // 4068
+      Serial.println("Manual test: 4068");
+      get_test_case(28);
+    }
+    if (val == 'w') { // 4069
+      Serial.println("Manual test: 4069");
+      get_test_case(29);
+    }
+    if (val == 'x') { // 4066
+      Serial.println("Manual test: 4066");
+      get_test_case(30);
+    }
+    if (val == 'y') { // 4094
+      Serial.println("Manual test: 4094");
+      get_test_case(31);
+    }
+    if (val == 'z') { // 74112
+      Serial.println("Manual test: 74112");
+      get_test_case(32);
+    }
+    if (val == 'A') { // 741
+      Serial.println("Manual test: 741");
+      get_test_case(33);
+    }
+    if (val == 'B') { // 072
+      Serial.println("Manual test: 072");
+      get_test_case(34);
+    }
+    if (val == 'C') { // 74373
+      Serial.println("Manual test: 74373");
+      get_test_case(35);
     }
   }
 }
