@@ -3,7 +3,7 @@
  * @brief Arduino-based IC Tester with automatic and manual testing modes.
  * 
  * This project is an IC tester using an Arduino, an LCD screen, and buttons for navigation.
- * It supports both automatic and manual IC testing and displays results on an LCD screen.
+ * It supports both automatic and manual IC testing and displays results on an LCD screen and Serial Monitor.
  * 
  * @version 1.0
  * @date 2024-06-25
@@ -702,6 +702,9 @@ byte modeP3 = 0;
 
 // FUNCTIONS
 
+/*
+  Initializes the pins needed for testing an IC.
+*/
 void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
@@ -963,6 +966,26 @@ void get_test_case(byte icModel) {
   reset_pin_config(pinCount);
 }
 
+/*
+  Performs automated testing of an Integrated Circuit (IC) based on its pin configuration.
+
+  Parameters:
+    pins - The number of pins on the IC to be tested.
+
+  Notes:
+    - This function iterates through the testPatterns database to find matching IC models
+      based on the number of pins provided.
+    - For each matching IC model found, it executes a series of test cases defined in the
+      testPatterns structure.
+    - After testing, it updates the LCD display to show the results of the testing process.
+    - Detailed results are displayed in the serial monitor.
+
+  Returns:
+    None.
+
+  Example Usage:
+    autoSearch(14); // Automatically tests ICs with 14 pins.
+*/
 void autoSearch(byte pins) {
   passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
@@ -1016,6 +1039,26 @@ void autoSearch(byte pins) {
   }
 }
 
+/*
+  Resets the configuration of pins based on the number of pins of an Integrated Circuit (IC).
+
+  Parameters:
+    pinCount - The number of pins on the IC whose configuration needs to be reset.
+
+  Notes:
+    - This function resets the pin mode to INPUT and the pin state to LOW for all pins
+      associated with the given pinCount.
+    - It uses predefined arrays (PINS_8, PINS_14, etc.) to determine the pin configuration
+      based on the pinCount parameter.
+    - If pinCount does not match any predefined configuration, the function returns without
+      performing any action.
+
+  Returns:
+    None.
+
+  Example Usage:
+    reset_pin_config(14); // Resets pin configuration for an IC with 14 pins.
+*/
 void reset_pin_config(byte pinCount) {
   const byte* pins = nullptr;
 
@@ -1042,6 +1085,22 @@ void reset_pin_config(byte pinCount) {
   }
 }
 
+/*
+  Manages the manual user interface for selecting IC configurations on an LCD display.
+
+  Notes:
+    - This function clears the LCD and displays menu options based on the submenu value.
+    - Each submenu option is formatted with an arrow indicating the current selection.
+    - Handles navigation with up and down arrows based on the submenu value.
+    - If submenu is out of range (less than 1 or greater than 43), it resets to 1 and
+      calls itself recursively to ensure a valid state.
+
+  Returns:
+    None.
+
+  Example Usage:
+    manual_user_interface(); // Manages the user interface for selecting IC configurations.
+*/
 void automatic_user_interface() {
   lcd.clear();
   switch (submenuAuto) {
@@ -1093,8 +1152,26 @@ void automatic_user_interface() {
 }
 
 /*
-  TO-DO: None at the moment, implementation seems correct, returns submenu value which is the IC Model to be tested.
-  IC Model value will be the parameter for get_test_case.
+  Displays the manual user interface for selecting a specific IC to test on the LCD screen.
+
+  This function updates the LCD to show a list of IC (integrated circuit) options for manual selection.
+  The display is updated based on the current value of the `submenu` variable, which determines
+  which IC is currently selected. The selected IC is shown with a '>' character, and the other options
+  are shown normally. Additionally, up and down arrows are displayed based on the current position in the menu.
+
+  Key actions:
+    - Clears the LCD screen.
+    - Displays the IC options in the menu, with the currently selected IC marked with a '>'.
+    - Shows up and down arrows to indicate if there are more options available above or below the current selection.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    manual_user_interface(); // Call to update the LCD display with the current manual menu selection.
 */
 void manual_user_interface() {
   lcd.clear();
@@ -1333,6 +1410,20 @@ void manual_user_interface() {
   }
 }
 
+/*
+  Executes automatic testing based on the submenuAuto selection and displays progress on the LCD.
+  
+  Notes:
+    - Clears the LCD screen and displays a "Please wait..." message while performing automatic testing.
+    - Calls the autoSearch function with the appropriate number of pins based on submenuAuto.
+    - Does not return any value; it updates the LCD directly with testing progress.
+
+  Returns:
+    None.
+
+  Example Usage:
+    automatic_options(); // Initiates automatic testing based on user-selected submenu option.
+*/
 void automatic_options() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -1356,6 +1447,20 @@ void automatic_options() {
   }
 }
 
+/*
+  Updates the main menu display on the LCD based on the current menu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current menu selection.
+    - If menu is out of range (not between 1 and 4), resets menu to 1 and calls itself recursively to correct state.
+
+  Returns:
+    None.
+
+  Example Usage:
+    update_menu(); // Updates the LCD display with the current main menu options.
+*/
 void update_menu() {
   switch (menu) {
     case 1:
@@ -1405,6 +1510,19 @@ void update_menu() {
   }
 }
 
+/*
+  Updates the probe menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    probe_user_interface(); // Updates the LCD display with the current probe menu options.
+*/
 void probe_user_interface() {
   switch (submenuProbe) {
     case 1:
@@ -1424,6 +1542,19 @@ void probe_user_interface() {
   }
 }
 
+/*
+  Updates the pulse menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    pulse_user_interface(); // Updates the LCD display with the current pulse menu options.
+*/
 void pulse_user_interface() {
   switch (submenuPulse) {
     case 1:
@@ -1443,6 +1574,19 @@ void pulse_user_interface() {
   }
 }
 
+/*
+  Updates the Px menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    px_user_interface(); // Updates the LCD display with the current Px menu options.
+*/
 void px_user_interface() {
   switch (submenuPx) {
     case 1:
@@ -1476,6 +1620,19 @@ void px_user_interface() {
   }
 }
 
+/*
+  Updates the square wave menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    swave_user_interface(); // Updates the LCD display with the current square wave menu options.
+*/
 void swave_user_interface() {
   switch (submenuSWave) {
     case 1:
@@ -1495,6 +1652,19 @@ void swave_user_interface() {
   }
 }
 
+/*
+  Updates the duty cycle menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    dutycycle_user_interface(); // Updates the LCD display with the current duty cycle menu options.
+*/
 void dutycycle_user_interface() {
   switch (submenuDCycle) {
     case 1:
@@ -1519,6 +1689,20 @@ void dutycycle_user_interface() {
   }
 }
 
+/*
+  Updates the LCD display to show the models that have passed and logs them to the Serial monitor.
+
+  Notes:
+    - Clears the LCD screen.
+    - If there are passed models, displays the current passed model on the LCD and logs all passed models to the Serial monitor.
+    - If no models have passed, displays a message indicating no models have passed on the LCD and logs the same message to the Serial monitor.
+
+  Returns:
+    None.
+
+  Example Usage:
+    updatePassedModelsDisplay(); // Updates the LCD display and Serial log with the passed models.
+*/
 void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
@@ -1539,18 +1723,69 @@ void updatePassedModelsDisplay() {
   }
 }
 
+/*
+  Turns off the RGB backlight by setting the RGB LED pins to 0.
+
+  Notes:
+    - Uses the analogWrite function to set the red, green, and blue LED pins to 0, turning off the backlight.
+
+  Returns:
+    None.
+
+  Example Usage:
+    turnOffBacklight(); // Turns off the RGB backlight.
+*/
 void turnOffBacklight() {
   analogWrite(PIN_RGBLED_R, 0);
   analogWrite(PIN_RGBLED_G, 0);
   analogWrite(PIN_RGBLED_B, 0);
 }
 
+/*
+  Sets the RGB backlight color by specifying the intensity for the red, green, and blue LED pins.
+
+  Notes:
+    - Uses the analogWrite function to set the intensity of the red, green, and blue LED pins.
+    - The intensity values should be between 0 and 255.
+
+  Parameters:
+    - red: The intensity of the red LED (0-255).
+    - green: The intensity of the green LED (0-255).
+    - blue: The intensity of the blue LED (0-255).
+
+  Returns:
+    None.
+
+  Example Usage:
+    setBacklightColor(255, 0, 0); // Sets the backlight color to red.
+    setBacklightColor(0, 255, 0); // Sets the backlight color to green.
+    setBacklightColor(0, 0, 255); // Sets the backlight color to blue.
+*/
 void setBacklightColor(uint8_t red, uint8_t green, uint8_t blue) {
   analogWrite(PIN_RGBLED_R, red);
   analogWrite(PIN_RGBLED_G, green);
   analogWrite(PIN_RGBLED_B, blue);
 }
 
+/*
+  Measures the voltage at the probe pin and updates the LCD and backlight color based on the voltage level.
+
+  Notes:
+    - Reads an analog value from the probe pin and converts it to a voltage.
+    - Updates the LCD display to show whether the voltage is HIGH, LOW, or HIGH-Z.
+    - Changes the backlight color based on the voltage level:
+      - GREEN for HIGH
+      - RED for LOW
+      - CYAN for HIGH-Z
+    - Logs the analog value and voltage to the Serial monitor for debugging purposes.
+    - Turns off the backlight and returns to the probe user interface after a delay.
+
+  Returns:
+    None.
+
+  Example Usage:
+    logic_probe(); // Runs the logic probe function to measure and display the voltage level.
+*/
 void logic_probe() {
   const uint8_t RED[] = {255, 0, 0}; // LOW
   const uint8_t GREEN[] = {0, 255, 0}; // HIGH
@@ -1582,6 +1817,21 @@ void logic_probe() {
   probe_user_interface();
 }
 
+/*
+  Continuously measures and displays the voltage at the probe pin on the LCD.
+
+  Notes:
+    - Enters a loop to continuously read an analog value from the probe pin and convert it to a voltage.
+    - Updates the LCD display with the measured voltage.
+    - Logs the analog value and voltage to the Serial monitor for debugging purposes.
+    - Checks if the cancel button is pressed to exit the loop and return to the previous menu.
+
+  Returns:
+    None.
+
+  Example Usage:
+    volt_meter(); // Runs the volt meter function to continuously measure and display the voltage.
+*/
 void volt_meter() {
   while (true) {
     int analogValue = analogRead(PIN_PROBE);
@@ -1612,7 +1862,27 @@ void volt_meter() {
   probe_user_interface();
 }
 
-// Function to generate a square wave with a frequency adjusted by the potentiometer
+/*
+  Generates a square wave with a frequency adjusted by the potentiometer.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the frequency of the square wave.
+    - Maps the potentiometer value to a frequency range of 1Hz to 100Hz.
+    - Sets the frequency and mode for the specified pin.
+    - Displays the frequency on the LCD and logs it to the Serial monitor.
+    - Generates the square wave with the calculated frequency.
+    - Checks for the cancel button press to stop the generation of the square wave.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the square wave on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePulseSquareWave(PIN_PWM_P0); // Generates a square wave on PIN_PWM_P0 with frequency controlled by the potentiometer.
+*/
 void generatePulseSquareWave(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1659,7 +1929,27 @@ void generatePulseSquareWave(byte pin) {
   }
 }
 
-// Function to generate a square wave with a period adjusted by the potentiometer
+/*
+  Generates a square wave with a period adjusted by the potentiometer.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the period of the square wave.
+    - Maps the potentiometer value to a period range of 1ms to 1000ms.
+    - Sets the period and mode for the specified pin.
+    - Displays the period on the LCD and logs it to the Serial monitor.
+    - Generates the square wave with the calculated period.
+    - Checks for the cancel button press to stop the generation of the square wave.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the square wave on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePulseSquareWavePeriod(PIN_PWM_P0); // Generates a square wave on PIN_PWM_P0 with period controlled by the potentiometer.
+*/
 void generatePulseSquareWavePeriod(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1704,7 +1994,26 @@ void generatePulseSquareWavePeriod(byte pin) {
   }
 }
 
-// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (0-100%)
+/*
+  Generates a PWM signal with duty cycle adjusted by the potentiometer (0-100%).
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the duty cycle of the PWM signal.
+    - Maps the potentiometer value to a duty cycle range of 0% to 100%.
+    - Sets the duty cycle and mode for the specified pin.
+    - Displays the duty cycle on the LCD and logs it to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMPulsePercentage(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with duty cycle controlled by the potentiometer.
+*/
 void generatePWMPulsePercentage(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1745,7 +2054,26 @@ void generatePWMPulsePercentage(byte pin) {
   }
 }
 
-// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (8-bit: 0-255)
+/*
+  Generates a PWM signal with duty cycle adjusted by the potentiometer (8-bit: 0-255).
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the duty cycle of the PWM signal.
+    - Maps the potentiometer value to a duty cycle range of 0 to 255.
+    - Sets the duty cycle and mode for the specified pin.
+    - Displays the duty cycle on the LCD and logs it to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMPulse8Bit(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with duty cycle controlled by the potentiometer.
+*/
 void generatePWMPulse8Bit(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1786,7 +2114,26 @@ void generatePWMPulse8Bit(byte pin) {
   }
 }
 
-// Function to generate a PWM signal with a specific period and the already set duty cycle
+/*
+  Generates a PWM signal with a specific period and the already set duty cycle.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the period of the PWM signal.
+    - Maps the potentiometer value to a period range of 1ms to 1000ms.
+    - Uses the already set duty cycle for the specified pin.
+    - Displays the period and duty cycle on the LCD and logs them to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMWithPeriod(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with period controlled by the potentiometer.
+*/
 void generatePWMWithPeriod(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1871,6 +2218,31 @@ void generatePWMWithPeriod(byte pin) {
   }
 }
 
+/*
+  Generates a signal (PWM or square wave) based on the specified mode.
+
+  Notes:
+    - Depending on the mode, the function can generate a square wave with a specific frequency,
+      a square wave with a specific period, or a PWM signal with a specified duty cycle.
+    - Modes:
+      1. Generate a square wave with a specific frequency.
+      2. Generate a square wave with a specific period.
+      3. Generate a PWM signal with duty cycle percentage (0-100%).
+      4. Generate a PWM signal with 8-bit duty cycle (0-255).
+
+  Parameters:
+    - pin: The pin to generate the signal on.
+    - frequency: The frequency of the square wave (for mode 1).
+    - period: The period of the square wave in milliseconds (for mode 2).
+    - dutyCycle: The duty cycle of the PWM signal (for modes 3 and 4).
+    - mode: The mode of signal generation (1 to 4).
+
+  Returns:
+    None.
+
+  Example Usage:
+    generateSignal(PIN_PWM_P0, 50, 0, 0, 1); // Generates a 50Hz square wave on PIN_PWM_P0.
+*/
 void generateSignal(byte pin, float frequency, unsigned long period, int dutyCycle, byte mode) {
   if (mode == 1) {
     unsigned long halfPeriod = 1000000UL / (2 * frequency);
@@ -1891,6 +2263,22 @@ void generateSignal(byte pin, float frequency, unsigned long period, int dutyCyc
   }
 }
 
+/*
+  Reads the potentiometer value with averaging for stability.
+
+  Notes:
+    - Reads the potentiometer value 10 times and averages them to get a stable reading.
+    - Uses a 50ms delay between readings to ensure smooth data.
+
+  Parameters:
+    None.
+
+  Returns:
+    - The averaged potentiometer value (0-1023).
+
+  Example Usage:
+    unsigned int potValue = potreader(); // Reads the potentiometer value.
+*/
 unsigned int potreader(){
   static unsigned long t;
   if(millis() - t < 50) return;
@@ -1908,6 +2296,22 @@ unsigned int potreader(){
   return a;
 }
 
+/*
+  Toggles a heartbeat LED on and off every second.
+
+  Notes:
+    - Uses the millis() function for non-blocking delay.
+    - Toggles the state of the LED every second to indicate the system is running.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    heartbeatLED(); // Call this function inside the loop() to keep the LED toggling.
+*/
 void heartbeatLED() {
   unsigned long currentMillis = millis();
   static unsigned long lastMillis = 0;
@@ -1922,6 +2326,24 @@ void heartbeatLED() {
   }
 }
 
+/*
+  Debounces multiple buttons with feedback via a buzzer.
+
+  Notes:
+    - Checks the state of each button and debounces it.
+    - If a button is pressed and held for more than 5ms, it is considered a valid press.
+    - Activates a buzzer for 50ms when a button press is detected.
+    - Waits until the button is released before proceeding.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    buttonDebounce(); // Call this function inside the loop() to debounce buttons.
+*/
 void buttonDebounce(){
   static unsigned t; //for loop tracking
   static unsigned last_unpress[MAX_BUTTONS];
@@ -1953,6 +2375,22 @@ void buttonDebounce(){
   }
 }
 
+/*
+  Checks if any button is pressed by examining the flag_button array.
+
+  Notes:
+    - Iterates through the flag_button array to check if any button press has been flagged.
+    - Returns true if any button is pressed, otherwise returns false.
+
+  Parameters:
+    None.
+
+  Returns:
+    - bool: True if any button is pressed, false otherwise.
+
+  Example Usage:
+    bool isButtonPressed = get_button_ok(); // Checks if any button is pressed.
+*/
 bool get_button_ok(){
   for (byte i = 0; i < MAX_BUTTONS; i++) {
     if (flag_button[i]) {
@@ -1963,13 +2401,26 @@ bool get_button_ok(){
 }
 
 /*
-  TO-DO: Review this function if it is calling get_test_case properly
+  Handles button inputs and navigation through various menu levels and submenus.
   
-  Checklist:
-    >None
+  Depending on the current `menu` state, this function:
+    - Processes button presses for main menu navigation.
+    - Handles submenu navigation and actions for different modes.
+    - Updates the state of the menu and performs actions based on button inputs.
+  
+  Notes:
+    - Button flags are reset after processing to avoid repeated actions.
+    - Includes various menu levels like Manual, Automatic, Probe, and Pulse Generator.
+    - Handles specific actions such as generating signals or changing menu states.
 
-  NOTES:
-    >None
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    buttonScanner(); // Call in the loop() function to continuously check for button presses.
 */
 void buttonScanner() {
   if (menu == 1 || menu == 2 || menu == 3 || menu == 4) {
