@@ -654,6 +654,7 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358} //43
 };
 
+// For generating an up arrow character
 byte upIndicator[] = {
   B00000,
   B00000,
@@ -665,6 +666,7 @@ byte upIndicator[] = {
   B00000
 };
 
+// For generating a down arrow character
 byte downIndicator[] = {
   B00000,
   B00000,
@@ -675,9 +677,6 @@ byte downIndicator[] = {
   B00000,
   B00000
 };
-
-unsigned int potValue = 0;
-boolean isRunning = false;
 
 // To store the settings for pulse generator
 float frequencyP0 = 0;
