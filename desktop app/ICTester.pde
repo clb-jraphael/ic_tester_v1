@@ -1,12 +1,17 @@
 import processing.serial.*; //<>//
 import controlP5.*;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 ControlP5 cp5;
 Serial port;
 
 Textarea leftTextarea, rightTextarea;
 Textfield inputField;
-Button sendButton, startButton;
+Button sendButton, startButton, copyResultButton, copySerialButton, toggleTimestamp;
 
 boolean isReceivingAutoResults = false; // Flag to indicate if automatic results are being received
 String autoResultBuffer = ""; // Buffer to hold the multi-line automatic test results
@@ -16,7 +21,7 @@ String[] manual = {"7400", "7402", "7404", "7408", "7432", "7486", "747266",
                    "74195", "7410", "7411", "74125", "74138", "7447", "74173",
                    "4070", "4071", "4017", "4511", "4081", "4077", "4068",
                    "4069", "4066", "4094", "74112", "741", "072", "74373"};
-PImage logo;
+PImage logo, timestampIcon;
 
 RadioButton autoManualSelector;
 
@@ -24,6 +29,8 @@ DropdownList commDropdown, autoDropdown, manualDropdown;
 
 boolean newResultReady = false; // Flag to check if a new summary result is ready
 String resultSummary = ""; // Variable to hold the summary result
+boolean timestampEnabled = false; // Flag to check if the timestamp is enabled
+
 
 /**
 * Sets up the GUI components, loads the logo, sets up text areas, input fields, buttons, and dropdown lists.
@@ -35,11 +42,13 @@ void setup() {
   logo = loadImage("layad_logo.png");
   surface.setIcon(logo); // Set the icon for the application window
   surface.setTitle("LC IC Tester");
-
+  
+  timestampIcon = loadImage("clock.png");
+  
   // Left Text Area
   leftTextarea = cp5.addTextarea("resultsTextArea")
                     .setPosition(10, 40)
-                    .setSize(615, 670)
+                    .setSize(615, 600)
                     .setFont(createFont("Monospaced", 16))
                     .setLineHeight(20)
                     .setColor(color(0))
@@ -92,7 +101,54 @@ void setup() {
                       executeTask();
                     }
                   });
+              
+  // Copy Result Button
+  copyResultButton = cp5.addButton("copyResultButton")
+                      .setLabel("Copy Results to Clipboard")
+                      .setPosition(10, 660)
+                      .setSize(150, 30)
+                      .onClick(new CallbackListener() {
+                        public void controlEvent(CallbackEvent event) {
+                          String textToCopy = leftTextarea.getText();
+                          StringSelection stringSelection = new StringSelection(textToCopy);
+                          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                          clipboard.setContents(stringSelection, null);
+                          println("Results copied to clipboard.");
+                        }
+                      });
 
+  // Copy Serial Button
+  copySerialButton = cp5.addButton("copySerialButton")
+                      .setLabel("Copy Serial Results to Clipboard")
+                      .setPosition(170, 660)
+                      .setSize(150, 30)
+                      .onClick(new CallbackListener() {
+                        public void controlEvent(CallbackEvent event) {
+                          String textToCopy = rightTextarea.getText();
+                          StringSelection stringSelection = new StringSelection(textToCopy);
+                          Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                          clipboard.setContents(stringSelection, null);
+                          println("Results copied to clipboard.");
+                        }
+                      });
+                      
+  // Toggle Timestamp Button
+  toggleTimestamp = cp5.addButton("toggleTimpstamp")
+                      .setPosition(1240, 40)
+                      .setSize(30, 30)
+                      .setImages(timestampIcon, timestampIcon, timestampIcon)
+                      .onClick(new CallbackListener() {
+                        public void controlEvent(CallbackEvent event) {
+                          timestampEnabled = !timestampEnabled; // Toggle the timestamp flag
+                          String status = timestampEnabled ? "enabled" : "disabled";
+                          rightTextarea.append("\nTimestamps " + status);
+                          rightTextarea.scroll(1);
+                          
+                          if (timestampEnabled) {
+                            addTimestampsToExistingLines();
+                          }
+                        }
+                      });
   // Menu bar
   commDropdown = addMenu("Communications", 0, new String[0]); // Empty list initially
   autoDropdown = addMenu("Automatic", 1, auto);
@@ -142,6 +198,23 @@ DropdownList addMenu(String name, int index, String[] items) {
   
   styleDropdown(menu);
   return menu;
+}
+
+/**
+* Adds timestamps to the existing lines in the rightTextarea.
+*/
+void addTimestampsToExistingLines() {
+  String[] lines = rightTextarea.getText().split("\n");
+  StringBuilder updatedText = new StringBuilder();
+  for (String line : lines) {
+    if (!line.trim().isEmpty()) {
+      String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+      updatedText.append(timestamp).append(" - ").append(line).append("\n");
+    } else {
+      updatedText.append(line).append("\n");
+    }
+  }
+  rightTextarea.setText(updatedText.toString());
 }
 
 /**
@@ -215,30 +288,28 @@ void initializePort(String portName) {
 * @param port The serial port from which data is received
 */
 void serialEvent(Serial port) {
-  String inData = port.readStringUntil('\n'); // Read the data from the serial port
-  if (inData != null) {
-    inData = inData.trim(); // Remove any leading/trailing whitespace
-    rightTextarea.append("\n" + inData); // Append the data to the right text area
-    rightTextarea.scroll(1); // Scroll down to the latest text
-
-    // Check for summary results for manual and update the left textarea
-    if (inData.contains("passed all tests") || inData.contains("failed")) {
-      newResultReady = true;
-      resultSummary = inData;
-    }
-
-    // Check for summary results for automatic and start buffering the results
-    if (inData.contains("Passed Models:") || inData.contains("No models passed")) {
-      isReceivingAutoResults = true;
-      autoResultBuffer = inData + "\n"; // Start buffering the results
+  String incomingData = port.readStringUntil('\n');
+  if (incomingData != null) {
+    // Check if we are receiving automatic test results
+    if (incomingData.startsWith("START")) {
+      isReceivingAutoResults = true; // Start receiving automatic results
+      autoResultBuffer = ""; // Clear the buffer
+    } else if (incomingData.startsWith("END")) {
+      isReceivingAutoResults = false; // Stop receiving automatic results
+      // Process the received results
+      leftTextarea.setText(autoResultBuffer); // Display the results
+      newResultReady = true; // Set flag to indicate new summary result is ready
     } else if (isReceivingAutoResults) {
-      if (inData.isEmpty()) {
-        isReceivingAutoResults = false; // Stop buffering when an empty line is encountered
-        newResultReady = true;
-        resultSummary = autoResultBuffer; // Set the result summary to the buffered results
-      } else {
-        autoResultBuffer += inData + "\n"; // Continue buffering the results
+      autoResultBuffer += incomingData; // Append to buffer if receiving results
+    } else {
+      // Normal serial data
+      String message = incomingData.trim(); // Trim whitespace and newline characters
+      if (timestampEnabled) {
+        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        message = timestamp + " - " + message;
       }
+      rightTextarea.append("\n" + message);
+      rightTextarea.scroll(1); // Scroll to the bottom
     }
   }
 }
