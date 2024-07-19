@@ -1600,7 +1600,7 @@ void volt_meter() {
     Serial.print(" Voltage: ");
     Serial.println(voltage);
 
-    delay(500);
+    delay(150);
 
     if (digitalRead(PIN_BTN_CANCEL) == LOW) {
       return;
