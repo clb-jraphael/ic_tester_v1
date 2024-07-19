@@ -31,6 +31,8 @@ boolean newResultReady = false; // Flag to check if a new summary result is read
 String resultSummary = ""; // Variable to hold the summary result
 boolean timestampEnabled = false; // Flag to check if the timestamp is enabled
 
+ArrayList<String> messageLog = new ArrayList<String>(); // List to hold messages with timestamps
+ArrayList<String> messageLogWithoutTimestamp = new ArrayList<String>(); // List to hold messages without timestamps
 
 /**
 * Sets up the GUI components, loads the logo, sets up text areas, input fields, buttons, and dropdown lists.
@@ -139,14 +141,13 @@ void setup() {
                       .setImages(timestampIcon, timestampIcon, timestampIcon)
                       .onClick(new CallbackListener() {
                         public void controlEvent(CallbackEvent event) {
-                          timestampEnabled = !timestampEnabled; // Toggle the timestamp flag
-                          String status = timestampEnabled ? "enabled" : "disabled";
-                          rightTextarea.append("\nTimestamps " + status);
-                          rightTextarea.scroll(1);
-                          
                           if (timestampEnabled) {
+                            removeTimestampsFromExistingLines();
+                          } else {
                             addTimestampsToExistingLines();
                           }
+                          timestampEnabled = !timestampEnabled; // Toggle the timestamp flag
+                          String status = timestampEnabled ? "enabled" : "disabled";
                         }
                       });
   // Menu bar
@@ -208,11 +209,25 @@ void addTimestampsToExistingLines() {
   StringBuilder updatedText = new StringBuilder();
   for (String line : lines) {
     if (!line.trim().isEmpty()) {
-      String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+      String timestamp = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
       updatedText.append(timestamp).append(" - ").append(line).append("\n");
     } else {
       updatedText.append(line).append("\n");
     }
+  }
+  rightTextarea.setText(updatedText.toString());
+}
+
+/**
+ * Removes timestamps from the existing lines in the rightTextarea.
+ */
+void removeTimestampsFromExistingLines() {
+  String[] lines = rightTextarea.getText().split("\n");
+  StringBuilder updatedText = new StringBuilder();
+  for (String line : lines) {
+    // Regex to match the timestamp format "HH:mm:ss.SSS - "
+    String cleanedLine = line.replaceFirst("^\\d{2}:\\d{2}:\\d{2}\\.\\d{3} - ", "");
+    updatedText.append(cleanedLine).append("\n");
   }
   rightTextarea.setText(updatedText.toString());
 }
@@ -288,27 +303,28 @@ void initializePort(String portName) {
 * @param port The serial port from which data is received
 */
 void serialEvent(Serial port) {
-  String incomingData = port.readStringUntil('\n');
-  if (incomingData != null) {
-    // Check if we are receiving automatic test results
-    if (incomingData.startsWith("START")) {
-      isReceivingAutoResults = true; // Start receiving automatic results
-      autoResultBuffer = ""; // Clear the buffer
-    } else if (incomingData.startsWith("END")) {
-      isReceivingAutoResults = false; // Stop receiving automatic results
-      // Process the received results
-      leftTextarea.setText(autoResultBuffer); // Display the results
-      newResultReady = true; // Set flag to indicate new summary result is ready
+  String inString = port.readStringUntil('\n');
+  if (inString != null) {
+    inString = inString.trim();
+    String timestamp = new SimpleDateFormat("HH:mm:ss").format(new Date());
+    String messageWithTimestamp = "[" + timestamp + "] " + inString;
+    messageLog.add(messageWithTimestamp); // Store message with timestamp
+    messageLogWithoutTimestamp.add(inString); // Store message without timestamp
+    
+    // Check for specific strings to handle automatic results
+    if (inString.equals("AUTO TEST RESULT:")) {
+      isReceivingAutoResults = true; // Start receiving auto test results
+      autoResultBuffer = inString + "\n";
     } else if (isReceivingAutoResults) {
-      autoResultBuffer += incomingData; // Append to buffer if receiving results
-    } else {
-      // Normal serial data
-      String message = incomingData.trim(); // Trim whitespace and newline characters
-      if (timestampEnabled) {
-        String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-        message = timestamp + " - " + message;
+      autoResultBuffer += inString + "\n";
+      if (inString.equals("END AUTO RESULT")) {
+        isReceivingAutoResults = false; // End of auto test results
+        leftTextarea.append(autoResultBuffer); // Append the complete auto test result
+        leftTextarea.scroll(1); // Scroll to the bottom
+        autoResultBuffer = ""; // Clear the buffer
       }
-      rightTextarea.append("\n" + message);
+    } else {
+      rightTextarea.append(inString + "\n");
       rightTextarea.scroll(1); // Scroll to the bottom
     }
   }

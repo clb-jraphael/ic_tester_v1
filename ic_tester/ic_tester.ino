@@ -1603,7 +1603,7 @@ void volt_meter() {
     delay(500);
 
     if (digitalRead(PIN_BTN_CANCEL) == LOW) {
-      break;
+      return;
     }
   }
 
