@@ -3,7 +3,7 @@
  * @brief Arduino-based IC Tester with automatic and manual testing modes.
  * 
  * This project is an IC tester using an Arduino, an LCD screen, and buttons for navigation.
- * It supports both automatic and manual IC testing and displays results on an LCD screen.
+ * It supports both automatic and manual IC testing and displays results on an LCD screen and Serial Monitor.
  * 
  * @version 1.0.0
  * @date 2024-07-26
@@ -744,6 +744,7 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078},     //46 Formulate and verify test patterns.
 };
 
+// For generating an up arrow character
 byte upIndicator[] = {
   B00000,
   B00000,
@@ -755,6 +756,7 @@ byte upIndicator[] = {
   B00000
 };
 
+// For generating a down arrow character
 byte downIndicator[] = {
   B00000,
   B00000,
@@ -765,9 +767,6 @@ byte downIndicator[] = {
   B00000,
   B00000
 };
-
-unsigned int potValue = 0;
-boolean isRunning = false;
 
 // To store the settings for pulse generator
 float frequencyP0 = 0;
@@ -792,6 +791,9 @@ byte modeP3 = 0;
 
 // FUNCTIONS
 
+/*
+  Initializes the pins needed for testing an IC.
+*/
 void init_ic_pins(){
   for(byte i=0;i<20;i++){
     pinMode(PINS_IC[i], INPUT);
@@ -1025,6 +1027,26 @@ void get_test_case(byte icModel) {
   reset_pin_config(pinCount);
 }
 
+/*
+  Performs automated testing of an Integrated Circuit (IC) based on its pin configuration.
+
+  Parameters:
+    pins - The number of pins on the IC to be tested.
+
+  Notes:
+    - This function iterates through the testPatterns database to find matching IC models
+      based on the number of pins provided.
+    - For each matching IC model found, it executes a series of test cases defined in the
+      testPatterns structure.
+    - After testing, it updates the LCD display to show the results of the testing process.
+    - Detailed results are displayed in the serial monitor.
+
+  Returns:
+    None.
+
+  Example Usage:
+    autoSearch(14); // Automatically tests ICs with 14 pins.
+*/
 void autoSearch(byte pins) {
   passedCount = 0; // Reset passed count
   byte size_db = sizeof(testPatterns) / sizeof(testPatterns[0]);
@@ -1078,6 +1100,26 @@ void autoSearch(byte pins) {
   }
 }
 
+/*
+  Resets the configuration of pins based on the number of pins of an Integrated Circuit (IC).
+
+  Parameters:
+    pinCount - The number of pins on the IC whose configuration needs to be reset.
+
+  Notes:
+    - This function resets the pin mode to INPUT and the pin state to LOW for all pins
+      associated with the given pinCount.
+    - It uses predefined arrays (PINS_8, PINS_14, etc.) to determine the pin configuration
+      based on the pinCount parameter.
+    - If pinCount does not match any predefined configuration, the function returns without
+      performing any action.
+
+  Returns:
+    None.
+
+  Example Usage:
+    reset_pin_config(14); // Resets pin configuration for an IC with 14 pins.
+*/
 void reset_pin_config(byte pinCount) {
   const byte* pins = nullptr;
 
@@ -1104,6 +1146,22 @@ void reset_pin_config(byte pinCount) {
   }
 }
 
+/*
+  Manages the manual user interface for selecting IC configurations on an LCD display.
+
+  Notes:
+    - This function clears the LCD and displays menu options based on the submenu value.
+    - Each submenu option is formatted with an arrow indicating the current selection.
+    - Handles navigation with up and down arrows based on the submenu value.
+    - If submenu is out of range (less than 1 or greater than 43), it resets to 1 and
+      calls itself recursively to ensure a valid state.
+
+  Returns:
+    None.
+
+  Example Usage:
+    manual_user_interface(); // Manages the user interface for selecting IC configurations.
+*/
 void automatic_user_interface() {
   lcd.clear();
   switch (submenuAuto) {
@@ -1154,6 +1212,28 @@ void automatic_user_interface() {
   }
 }
 
+/*
+  Displays the manual user interface for selecting a specific IC to test on the LCD screen.
+
+  This function updates the LCD to show a list of IC (integrated circuit) options for manual selection.
+  The display is updated based on the current value of the `submenu` variable, which determines
+  which IC is currently selected. The selected IC is shown with a '>' character, and the other options
+  are shown normally. Additionally, up and down arrows are displayed based on the current position in the menu.
+
+  Key actions:
+    - Clears the LCD screen.
+    - Displays the IC options in the menu, with the currently selected IC marked with a '>'.
+    - Shows up and down arrows to indicate if there are more options available above or below the current selection.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    manual_user_interface(); // Call to update the LCD display with the current manual menu selection.
+*/
 void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
@@ -1406,6 +1486,20 @@ void manual_user_interface() {
   }
 }
 
+/*
+  Executes automatic testing based on the submenuAuto selection and displays progress on the LCD.
+  
+  Notes:
+    - Clears the LCD screen and displays a "Please wait..." message while performing automatic testing.
+    - Calls the autoSearch function with the appropriate number of pins based on submenuAuto.
+    - Does not return any value; it updates the LCD directly with testing progress.
+
+  Returns:
+    None.
+
+  Example Usage:
+    automatic_options(); // Initiates automatic testing based on user-selected submenu option.
+*/
 void automatic_options() {
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -1429,6 +1523,20 @@ void automatic_options() {
   }
 }
 
+/*
+  Updates the main menu display on the LCD based on the current menu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current menu selection.
+    - If menu is out of range (not between 1 and 4), resets menu to 1 and calls itself recursively to correct state.
+
+  Returns:
+    None.
+
+  Example Usage:
+    update_menu(); // Updates the LCD display with the current main menu options.
+*/
 void update_menu() {
   switch (menu) {
     case 1:
@@ -1478,6 +1586,19 @@ void update_menu() {
   }
 }
 
+/*
+  Updates the probe menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    probe_user_interface(); // Updates the LCD display with the current probe menu options.
+*/
 void probe_user_interface() {
   switch (submenuProbe) {
     case 1:
@@ -1497,6 +1618,19 @@ void probe_user_interface() {
   }
 }
 
+/*
+  Updates the pulse menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    pulse_user_interface(); // Updates the LCD display with the current pulse menu options.
+*/
 void pulse_user_interface() {
   switch (submenuPulse) {
     case 1:
@@ -1516,6 +1650,19 @@ void pulse_user_interface() {
   }
 }
 
+/*
+  Updates the Px menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    px_user_interface(); // Updates the LCD display with the current Px menu options.
+*/
 void px_user_interface() {
   switch (submenuPx) {
     case 1:
@@ -1549,6 +1696,19 @@ void px_user_interface() {
   }
 }
 
+/*
+  Updates the square wave menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    swave_user_interface(); // Updates the LCD display with the current square wave menu options.
+*/
 void swave_user_interface() {
   switch (submenuSWave) {
     case 1:
@@ -1568,6 +1728,19 @@ void swave_user_interface() {
   }
 }
 
+/*
+  Updates the duty cycle menu display on the LCD based on the current submenu selection.
+
+  Notes:
+    - Clears the LCD screen and displays menu options with '>' indicating the current selection.
+    - Handles navigation arrows based on the current submenu selection.
+
+  Returns:
+    None.
+
+  Example Usage:
+    dutycycle_user_interface(); // Updates the LCD display with the current duty cycle menu options.
+*/
 void dutycycle_user_interface() {
   switch (submenuDCycle) {
     case 1:
@@ -1584,34 +1757,111 @@ void dutycycle_user_interface() {
       lcd.setCursor(0, 1);
       lcd.print(F(">8-bit          "));
       break;
+    case 3:
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print(F(">Period     "));
+      break;
   }
 }
 
+/*
+  Updates the LCD display to show the models that have passed and logs them to the Serial monitor.
+
+  Notes:
+    - Clears the LCD screen.
+    - If there are passed models, displays the current passed model on the LCD and logs all passed models to the Serial monitor.
+    - If no models have passed, displays a message indicating no models have passed on the LCD and logs the same message to the Serial monitor.
+
+  Returns:
+    None.
+
+  Example Usage:
+    updatePassedModelsDisplay(); // Updates the LCD display and Serial log with the passed models.
+*/
 void updatePassedModelsDisplay() {
   lcd.clear();
   if (passedCount > 0) {
     lcd.setCursor(0, 0);
-    lcd.print("Passed Models:");
+    lcd.print(F("Passed Models:"));
     lcd.setCursor(0, 1);
     lcd.print(passedModels[currentModelIndex]);
+
+    byte size_db = sizeof(passedModels) / sizeof(passedModels[0]);
+    Serial.println(F("Passed Models:"));
+    for (byte i = 0; i < size_db; i++) {
+      Serial.println(passedModels[i]);
+    }
   } else {
     lcd.setCursor(0, 0);
-    lcd.print("No models passed");
+    lcd.print(F("No models passed"));
+    Serial.println(F("No models passed"));
   }
 }
 
+/*
+  Turns off the RGB backlight by setting the RGB LED pins to 0.
+
+  Notes:
+    - Uses the analogWrite function to set the red, green, and blue LED pins to 0, turning off the backlight.
+
+  Returns:
+    None.
+
+  Example Usage:
+    turnOffBacklight(); // Turns off the RGB backlight.
+*/
 void turnOffBacklight() {
   analogWrite(PIN_RGBLED_R, 0);
   analogWrite(PIN_RGBLED_G, 0);
   analogWrite(PIN_RGBLED_B, 0);
 }
 
+/*
+  Sets the RGB backlight color by specifying the intensity for the red, green, and blue LED pins.
+
+  Notes:
+    - Uses the analogWrite function to set the intensity of the red, green, and blue LED pins.
+    - The intensity values should be between 0 and 255.
+
+  Parameters:
+    - red: The intensity of the red LED (0-255).
+    - green: The intensity of the green LED (0-255).
+    - blue: The intensity of the blue LED (0-255).
+
+  Returns:
+    None.
+
+  Example Usage:
+    setBacklightColor(255, 0, 0); // Sets the backlight color to red.
+    setBacklightColor(0, 255, 0); // Sets the backlight color to green.
+    setBacklightColor(0, 0, 255); // Sets the backlight color to blue.
+*/
 void setBacklightColor(uint8_t red, uint8_t green, uint8_t blue) {
   analogWrite(PIN_RGBLED_R, red);
   analogWrite(PIN_RGBLED_G, green);
   analogWrite(PIN_RGBLED_B, blue);
 }
 
+/*
+  Measures the voltage at the probe pin and updates the LCD and backlight color based on the voltage level.
+
+  Notes:
+    - Reads an analog value from the probe pin and converts it to a voltage.
+    - Updates the LCD display to show whether the voltage is HIGH, LOW, or HIGH-Z.
+    - Changes the backlight color based on the voltage level:
+      - GREEN for HIGH
+      - RED for LOW
+      - CYAN for HIGH-Z
+    - Logs the analog value and voltage to the Serial monitor for debugging purposes.
+    - Turns off the backlight and returns to the probe user interface after a delay.
+
+  Returns:
+    None.
+
+  Example Usage:
+    logic_probe(); // Runs the logic probe function to measure and display the voltage level.
+*/
 void logic_probe() {
   const uint8_t RED[] = {255, 0, 0}; // LOW
   const uint8_t GREEN[] = {0, 255, 0}; // HIGH
@@ -1643,6 +1893,21 @@ void logic_probe() {
   probe_user_interface();
 }
 
+/*
+  Continuously measures and displays the voltage at the probe pin on the LCD.
+
+  Notes:
+    - Enters a loop to continuously read an analog value from the probe pin and convert it to a voltage.
+    - Updates the LCD display with the measured voltage.
+    - Logs the analog value and voltage to the Serial monitor for debugging purposes.
+    - Checks if the cancel button is pressed to exit the loop and return to the previous menu.
+
+  Returns:
+    None.
+
+  Example Usage:
+    volt_meter(); // Runs the volt meter function to continuously measure and display the voltage.
+*/
 void volt_meter() {
   while (true) {
     int analogValue = analogRead(PIN_PROBE);
@@ -1661,10 +1926,10 @@ void volt_meter() {
     Serial.print(" Voltage: ");
     Serial.println(voltage);
 
-    delay(500);
+    delay(150);
 
     if (digitalRead(PIN_BTN_CANCEL) == LOW) {
-      break;
+      return;
     }
   }
 
@@ -1673,7 +1938,27 @@ void volt_meter() {
   probe_user_interface();
 }
 
-// Function to generate a square wave with a frequency adjusted by the potentiometer
+/*
+  Generates a square wave with a frequency adjusted by the potentiometer.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the frequency of the square wave.
+    - Maps the potentiometer value to a frequency range of 1Hz to 100Hz.
+    - Sets the frequency and mode for the specified pin.
+    - Displays the frequency on the LCD and logs it to the Serial monitor.
+    - Generates the square wave with the calculated frequency.
+    - Checks for the cancel button press to stop the generation of the square wave.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the square wave on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePulseSquareWave(PIN_PWM_P0); // Generates a square wave on PIN_PWM_P0 with frequency controlled by the potentiometer.
+*/
 void generatePulseSquareWave(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1720,7 +2005,27 @@ void generatePulseSquareWave(byte pin) {
   }
 }
 
-// Function to generate a square wave with a period adjusted by the potentiometer
+/*
+  Generates a square wave with a period adjusted by the potentiometer.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the period of the square wave.
+    - Maps the potentiometer value to a period range of 1ms to 1000ms.
+    - Sets the period and mode for the specified pin.
+    - Displays the period on the LCD and logs it to the Serial monitor.
+    - Generates the square wave with the calculated period.
+    - Checks for the cancel button press to stop the generation of the square wave.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the square wave on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePulseSquareWavePeriod(PIN_PWM_P0); // Generates a square wave on PIN_PWM_P0 with period controlled by the potentiometer.
+*/
 void generatePulseSquareWavePeriod(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1765,7 +2070,26 @@ void generatePulseSquareWavePeriod(byte pin) {
   }
 }
 
-// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (0-100%)
+/*
+  Generates a PWM signal with duty cycle adjusted by the potentiometer (0-100%).
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the duty cycle of the PWM signal.
+    - Maps the potentiometer value to a duty cycle range of 0% to 100%.
+    - Sets the duty cycle and mode for the specified pin.
+    - Displays the duty cycle on the LCD and logs it to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMPulsePercentage(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with duty cycle controlled by the potentiometer.
+*/
 void generatePWMPulsePercentage(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1806,7 +2130,26 @@ void generatePWMPulsePercentage(byte pin) {
   }
 }
 
-// Function to generate a PWM signal with duty cycle adjusted by the potentiometer (8-bit: 0-255)
+/*
+  Generates a PWM signal with duty cycle adjusted by the potentiometer (8-bit: 0-255).
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the duty cycle of the PWM signal.
+    - Maps the potentiometer value to a duty cycle range of 0 to 255.
+    - Sets the duty cycle and mode for the specified pin.
+    - Displays the duty cycle on the LCD and logs it to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMPulse8Bit(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with duty cycle controlled by the potentiometer.
+*/
 void generatePWMPulse8Bit(byte pin) {
   while (true) {
     unsigned int potValue = potreader();
@@ -1847,6 +2190,135 @@ void generatePWMPulse8Bit(byte pin) {
   }
 }
 
+/*
+  Generates a PWM signal with a specific period and the already set duty cycle.
+
+  Notes:
+    - Continuously reads the potentiometer value to adjust the period of the PWM signal.
+    - Maps the potentiometer value to a period range of 1ms to 1000ms.
+    - Uses the already set duty cycle for the specified pin.
+    - Displays the period and duty cycle on the LCD and logs them to the Serial monitor.
+    - Checks for the cancel button press to stop the generation of the PWM signal.
+    - Results can be visualized with an oscilloscope.
+
+  Parameters:
+    - pin: The pin to generate the PWM signal on.
+
+  Returns:
+    None.
+
+  Example Usage:
+    generatePWMWithPeriod(PIN_PWM_P0); // Generates a PWM signal on PIN_PWM_P0 with period controlled by the potentiometer.
+*/
+void generatePWMWithPeriod(byte pin) {
+  while (true) {
+    unsigned int potValue = potreader();
+
+    // Map pot value to period range (1ms to 1000ms)
+    unsigned long period = map(potValue, 0, 1023, 1, 1000); // Period in milliseconds
+
+    float dutyCycle = 0;
+    if (pin == PIN_PWM_P0) {
+      if (dutyCycleP0 == 0) {
+        dutyCycle = 50;
+        periodP0 = period;
+        modeP0 = 5; // New mode for custom PWM with period
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP0 = period;
+        modeP0 = 5; // New mode for custom PWM with period
+      }
+    } else if (pin == PIN_PWM_P1) {
+      if (dutyCycleP1 == 0) {
+        dutyCycle = 50;
+        periodP1 = period;
+        modeP1 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP1 = period;
+        modeP1 = 5;
+      }
+    } else if (pin == PIN_PWM_P2) {
+      if (dutyCycleP2 == 0) {
+        dutyCycle = 50;
+        periodP2 = period;
+        modeP2 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP2 = period;
+        modeP2 = 5;
+      }
+    } else if (pin == PIN_PWM_P3) {
+      if (dutyCycleP3 == 0) {
+        dutyCycle = 50;
+        periodP3 = period;
+        modeP3 = 5;
+      } else {
+        dutyCycle = dutyCycleP0;
+        periodP3 = period;
+        modeP3 = 5;
+      }
+    }
+
+    // Calculate on-time and off-time in microseconds
+    unsigned long onTime = (period * 1000UL * dutyCycle) / 100; // On-time in microseconds
+    unsigned long offTime = (period * 1000UL) - onTime; // Off-time in microseconds
+
+    Serial.print("Period: ");
+    Serial.print(period);
+    Serial.print(" ms, Duty Cycle: ");
+    Serial.print(dutyCycle);
+    Serial.println(" %");
+    lcd.clear();
+    lcd.print("Period: ");
+    lcd.print(period);
+    lcd.print(" ms");
+    lcd.setCursor(0, 1);
+    lcd.print("Duty Cycle: ");
+    lcd.print(dutyCycle);
+    lcd.print(" %");
+
+    // Generate the PWM signal
+    for (unsigned long start = millis(); millis() - start < 50;) { // Keep it non-blocking for the button check
+      digitalWrite(pin, HIGH);
+      delayMicroseconds(onTime);
+      digitalWrite(pin, LOW);
+      delayMicroseconds(offTime);
+    }
+
+    // Break if the cancel button is pressed
+    if (digitalRead(PIN_BTN_CANCEL) == LOW) {
+      digitalWrite(pin, LOW);
+      break;
+    }
+  }
+}
+
+/*
+  Generates a signal (PWM or square wave) based on the specified mode.
+
+  Notes:
+    - Depending on the mode, the function can generate a square wave with a specific frequency,
+      a square wave with a specific period, or a PWM signal with a specified duty cycle.
+    - Modes:
+      1. Generate a square wave with a specific frequency.
+      2. Generate a square wave with a specific period.
+      3. Generate a PWM signal with duty cycle percentage (0-100%).
+      4. Generate a PWM signal with 8-bit duty cycle (0-255).
+
+  Parameters:
+    - pin: The pin to generate the signal on.
+    - frequency: The frequency of the square wave (for mode 1).
+    - period: The period of the square wave in milliseconds (for mode 2).
+    - dutyCycle: The duty cycle of the PWM signal (for modes 3 and 4).
+    - mode: The mode of signal generation (1 to 4).
+
+  Returns:
+    None.
+
+  Example Usage:
+    generateSignal(PIN_PWM_P0, 50, 0, 0, 1); // Generates a 50Hz square wave on PIN_PWM_P0.
+*/
 void generateSignal(byte pin, float frequency, unsigned long period, int dutyCycle, byte mode) {
   if (mode == 1) {
     unsigned long halfPeriod = 1000000UL / (2 * frequency);
@@ -1867,6 +2339,22 @@ void generateSignal(byte pin, float frequency, unsigned long period, int dutyCyc
   }
 }
 
+/*
+  Reads the potentiometer value with averaging for stability.
+
+  Notes:
+    - Reads the potentiometer value 10 times and averages them to get a stable reading.
+    - Uses a 50ms delay between readings to ensure smooth data.
+
+  Parameters:
+    None.
+
+  Returns:
+    - The averaged potentiometer value (0-1023).
+
+  Example Usage:
+    unsigned int potValue = potreader(); // Reads the potentiometer value.
+*/
 unsigned int potreader(){
   static unsigned long t;
   if(millis() - t < 50) return;
@@ -1884,6 +2372,22 @@ unsigned int potreader(){
   return a;
 }
 
+/*
+  Toggles a heartbeat LED on and off every second.
+
+  Notes:
+    - Uses the millis() function for non-blocking delay.
+    - Toggles the state of the LED every second to indicate the system is running.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    heartbeatLED(); // Call this function inside the loop() to keep the LED toggling.
+*/
 void heartbeatLED() {
   unsigned long currentMillis = millis();
   static unsigned long lastMillis = 0;
@@ -1898,6 +2402,24 @@ void heartbeatLED() {
   }
 }
 
+/*
+  Debounces multiple buttons with feedback via a buzzer.
+
+  Notes:
+    - Checks the state of each button and debounces it.
+    - If a button is pressed and held for more than 5ms, it is considered a valid press.
+    - Activates a buzzer for 50ms when a button press is detected.
+    - Waits until the button is released before proceeding.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    buttonDebounce(); // Call this function inside the loop() to debounce buttons.
+*/
 void buttonDebounce(){
   static unsigned t; //for loop tracking
   static unsigned last_unpress[MAX_BUTTONS];
@@ -1929,6 +2451,22 @@ void buttonDebounce(){
   }
 }
 
+/*
+  Checks if any button is pressed by examining the flag_button array.
+
+  Notes:
+    - Iterates through the flag_button array to check if any button press has been flagged.
+    - Returns true if any button is pressed, otherwise returns false.
+
+  Parameters:
+    None.
+
+  Returns:
+    - bool: True if any button is pressed, false otherwise.
+
+  Example Usage:
+    bool isButtonPressed = get_button_ok(); // Checks if any button is pressed.
+*/
 bool get_button_ok(){
   for (byte i = 0; i < MAX_BUTTONS; i++) {
     if (flag_button[i]) {
@@ -1938,6 +2476,28 @@ bool get_button_ok(){
   return false;  // Return false if no button is pressed
 }
 
+/*
+  Handles button inputs and navigation through various menu levels and submenus.
+  
+  Depending on the current `menu` state, this function:
+    - Processes button presses for main menu navigation.
+    - Handles submenu navigation and actions for different modes.
+    - Updates the state of the menu and performs actions based on button inputs.
+  
+  Notes:
+    - Button flags are reset after processing to avoid repeated actions.
+    - Includes various menu levels like Manual, Automatic, Probe, and Pulse Generator.
+    - Handles specific actions such as generating signals or changing menu states.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example Usage:
+    buttonScanner(); // Call in the loop() function to continuously check for button presses.
+*/
 void buttonScanner() {
   if (menu == 1 || menu == 2 || menu == 3 || menu == 4) {
     // Main menu navigation
@@ -2205,13 +2765,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenuDCycle > 1) submenuDCycle--;
-      else submenuDCycle = 2; // Wrap around to last option
+      else submenuDCycle = 3; // Wrap around to last option
       dutycycle_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenuDCycle < 2) submenuDCycle++;
+      if (submenuDCycle < 3) submenuDCycle++;
       else submenuDCycle = 1; // Wrap around to first option
       dutycycle_user_interface();
     }
@@ -2225,24 +2785,32 @@ void buttonScanner() {
           generatePWMPulsePercentage(PIN_PWM_P0);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P0);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 2) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P1);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P1);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 3) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P2);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P2);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       } else if (submenuPx == 4) {
         if (submenuDCycle == 1) {
           generatePWMPulsePercentage(PIN_PWM_P3);
         } else if (submenuDCycle == 2) {
           generatePWMPulse8Bit(PIN_PWM_P3);
+        } else if (submenuDCycle == 3) {
+          generatePWMWithPeriod(PIN_PWM_P0);
         }
       }
     }
@@ -2340,4 +2908,164 @@ void loop() {
   generateSignal(PIN_PWM_P1, frequencyP1, periodP1, dutyCycleP1, modeP1);
   generateSignal(PIN_PWM_P2, frequencyP2, periodP2, dutyCycleP2, modeP2);
   generateSignal(PIN_PWM_P3, frequencyP3, periodP3, dutyCycleP3, modeP3);
+
+  if (Serial.available()) {
+    char val = Serial.read();
+
+    // For automatic search
+    if (val == '0') {
+      autoSearch(14);
+    }
+    if (val == '1') {
+      autoSearch(16);
+    }
+    if (val == '2') {
+      autoSearch(8);
+    }
+    if (val == '3') {
+      autoSearch(20);
+    }
+
+    // For manual testing
+    if (val == '4') { // 7400
+      Serial.println("Manual test: 7400");
+      get_test_case(1);
+    }
+    if (val == '5') { // 7402
+      Serial.println("Manual test: 7402");
+      get_test_case(2);
+    }
+    if (val == '6') { // 7404
+      Serial.println("Manual test: 7404");
+      get_test_case(3);
+    }
+    if (val == '7') { // 7408
+      Serial.println("Manual test: 7408");
+      get_test_case(4);
+    }
+    if (val == '8') { // 7432
+      Serial.println("Manual test: 7432");
+      get_test_case(5);
+    }
+    if (val == '9') { // 7486
+      Serial.println("Manual test: 7486");
+      get_test_case(6);
+    }
+    if (val == 'a') { // 747266
+      Serial.println("Manual test: 747266");
+      get_test_case(7);
+    }
+    if (val == 'b') { // 7427
+      Serial.println("Manual test: 7427");
+      get_test_case(8);
+    }
+    if (val == 'c') { // 74151
+      Serial.println("Manual test: 74151");
+      get_test_case(9);
+    }
+    if (val == 'd') { // 7421
+      Serial.println("Manual test: 7421");
+      get_test_case(10);
+    }
+    if (val == 'e') { // 74192
+      Serial.println("Manual test: 74192");
+      get_test_case(11);
+    }
+    if (val == 'f') { // 7474
+      Serial.println("Manual test: 7474");
+      get_test_case(12);
+    }
+    if (val == 'g') { // 74190
+      Serial.println("Manual test: 74190");
+      get_test_case(13);
+    }
+    if (val == 'h') { // 74193
+      Serial.println("Manual test: 74193");
+      get_test_case(14);
+    }
+    if (val == 'i') { // 74195
+      Serial.println("Manual test: 74195");
+      get_test_case(15);
+    }
+    if (val == 'j') { // 7410
+      Serial.println("Manual test: 7410");
+      get_test_case(16);
+    }
+    if (val == 'k') { // 7411
+      Serial.println("Manual test: 7411");
+      get_test_case(17);
+    }
+    if (val == 'l') { // 74125
+      Serial.println("Manual test: 74125");
+      get_test_case(18);
+    }
+    if (val == 'm') { // 74138
+      Serial.println("Manual test: 74138");
+      get_test_case(19);
+    }
+    if (val == 'n') { // 7447
+      Serial.println("Manual test: 7447");
+      get_test_case(20);
+    }
+    if (val == 'o') { // 74173
+      Serial.println("Manual test: 74173");
+      get_test_case(21);
+    }
+    if (val == 'p') { // 4070
+      Serial.println("Manual test: 4070");
+      get_test_case(22);
+    }
+    if (val == 'q') { // 4071
+      Serial.println("Manual test: 4071");
+      get_test_case(23);
+    }
+    if (val == 'r') { // 4017
+      Serial.println("Manual test: 4017");
+      get_test_case(24);
+    }
+    if (val == 's') { // 4511
+      Serial.println("Manual test: 4511");
+      get_test_case(25);
+    }
+    if (val == 't') { // 4081
+      Serial.println("Manual test: 4081");
+      get_test_case(26);
+    }
+    if (val == 'u') { // 4077
+      Serial.println("Manual test: 4077");
+      get_test_case(27);
+    }
+    if (val == 'v') { // 4068
+      Serial.println("Manual test: 4068");
+      get_test_case(28);
+    }
+    if (val == 'w') { // 4069
+      Serial.println("Manual test: 4069");
+      get_test_case(29);
+    }
+    if (val == 'x') { // 4066
+      Serial.println("Manual test: 4066");
+      get_test_case(30);
+    }
+    if (val == 'y') { // 4094
+      Serial.println("Manual test: 4094");
+      get_test_case(31);
+    }
+    if (val == 'z') { // 74112
+      Serial.println("Manual test: 74112");
+      get_test_case(32);
+    }
+    if (val == 'A') { // 741
+      Serial.println("Manual test: 741");
+      get_test_case(33);
+    }
+    if (val == 'B') { // 072
+      Serial.println("Manual test: 072");
+      get_test_case(34);
+    }
+    if (val == 'C') { // 74373
+      Serial.println("Manual test: 74373");
+      get_test_case(35);
+    }
+  }
 }
