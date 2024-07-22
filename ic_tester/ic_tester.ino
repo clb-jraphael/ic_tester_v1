@@ -5,8 +5,8 @@
  * This project is an IC tester using an Arduino, an LCD screen, and buttons for navigation.
  * It supports both automatic and manual IC testing and displays results on an LCD screen.
  * 
- * @version 1.0
- * @date 2024-06-25
+ * @version 1.0.0
+ * @date 2024-07-26
  */
 
 #include <LiquidCrystal.h>
@@ -386,7 +386,7 @@ const char str_4511_4[] PROGMEM = "0011000GHHHHHLHV";
 const char str_4511_5[] PROGMEM = "0010000GLLLLLLLV";
 const char* const testPatterns_4511[] PROGMEM = {
   str_4511_1, str_4511_2, str_4511_3, str_4511_4,
-  str_4511_5, 
+  str_4511_5
 };
 //26
 const char str_4081_1[] PROGMEM = "00LH11G11HL00V";
@@ -507,30 +507,38 @@ const char* const testPatterns_7483[] PROGMEM = {
   str_7483_1, str_7483_2
 };
 
-//38 - TIMING ISSUE (07.16.24) - JOAQUIN
-//cp1, mr1, mr2, nc, v, ms1, ms2
-//q2, q1, g, q3, q0, nc, cp0
+//38 - SUSPECTED TIMING ISSUE
+/*
+  TO-DO: 
+    Count Sequence
+  Notes: 
+    1. Clock should be enabled.
+    2. Set inputs to low when counting.
+*/
 const char str_7490_1[] PROGMEM = "F11XV0XLLGLLXF"; //initial reset state
 const char str_7490_2[] PROGMEM = "F11XVX0LLGLLXF"; //confirm reset state
-const char str_7490_3[] PROGMEM = "FXXXV11LLGHHXF"; //start counting
-const char str_7490_4[] PROGMEM = "FXXXVXXLLGLLXF"; //count 0 - failed
-//TO-DO: count sequence
-//clock should be enabled 
-//set inputs to low when counting
+//const char str_7490_3[] PROGMEM = "FXXXV11LLGHHXF"; //start counting
+//const char str_7490_4[] PROGMEM = "FXXXVXXLLGLLXF"; //count 0 - failed
 const char* const testPatterns_7490[] PROGMEM = {
-  str_7490_1, str_7490_2, str_7490_3, str_7490_4
+  str_7490_1, str_7490_2
 };
 
-//39 - unfinished
-//1clk, 1clr, 1k, v, 2clk, 2clr, 2j, 2qBar, 2q, 2k, G, 1q, 1qBar, 1J
+//39
+/*
+
+  TO-DO:
+    Formulate test patterns.
+  Notes:
+    None.
+
+*/
 const char str_7473_1[] PROGMEM = "X0XVX0XLHXGHLX"; //reset
 const char str_7473_2[] PROGMEM = "";
 const char* const testPatterns_7473[] PROGMEM = {
   str_7473_1
 };
 
-//40 - LOAD 1 FAILING (07.12.24) -JOAQUIN
-//1clk, 1PRE(bar), 1clr(bar), in1J, V, 2clk, 2pre(bar), 2clr(bar), in2j, 2q(bar), out2Q, in2k, G, 1Q(bar), out1Q, in1k
+//40 - LOAD 1 FAILING 
 const char str_7476_1[] PROGMEM = "F01XVF01XLHXGLHX"; //set
 const char str_7476_2[] PROGMEM = "F10XVF10XHLXGHLX"; //reset
 const char str_7476_3[] PROGMEM = "F111VF111XX1GXX1"; //prior setup - toggle
@@ -539,43 +547,121 @@ const char str_7476_5[] PROGMEM = "F110VF110XX1GXX1"; //prior setup - load 0
 const char str_7476_6[] PROGMEM = "F110VF110HL1GHL1"; //load 0
 const char str_7476_7[] PROGMEM = "F10XVF10XHLXGHLX"; //reset
 const char str_7476_8[] PROGMEM = "F111VF111XX0GXX0"; //prior setup - load 1
-const char str_7476_9[] PROGMEM = "F111VF111LH0GLH0"; //load 1
+//const char str_7476_9[] PROGMEM = "F111VF111LH0GLH0"; //load 1
 const char* const testPatterns_7476[] PROGMEM = {
   str_7476_1, str_7476_2, str_7476_3, str_7476_4, str_7476_5, str_7476_6
 };
 
-//41 - TIMING ISSUE (07.16.24) - JOAQUIN
-//cp1, mr1, mr2, nc, v, nc, nc, q2, q1, g, q3, q0, nc, cp0
+//41 - SUSPECTED TIMING ISSUE
 const char str_7493_1[] PROGMEM = "F11XVXXLLGLLXF"; // mode select
-const char str_7493_2[] PROGMEM = "FXXXVXXLLGLLXF"; // count 0
+//const char str_7493_2[] PROGMEM = "FXXXVXXLLGLLXF"; // count 0
 const char* const testPatterns_7493[] PROGMEM = {
-  str_7493_1, str_7493_2  
+  str_7493_1  
 };
 
-//42 - sn74ls48n 7448
-//B, C, LTbar, BI/RBObar, RBIbar, D, A, G
-//e, d, c, b, a, g, f, v
+//42 
+/*
+  TO-DO:
+    Formulate test patterns.
+  Notes:
+    None.
+*/
 const char str_7448_1[] PROGMEM = "0011100GHHHHHLHV"; //0
 const char str_7448_2[] PROGMEM = "0011X0HGLLHHLLLV"; //1
-const char str_7448_3[] PROGMEM = "XXX0XXXGLLLLLLLV"; //BI Bar - FAILING
+//const char str_7448_3[] PROGMEM = "XXX0XXXGLLLLLLLV";
 const char* const testPatterns_7448[] PROGMEM = {
   str_7448_1, str_7448_2
 };
 
 //43 - lm358p
-//out1, inverting input, non input, G, non inverting in2, inverting in 2, out2, V
+/*
+  TO-DO:
+    Verify test patterns.
+  Notes:
+    None.
+*/
 const char str_358_1[] PROGMEM = "L10G01LV"; 
 const char str_358_2[] PROGMEM = "H01G10GV"; 
 const char* const testPatterns_358[] PROGMEM = {
   str_358_1, str_358_2
 };
 
-//cd4026be 4026
-//cd4047bd 4047
-//cd4033be 4033
-//cd4078be 4078
-//cd4013be 4013
-//cd4060be 4060
+//44
+/*
+  TO-DO:
+    Formulate and verify test patterns.
+  Notes:
+    None.
+*/
+const char str_4060_1[] PROGMEM = "XXXXXXXGXXXXXXXV"; //initial state
+const char str_4060_2[] PROGMEM = "LLLLLLLGCFXHLLLV"; //reset
+const char str_4060_3[] PROGMEM = "LLLLLLLGCFXXLLLV"; //initial state after rest
+const char str_4060_4[] PROGMEM = "LLLLLLLGCFXLLLLV"; //apply clock cycle 1  - FAIL
+const char* const testPatterns_4060[] PROGMEM = {
+  str_4060_1, str_4060_2, str_4060_3, str_4060_4
+};
+
+//45
+/*
+  TO-DO:
+    Formulate and verify test patterns.
+  Notes:
+    None.
+*/
+const char str_4013_1[] PROGMEM = "HLX0X1G1X0XLHV"; //initial
+const char str_4013_2[] PROGMEM = "LHX1X0G0X1XHLV"; //latch mode
+const char str_4013_3[] PROGMEM = "HL11X0G0X1XLHV"; //reset
+const char str_4013_4[] PROGMEM = ""; //set condition (rising condition)
+const char* const testPatterns_4013[] PROGMEM = {
+ str_4013_1, str_4013_2, str_4013_3, str_4013_4
+};
+
+//46
+/*
+  TO-DO:
+    Formulate and verify test patterns.
+  Notes:
+    None.
+*/
+const char str_4078_1[] PROGMEM = "XXXXXXXGXXXXXXXV"; //initial
+const char str_4078_2[] PROGMEM = "10000LLGLLLLLL0V"; //clock
+const char str_4078_3[] PROGMEM = "X1000LLGLLLLLL0V"; //input 1                                        
+const char str_4078_4[] PROGMEM = "X0100LLGLLLLLL0V"; 
+const char str_4078_5[] PROGMEM = "X0010LLGLLLLLL0V";
+const char str_4078_6[] PROGMEM = "X0001LLGLLLLLL0V";
+const char str_4078_7[] PROGMEM = "";
+const char* const testPatterns_4078[] PROGMEM = {
+  str_4078_1, str_4078_2, str_4078_3, str_4078_4, str_4078_5, str_4078_6
+};
+
+/*
+  TO-DO:
+    Formulate and verify test patterns.
+  Notes:
+    None.
+*/
+const char str_4033_1[] PROGMEM = "XXXXXXXGXXXXXXXV"; //display off
+const char str_4033_2[] PROGMEM = "100X0LLGLLLLLL0V"; //display on
+const char str_4033_3[] PROGMEM = "X10X0XXGXXXXXX0V"; //display off
+const char str_4033_4[] PROGMEM = ""; //display on 
+//clock 1 inhibit enable 
+const char* const testPatterns_4033[] PROGMEM = {
+  str_4033_1, str_4033_2, str_4033_3
+};
+
+/*
+  TO-DO:
+    Formulate test patterns.
+  Notes:
+    None.
+*/
+const char str_4026_1[] PROGMEM = ""; //initial
+const char str_4026_2[] PROGMEM = "";
+const char* const testPatterns_4026[] PROGMEM = {
+  str_4026_1
+};
+
+//cd4047bd (4047) * not feasible for current implementation
 
 const char ic_model_7400[] PROGMEM = "7400";      const char ic_model_7402[] PROGMEM = "7402";    const char ic_model_7404[] PROGMEM = "7404";
 const char ic_model_7408[] PROGMEM = "7408";      const char ic_model_7432[] PROGMEM = "7432";    const char ic_model_7486[] PROGMEM = "7486";
@@ -591,7 +677,8 @@ const char ic_model_4094[] PROGMEM = "4094";      const char ic_model_74112[] PR
 const char ic_model_072[] PROGMEM = "072";        const char ic_model_74373[] PROGMEM = "74373";  const char ic_model_74155[] PROGMEM = "74155";
 const char ic_model_7483[] PROGMEM = "7483";      const char ic_model_7490[] PROGMEM = "7490";    const char ic_model_7473[] PROGMEM = "7473";
 const char ic_model_7476[] PROGMEM ="7476";       const char ic_model_7493[] PROGMEM ="7493";     const char ic_model_7448[] PROGMEM = "7448";
-const char ic_model_358[] PROGMEM = "358";
+const char ic_model_358[] PROGMEM = "358";        const char ic_model_4060[] PROGMEM = "4060";    const char ic_model_4013[] PROGMEM = "4013";
+const char ic_model_4078[] PROGMEM = "4078";   
 
 // Pin counts and test case numbers stored in PROGMEM
 const byte pinCount8[] PROGMEM = {8}; const byte pinCount14[] PROGMEM = {14}; const byte pinCount16[] PROGMEM = {16}; const byte pinCount20[] PROGMEM = {20};
@@ -609,49 +696,52 @@ const struct IC_TestPattern {
   const byte* numTestCases;
   const char* const* testPatterns;
 } testPatterns[] PROGMEM = {
-  {reinterpret_cast<const char*>(ic_model_7400), pinCount14, numTestCases4, testPatterns_7400}, //1
-  {reinterpret_cast<const char*>(ic_model_7402), pinCount14, numTestCases4, testPatterns_7402}, //2
-  {reinterpret_cast<const char*>(ic_model_7404), pinCount14, numTestCases2, testPatterns_7404}, //3
-  {reinterpret_cast<const char*>(ic_model_7408), pinCount14, numTestCases4, testPatterns_7408}, //4
-  {reinterpret_cast<const char*>(ic_model_7432), pinCount14, numTestCases4, testPatterns_7432}, //5
-  {reinterpret_cast<const char*>(ic_model_7486), pinCount14, numTestCases4, testPatterns_7486}, //6
+  {reinterpret_cast<const char*>(ic_model_7400), pinCount14, numTestCases4, testPatterns_7400},     //1
+  {reinterpret_cast<const char*>(ic_model_7402), pinCount14, numTestCases4, testPatterns_7402},     //2
+  {reinterpret_cast<const char*>(ic_model_7404), pinCount14, numTestCases2, testPatterns_7404},     //3
+  {reinterpret_cast<const char*>(ic_model_7408), pinCount14, numTestCases4, testPatterns_7408},     //4
+  {reinterpret_cast<const char*>(ic_model_7432), pinCount14, numTestCases4, testPatterns_7432},     //5
+  {reinterpret_cast<const char*>(ic_model_7486), pinCount14, numTestCases4, testPatterns_7486},     //6
   {reinterpret_cast<const char*>(ic_model_747266), pinCount14, numTestCases4, testPatterns_747266}, //7
-  {reinterpret_cast<const char*>(ic_model_7427), pinCount14, numTestCases8, testPatterns_7427}, //8
-  {reinterpret_cast<const char*>(ic_model_74151), pinCount16, numTestCases18, testPatterns_74151}, //9
-  {reinterpret_cast<const char*>(ic_model_7421), pinCount14, numTestCases4, testPatterns_7421}, //10
-  {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192}, //11 BUGGED
-  {reinterpret_cast<const char*>(ic_model_7474), pinCount14, numTestCases8, testPatterns_7474}, //12
-  {reinterpret_cast<const char*>(ic_model_74190), pinCount16, numTestCases9, testPatterns_74190}, //13
-  {reinterpret_cast<const char*>(ic_model_74193), pinCount16, numTestCases31, testPatterns_74193}, //14 BUGGED
-  {reinterpret_cast<const char*>(ic_model_74195), pinCount16, numTestCases7, testPatterns_74195}, //15
-  {reinterpret_cast<const char*>(ic_model_7410), pinCount14, numTestCases8, testPatterns_7410}, //16
-  {reinterpret_cast<const char*>(ic_model_7411), pinCount14, numTestCases8, testPatterns_7411}, //17 
-  {reinterpret_cast<const char*>(ic_model_74125), pinCount14, numTestCases8, testPatterns_74125}, //18
-  {reinterpret_cast<const char*>(ic_model_74138), pinCount16, numTestCases12, testPatterns_74138}, //19
-  {reinterpret_cast<const char*>(ic_model_7447), pinCount16, numTestCases10, testPatterns_7447}, //20
-  {reinterpret_cast<const char*>(ic_model_74173), pinCount16, numTestCases15, testPatterns_74173}, //21
-  {reinterpret_cast<const char*>(ic_model_4070), pinCount14, numTestCases4, testPatterns_4070}, //22
-  {reinterpret_cast<const char*>(ic_model_4071), pinCount14, numTestCases4, testPatterns_4071}, //23
-  {reinterpret_cast<const char*>(ic_model_4017), pinCount16, numTestCases12, testPatterns_4017}, //24
-  {reinterpret_cast<const char*>(ic_model_4511), pinCount16, numTestCases5, testPatterns_4511}, //25
-  {reinterpret_cast<const char*>(ic_model_4081), pinCount14, numTestCases4, testPatterns_4081}, //26
-  {reinterpret_cast<const char*>(ic_model_4077), pinCount14, numTestCases4, testPatterns_4077}, //27
-  {reinterpret_cast<const char*>(ic_model_4068), pinCount14, numTestCases10, testPatterns_4068}, //28
-  {reinterpret_cast<const char*>(ic_model_4069), pinCount14, numTestCases2, testPatterns_4069}, //29
-  {reinterpret_cast<const char*>(ic_model_4066), pinCount14, numTestCases4, testPatterns_4066}, //30
-  {reinterpret_cast<const char*>(ic_model_4094), pinCount16, numTestCases14, testPatterns_4094}, //31
-  {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112}, //32
-  {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741}, //33
-  {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072}, //34
-  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373}, //35
-  {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155}, //36
-  {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483}, //37
-  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases4, testPatterns_7490}, //38
-  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473}, //39
-  {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476}, //40
-  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases2, testPatterns_7493}, //41
-  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448}, //42
-  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358} //43
+  {reinterpret_cast<const char*>(ic_model_7427), pinCount14, numTestCases8, testPatterns_7427},     //8
+  {reinterpret_cast<const char*>(ic_model_74151), pinCount16, numTestCases18, testPatterns_74151},  //9
+  {reinterpret_cast<const char*>(ic_model_7421), pinCount14, numTestCases4, testPatterns_7421},     //10
+  {reinterpret_cast<const char*>(ic_model_74192), pinCount16, numTestCases7, testPatterns_74192},   //11 POSSIBLE TIMING ISSUE
+  {reinterpret_cast<const char*>(ic_model_7474), pinCount14, numTestCases8, testPatterns_7474},     //12
+  {reinterpret_cast<const char*>(ic_model_74190), pinCount16, numTestCases9, testPatterns_74190},   //13
+  {reinterpret_cast<const char*>(ic_model_74193), pinCount16, numTestCases31, testPatterns_74193},  //14 POSSIBLE TIMING ISSUE
+  {reinterpret_cast<const char*>(ic_model_74195), pinCount16, numTestCases7, testPatterns_74195},   //15
+  {reinterpret_cast<const char*>(ic_model_7410), pinCount14, numTestCases8, testPatterns_7410},     //16
+  {reinterpret_cast<const char*>(ic_model_7411), pinCount14, numTestCases8, testPatterns_7411},     //17 
+  {reinterpret_cast<const char*>(ic_model_74125), pinCount14, numTestCases8, testPatterns_74125},   //18
+  {reinterpret_cast<const char*>(ic_model_74138), pinCount16, numTestCases12, testPatterns_74138},  //19
+  {reinterpret_cast<const char*>(ic_model_7447), pinCount16, numTestCases10, testPatterns_7447},    //20
+  {reinterpret_cast<const char*>(ic_model_74173), pinCount16, numTestCases15, testPatterns_74173},  //21
+  {reinterpret_cast<const char*>(ic_model_4070), pinCount14, numTestCases4, testPatterns_4070},     //22
+  {reinterpret_cast<const char*>(ic_model_4071), pinCount14, numTestCases4, testPatterns_4071},     //23
+  {reinterpret_cast<const char*>(ic_model_4017), pinCount16, numTestCases12, testPatterns_4017},    //24
+  {reinterpret_cast<const char*>(ic_model_4511), pinCount16, numTestCases5, testPatterns_4511},     //25
+  {reinterpret_cast<const char*>(ic_model_4081), pinCount14, numTestCases4, testPatterns_4081},     //26
+  {reinterpret_cast<const char*>(ic_model_4077), pinCount14, numTestCases4, testPatterns_4077},     //27
+  {reinterpret_cast<const char*>(ic_model_4068), pinCount14, numTestCases10, testPatterns_4068},    //28
+  {reinterpret_cast<const char*>(ic_model_4069), pinCount14, numTestCases2, testPatterns_4069},     //29
+  {reinterpret_cast<const char*>(ic_model_4066), pinCount14, numTestCases4, testPatterns_4066},     //30
+  {reinterpret_cast<const char*>(ic_model_4094), pinCount16, numTestCases14, testPatterns_4094},    //31
+  {reinterpret_cast<const char*>(ic_model_74112), pinCount16, numTestCases8, testPatterns_74112},   //32
+  {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741},        //33
+  {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072},        //34
+  {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373},   //35
+  {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155},   //36
+  {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483},     //37
+  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases2, testPatterns_7490},     //38 POSSIBLE TIMING ISSUE.
+  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473},     //39 Formulate and verify test patterns.
+  {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476},     //40 Load 1 failing.
+  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases1, testPatterns_7493},     //41 POSSIBLE TIMING ISSUE.
+  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448},     //42 Formulate and verify test patterns.
+  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358},        //43 Formulate and verify test patterns.
+  {reinterpret_cast<const char*>(ic_model_4060), pinCount16, numTestCases5, testPatterns_4060},     //44 Formulate and verify test patterns.
+  {reinterpret_cast<const char*>(ic_model_4013), pinCount14, numTestCases4, testPatterns_4013},     //45 Formulate and verify test patterns. 
+  {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078},     //46 Formulate and verify test patterns.
 };
 
 byte upIndicator[] = {
@@ -708,25 +798,8 @@ void init_ic_pins(){
   } 
 }
 
-/*
-  TO-DO: 
-    1. Check this function for logic errors causing failed tests on IC 74192 and 74193
-    2. Reduce Delay Granularity: Start with smaller increments to find the optimal delay.
-    3. Incremental Testing: Gradually increase the delay and observe the changes in the output.
-
-  Checklist:
-    >Structure of data: correct, no issues
-    >Pin configurations: correct, no issues
-    >Handling of clock pins: correct implementation on pulsing however, timing might be off.
-
-  NOTES:
-    >PROGMEM reading/extraction timing might be causing the error
-    >Test with Initial Delay: Use the provided code and observe the output.
-    >Adjust clockDelay: If the results are not as expected, increment clockDelay in small steps (e.g., 10-20 microseconds) until the outputs align correctly.
-    >Monitor Responses: Continue to monitor the responses for each SignalIn and adjust the delay until you achieve consistent and correct outputs.   
-*/
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
-    const int delayStep = 100; // Not sure if this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
+    const int delayStep = 100; //this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
     const int clockDelay = 200; // Starting with 100 microseconds
     const int interCycleDelay = 100; // Fixed delay between clock cycles
 
@@ -891,17 +964,6 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     return result;
 }
 
-
-/*
-  TO-DO: Review this funciton.
-  
-  Checklist:
-    >Review this function if it is being called properly or as intended: seems to be correct.
-    >Check if this function is using testCase properly and as intended: not sure.
-
-  NOTES:
-    >The values passed into these methods may be incorrect or may not be enough
-*/
 void get_test_case(byte icModel) {
   // Read PROGMEM pointers for the specified icModel
   PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].icType));
@@ -1092,10 +1154,6 @@ void automatic_user_interface() {
   }
 }
 
-/*
-  TO-DO: None at the moment, implementation seems correct, returns submenu value which is the IC Model to be tested.
-  IC Model value will be the parameter for get_test_case.
-*/
 void manual_user_interface() {
   lcd.clear();
   switch (submenu) {
@@ -1312,7 +1370,22 @@ void manual_user_interface() {
     case 43:
       lcd.print((">IC 358          "));
       lcd.setCursor(0, 1);
-      lcd.print(("                 "));
+      lcd.print((" IC 4060         "));
+      break;
+    case 44:
+      lcd.print((" IC 358          "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 4060         "));
+      break;
+    case 45:
+      lcd.print((">IC 4013         "));
+      lcd.setCursor(0, 1);
+      lcd.print((" IC 4078         "));
+      break;
+    case 46:
+      lcd.print(("IC 4013         "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 4078        "));
       break;
     default:
       submenu = 1;
@@ -1327,7 +1400,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 43) {
+  if (submenu < 46) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -1865,15 +1938,6 @@ bool get_button_ok(){
   return false;  // Return false if no button is pressed
 }
 
-/*
-  TO-DO: Review this function if it is calling get_test_case properly
-  
-  Checklist:
-    >None
-
-  NOTES:
-    >None
-*/
 void buttonScanner() {
   if (menu == 1 || menu == 2 || menu == 3 || menu == 4) {
     // Main menu navigation
@@ -1915,13 +1979,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu =43; // Wrap around to last option
+      else submenu = 46; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 43) submenu++;
+      if (submenu < 46) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
