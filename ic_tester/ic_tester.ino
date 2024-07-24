@@ -800,6 +800,18 @@ void init_ic_pins(){
   } 
 }
 
+/*
+ * This function tests an Integrated Circuit (IC) based on the provided test pattern.
+ * It configures the IC pins according to the test pattern, applies clock pulses if necessary,
+ * and verifies the IC's output.
+ * 
+ * Parameters:
+ * - test: Pointer to the test pattern stored in program memory (PROGMEM).
+ * - pins: Array of pin numbers used by the IC.
+ * - pinCount: Number of pins in the IC.
+ * 
+ * Returns:
+ * - b
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     const int delayStep = 100; //this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
     const int clockDelay = 200; // Starting with 100 microseconds
@@ -966,6 +978,14 @@ boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     return result;
 }
 
+/*
+ * This function retrieves and executes the test cases for a specified IC model.
+ * It reads the test patterns and pin configurations from PROGMEM, configures the pins,
+ * and runs each test case using the testCase function.
+ * 
+ * Parameters:
+ * - icModel: The model of the IC to be tested.
+ */
 void get_test_case(byte icModel) {
   // Read PROGMEM pointers for the specified icModel
   PGM_P icType_p = reinterpret_cast<PGM_P>(pgm_read_ptr(&testPatterns[icModel - 1].icType));
