@@ -663,21 +663,51 @@ const char* const testPatterns_4026[] PROGMEM = {
 
 //cd4047bd (4047) * not feasible for current implementation
 
-const char ic_model_7400[] PROGMEM = "7400";      const char ic_model_7402[] PROGMEM = "7402";    const char ic_model_7404[] PROGMEM = "7404";
-const char ic_model_7408[] PROGMEM = "7408";      const char ic_model_7432[] PROGMEM = "7432";    const char ic_model_7486[] PROGMEM = "7486";
-const char ic_model_747266[] PROGMEM = "747266";  const char ic_model_7427[] PROGMEM = "7427";    const char ic_model_74151[] PROGMEM = "74151";
-const char ic_model_7421[] PROGMEM = "7421";      const char ic_model_74192[] PROGMEM = "74192";  const char ic_model_7474[] PROGMEM = "7474";
-const char ic_model_74190[] PROGMEM = "74190";    const char ic_model_74193[] PROGMEM = "74193";  const char ic_model_74195[] PROGMEM = "74195";
-const char ic_model_7410[] PROGMEM = "7410";      const char ic_model_7411[] PROGMEM = "7411";    const char ic_model_74125[] PROGMEM = "74125";
-const char ic_model_74138[] PROGMEM = "74138";    const char ic_model_7447[] PROGMEM = "7447";    const char ic_model_74173[] PROGMEM = "74173";
-const char ic_model_4070[] PROGMEM = "4070";      const char ic_model_4071[] PROGMEM = "4071";    const char ic_model_4017[] PROGMEM = "4017";
-const char ic_model_4511[] PROGMEM = "4511";      const char ic_model_4081[] PROGMEM = "4081";    const char ic_model_4077[] PROGMEM = "4077";
-const char ic_model_4068[] PROGMEM = "4068";      const char ic_model_4069[] PROGMEM = "4069";    const char ic_model_4066[] PROGMEM = "4066";
-const char ic_model_4094[] PROGMEM = "4094";      const char ic_model_74112[] PROGMEM = "74112";  const char ic_model_741[] PROGMEM = "741";
-const char ic_model_072[] PROGMEM = "072";        const char ic_model_74373[] PROGMEM = "74373";  const char ic_model_74155[] PROGMEM = "74155";
-const char ic_model_7483[] PROGMEM = "7483";      const char ic_model_7490[] PROGMEM = "7490";    const char ic_model_7473[] PROGMEM = "7473";
-const char ic_model_7476[] PROGMEM ="7476";       const char ic_model_7493[] PROGMEM ="7493";     const char ic_model_7448[] PROGMEM = "7448";
-const char ic_model_358[] PROGMEM = "358";        const char ic_model_4060[] PROGMEM = "4060";    const char ic_model_4013[] PROGMEM = "4013";
+const char ic_model_7400[] PROGMEM = "7400";      
+const char ic_model_7402[] PROGMEM = "7402";    
+const char ic_model_7404[] PROGMEM = "7404";
+const char ic_model_7408[] PROGMEM = "7408";      
+const char ic_model_7432[] PROGMEM = "7432";    
+const char ic_model_7486[] PROGMEM = "7486";
+const char ic_model_747266[] PROGMEM = "747266";  
+const char ic_model_7427[] PROGMEM = "7427";    
+const char ic_model_74151[] PROGMEM = "74151";
+const char ic_model_7421[] PROGMEM = "7421";      
+const char ic_model_74192[] PROGMEM = "74192";  
+const char ic_model_7474[] PROGMEM = "7474";
+const char ic_model_74190[] PROGMEM = "74190";    
+const char ic_model_74193[] PROGMEM = "74193";  
+const char ic_model_74195[] PROGMEM = "74195";
+const char ic_model_7410[] PROGMEM = "7410";      
+const char ic_model_7411[] PROGMEM = "7411";    
+const char ic_model_74125[] PROGMEM = "74125";
+const char ic_model_74138[] PROGMEM = "74138";    
+const char ic_model_7447[] PROGMEM = "7447";    
+const char ic_model_74173[] PROGMEM = "74173";
+const char ic_model_4070[] PROGMEM = "4070";      
+const char ic_model_4071[] PROGMEM = "4071";    
+const char ic_model_4017[] PROGMEM = "4017";
+const char ic_model_4511[] PROGMEM = "4511";      
+const char ic_model_4081[] PROGMEM = "4081";    
+const char ic_model_4077[] PROGMEM = "4077";
+const char ic_model_4068[] PROGMEM = "4068";      
+const char ic_model_4069[] PROGMEM = "4069";    
+const char ic_model_4066[] PROGMEM = "4066";
+const char ic_model_4094[] PROGMEM = "4094";      
+const char ic_model_74112[] PROGMEM = "74112";  
+const char ic_model_741[] PROGMEM = "741";
+const char ic_model_072[] PROGMEM = "072";        
+const char ic_model_74373[] PROGMEM = "74373";  
+const char ic_model_74155[] PROGMEM = "74155";
+const char ic_model_7483[] PROGMEM = "7483";      
+const char ic_model_7490[] PROGMEM = "7490";    
+const char ic_model_7473[] PROGMEM = "7473";
+const char ic_model_7476[] PROGMEM ="7476";       
+const char ic_model_7493[] PROGMEM ="7493";     
+const char ic_model_7448[] PROGMEM = "7448";
+const char ic_model_358[] PROGMEM = "358";        
+const char ic_model_4060[] PROGMEM = "4060";    
+const char ic_model_4013[] PROGMEM = "4013";
 const char ic_model_4078[] PROGMEM = "4078";   
 
 // Pin counts and test case numbers stored in PROGMEM
@@ -731,17 +761,17 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_741), pinCount8, numTestCases2, testPatterns_741},        //33
   {reinterpret_cast<const char*>(ic_model_072), pinCount8, numTestCases2, testPatterns_072},        //34
   {reinterpret_cast<const char*>(ic_model_74373), pinCount20, numTestCases2, testPatterns_74373},   //35
-  {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155},   //36
-  {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483},     //37
-  {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases2, testPatterns_7490},     //38 POSSIBLE TIMING ISSUE.
-  {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473},     //39 Formulate and verify test patterns.
-  {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476},     //40 Load 1 failing.
-  {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases1, testPatterns_7493},     //41 POSSIBLE TIMING ISSUE.
-  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448}     //42 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_74155), pinCount16, numTestCases6, testPatterns_74155},   //36
+  // {reinterpret_cast<const char*>(ic_model_7483), pinCount16, numTestCases2, testPatterns_7483},     //37 
+  // {reinterpret_cast<const char*>(ic_model_7490), pinCount14, numTestCases2, testPatterns_7490},     //38 POSSIBLE TIMING ISSUE.
+  // {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473},     //39 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476},     //40 Load 1 failing.
+  // {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases1, testPatterns_7493},     //41 POSSIBLE TIMING ISSUE.
+  // {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448},      //42 Formulate and verify test patterns.
   // {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358},        //43 Formulate and verify test patterns.
   // {reinterpret_cast<const char*>(ic_model_4060), pinCount16, numTestCases5, testPatterns_4060},     //44 Formulate and verify test patterns.
   // {reinterpret_cast<const char*>(ic_model_4013), pinCount14, numTestCases4, testPatterns_4013},     //45 Formulate and verify test patterns. 
-  // {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078},     //46 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078}      //46 Formulate and verify test patterns.
 };
 
 // For generating an up arrow character
@@ -811,7 +841,8 @@ void init_ic_pins(){
  * - pinCount: Number of pins in the IC.
  * 
  * Returns:
- * - b
+ * - boolean: True if the IC passes the test, false otherwise.
+ */
 boolean testCase(PGM_P test, const byte* pins, int pinCount) {
     const int delayStep = 100; //this delay will help reduce the noise between state transitions, still needed to be considered for fine tuning
     const int clockDelay = 200; // Starting with 100 microseconds
@@ -996,7 +1027,7 @@ void get_test_case(byte icModel) {
   const char* const* testPatterns_p = reinterpret_cast<const char* const*>(pgm_read_ptr(&testPatterns[icModel - 1].testPatterns));
 
   // Print IC Type
-  char icType_buffer[20];
+  char icType_buffer[36];
   strcpy_P(icType_buffer, icType_p);
   Serial.print(F("Testing IC: "));
   Serial.println(icType_buffer);
@@ -1039,10 +1070,23 @@ void get_test_case(byte icModel) {
 
   if (overallResult) {
     Serial.println("IC Model " + String(icType_buffer) + " passed all tests.\n");
+    lcd.setCursor(0, 0);
+    lcd.print(F("Test Passed"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("                "));
+    delay(600);
+    submenu = 1;
+    manual_user_interface();
   } else {
     Serial.println("IC Model " + String(icType_buffer) + " failed.\n");
+    lcd.setCursor(0, 0);
+    lcd.print(F("Test Failed"));
+    lcd.setCursor(0, 1);
+    lcd.print(F("                "));
+    delay(600);
+    submenu = 1;
+    manual_user_interface();
   }
-
   // Final reset after all test cases
   reset_pin_config(pinCount);
 }
@@ -1467,26 +1511,26 @@ void manual_user_interface() {
       lcd.setCursor(0, 1);
       lcd.print((">IC 7448        "));
       break;
-    // case 43:
-    //   lcd.print((">IC 358         "));
-    //   lcd.setCursor(0, 1);
-    //   lcd.print((" IC 4060        "));
-    //   break;
-    // case 44:
-    //   lcd.print((" IC 358         "));
-    //   lcd.setCursor(0, 1);
-    //   lcd.print((">IC 4060        "));
-    //   break;
-    // case 45:
-    //   lcd.print((">IC 4013        "));
-    //   lcd.setCursor(0, 1);
-    //   lcd.print((" IC 4078        "));
-    //   break;
-    // case 46:
-    //   lcd.print((" IC 4013        "));
-    //   lcd.setCursor(0, 1);
-    //   lcd.print((">IC 4078        "));
-    //   break;
+    case 43:
+      lcd.print((">IC 358         "));
+      lcd.setCursor(0, 1);
+      lcd.print((" IC 4060        "));
+      break;
+    case 44:
+      lcd.print((" IC 358         "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 4060        "));
+      break;
+    case 45:
+      lcd.print((">IC 4013        "));
+      lcd.setCursor(0, 1);
+      lcd.print((" IC 4078        "));
+      break;
+    case 46:
+      lcd.print((" IC 4013        "));
+      lcd.setCursor(0, 1);
+      lcd.print((">IC 4078        "));
+      break;
     default:
       submenu = 1;
       manual_user_interface();
@@ -1500,7 +1544,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 42) {
+  if (submenu < 35) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -2559,13 +2603,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 42; // Wrap around to last option
+      else submenu = 35; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 42) submenu++;
+      if (submenu < 35) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
