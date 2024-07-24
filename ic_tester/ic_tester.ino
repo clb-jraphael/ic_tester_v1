@@ -737,11 +737,11 @@ const struct IC_TestPattern {
   {reinterpret_cast<const char*>(ic_model_7473), pinCount14, numTestCases1, testPatterns_7473},     //39 Formulate and verify test patterns.
   {reinterpret_cast<const char*>(ic_model_7476), pinCount16, numTestCases6, testPatterns_7476},     //40 Load 1 failing.
   {reinterpret_cast<const char*>(ic_model_7493), pinCount14, numTestCases1, testPatterns_7493},     //41 POSSIBLE TIMING ISSUE.
-  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448},     //42 Formulate and verify test patterns.
-  {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358},        //43 Formulate and verify test patterns.
-  {reinterpret_cast<const char*>(ic_model_4060), pinCount16, numTestCases5, testPatterns_4060},     //44 Formulate and verify test patterns.
-  {reinterpret_cast<const char*>(ic_model_4013), pinCount14, numTestCases4, testPatterns_4013},     //45 Formulate and verify test patterns. 
-  {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078},     //46 Formulate and verify test patterns.
+  {reinterpret_cast<const char*>(ic_model_7448), pinCount16, numTestCases2, testPatterns_7448}     //42 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_358), pinCount8, numTestCases2, testPatterns_358},        //43 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_4060), pinCount16, numTestCases5, testPatterns_4060},     //44 Formulate and verify test patterns.
+  // {reinterpret_cast<const char*>(ic_model_4013), pinCount14, numTestCases4, testPatterns_4013},     //45 Formulate and verify test patterns. 
+  // {reinterpret_cast<const char*>(ic_model_4078), pinCount16, numTestCases6, testPatterns_4078},     //46 Formulate and verify test patterns.
 };
 
 // For generating an up arrow character
@@ -1408,65 +1408,65 @@ void manual_user_interface() {
       lcd.print((">IC 072         "));
       break;
     case 35:
-      lcd.print((">IC 74373        "));
+      lcd.print((">IC 74373       "));
       lcd.setCursor(0, 1);
-      lcd.print((" IC 74155        "));
+      lcd.print((" IC 74155       "));
       break;
     case 36:
-      lcd.print((" IC 74373        "));
+      lcd.print((" IC 74373       "));
       lcd.setCursor(0, 1);
-      lcd.print((">IC 74155        "));
+      lcd.print((">IC 74155       "));
       break;
     case 37:
-      lcd.print((">IC 7483         "));
+      lcd.print((">IC 7483        "));
       lcd.setCursor(0, 1);
-      lcd.print((" IC 7490         "));
+      lcd.print((" IC 7490        "));
       break;
     case 38:
-      lcd.print((" IC 7483         "));
+      lcd.print((" IC 7483        "));
       lcd.setCursor(0, 1);
-      lcd.print((">IC 7490         "));
+      lcd.print((">IC 7490        "));
       break;
     case 39:
-      lcd.print((">IC 7473         "));
+      lcd.print((">IC 7473        "));
       lcd.setCursor(0, 1);
-      lcd.print((" IC 7476         "));
+      lcd.print((" IC 7476        "));
       break;
     case 40:
-      lcd.print((" IC 7473         "));
+      lcd.print((" IC 7473        "));
       lcd.setCursor(0, 1);
-      lcd.print((">IC 7476         "));
+      lcd.print((">IC 7476        "));
       break;
     case 41:
-      lcd.print((">IC 7493         "));
+      lcd.print((">IC 7493        "));
       lcd.setCursor(0, 1);
-      lcd.print((" IC 7448         "));
+      lcd.print((" IC 7448        "));
       break;
     case 42:
-      lcd.print((" IC 7493         "));
+      lcd.print((" IC 7493        "));
       lcd.setCursor(0, 1);
-      lcd.print((">IC 7448         "));
+      lcd.print((">IC 7448        "));
       break;
-    case 43:
-      lcd.print((">IC 358          "));
-      lcd.setCursor(0, 1);
-      lcd.print((" IC 4060         "));
-      break;
-    case 44:
-      lcd.print((" IC 358          "));
-      lcd.setCursor(0, 1);
-      lcd.print((">IC 4060         "));
-      break;
-    case 45:
-      lcd.print((">IC 4013         "));
-      lcd.setCursor(0, 1);
-      lcd.print((" IC 4078         "));
-      break;
-    case 46:
-      lcd.print(("IC 4013         "));
-      lcd.setCursor(0, 1);
-      lcd.print((">IC 4078        "));
-      break;
+    // case 43:
+    //   lcd.print((">IC 358         "));
+    //   lcd.setCursor(0, 1);
+    //   lcd.print((" IC 4060        "));
+    //   break;
+    // case 44:
+    //   lcd.print((" IC 358         "));
+    //   lcd.setCursor(0, 1);
+    //   lcd.print((">IC 4060        "));
+    //   break;
+    // case 45:
+    //   lcd.print((">IC 4013        "));
+    //   lcd.setCursor(0, 1);
+    //   lcd.print((" IC 4078        "));
+    //   break;
+    // case 46:
+    //   lcd.print((" IC 4013        "));
+    //   lcd.setCursor(0, 1);
+    //   lcd.print((">IC 4078        "));
+    //   break;
     default:
       submenu = 1;
       manual_user_interface();
@@ -1480,7 +1480,7 @@ void manual_user_interface() {
   }
 
   // Display down arrow if not on the last submenu
-  if (submenu < 46) {
+  if (submenu < 42) {
     lcd.setCursor(15, 1);
     lcd.write(byte(1));
   }
@@ -2539,13 +2539,13 @@ void buttonScanner() {
     if (flag_button[0]) { // UP button
       flag_button[0] = false; // Reset flag
       if (submenu > 1) submenu--;
-      else submenu = 46; // Wrap around to last option
+      else submenu = 42; // Wrap around to last option
       manual_user_interface();
     }
 
     if (flag_button[1]) { // DOWN button
       flag_button[1] = false; // Reset flag
-      if (submenu < 46) submenu++;
+      if (submenu < 42) submenu++;
       else submenu = 1; // Wrap around to first option
       manual_user_interface();
     }
